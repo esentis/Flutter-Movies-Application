@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           GetPage(name: '/search', page: () => SearchResults()),
           GetPage(
             name: '/article',
-            page: () => ArticleSreen(),
+            page: () => ArticleScreen(),
             transition: Transition.cupertinoDialog,
             curve: Curves.bounceIn,
             transitionDuration: const Duration(milliseconds: 350),
