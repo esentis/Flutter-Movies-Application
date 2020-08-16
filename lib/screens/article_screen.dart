@@ -9,12 +9,12 @@ import 'package:url_launcher/url_launcher.dart';
 Map arguments;
 Color _heartColor = Colors.white;
 
-class ArticleSreen extends StatefulWidget {
+class ArticleScreen extends StatefulWidget {
   @override
-  _ArticleSreenState createState() => _ArticleSreenState();
+  _ArticleScreenState createState() => _ArticleScreenState();
 }
 
-class _ArticleSreenState extends State<ArticleSreen> {
+class _ArticleScreenState extends State<ArticleScreen> {
   @override
   void initState() {
     super.initState();
@@ -100,10 +100,27 @@ class _ArticleSreenState extends State<ArticleSreen> {
                     }
                   });
                 },
-                child: Icon(
-                  Icons.favorite,
-                  color: _heartColor,
-                  size: 60,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(60),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFd54062),
+                        Color(0xFFb52b65),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: Colors.blue.withOpacity(0.3),
+                    ),
+                    child: Icon(
+                      Icons.favorite,
+                      color: _heartColor,
+                      size: 60,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -137,7 +154,7 @@ class _ArticleSreenState extends State<ArticleSreen> {
                       builder: (context, sizingInformation) => Column(
                             children: [
                               Text(
-                                arguments['title'],
+                                arguments['title'] ?? 'No title found',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
@@ -150,7 +167,8 @@ class _ArticleSreenState extends State<ArticleSreen> {
                                 color: Colors.black.withOpacity(0.6),
                               ),
                               Text(
-                                arguments['description'],
+                                arguments['description'] ??
+                                    'No description found',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
