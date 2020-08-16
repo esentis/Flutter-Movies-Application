@@ -304,7 +304,7 @@ class _MainScreenState extends State<MainScreen> {
                                         'No author found',
                                     image: data['articles'][index]
                                             ['urlToImage'] ??
-                                        'No image found',
+                                        'assets/images/404.png',
                                     borderColor: const Color(0xFFe0dede)
                                         .withOpacity(0.5),
                                     overlayColor: const Color(0xFFe0dede)
@@ -325,7 +325,8 @@ class _MainScreenState extends State<MainScreen> {
                                       'author': data['articles'][index]
                                           ['author'],
                                       'image': data['articles'][index]
-                                          ['urlToImage'],
+                                              ['urlToImage'] ??
+                                          'assets/images/404.png',
                                       'url': data['articles'][index]['url'],
                                       'key': data['articles'][index]['title'],
                                       'description': data['articles'][index]
