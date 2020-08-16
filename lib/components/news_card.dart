@@ -11,6 +11,9 @@ class NewsCard extends StatelessWidget {
     this.onTap,
     this.overlayHeight,
     this.width,
+    this.elevation,
+    this.shadowColor,
+    this.borderColor,
   });
   final String image;
   final Color overlayColor;
@@ -20,6 +23,9 @@ class NewsCard extends StatelessWidget {
   final Function onTap;
   final double overlayHeight;
   final double width;
+  final double elevation;
+  final Color shadowColor;
+  final Color borderColor;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,10 +33,14 @@ class NewsCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Material(
-          elevation: 5,
+          elevation: elevation,
+          shadowColor: shadowColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                width: 3,
+                color: borderColor,
+              )),
           child: Container(
             height: 200,
             width: 300,
