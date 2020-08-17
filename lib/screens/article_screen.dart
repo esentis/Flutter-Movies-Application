@@ -45,8 +45,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       Get.snackbar(
                         '',
                         '',
-                        duration: const Duration(milliseconds: 900),
-                        backgroundColor: Colors.green.withOpacity(0.8),
+                        maxWidth: 350,
+                        duration: const Duration(milliseconds: 800),
+                        backgroundColor: Colors.green.withOpacity(0.7),
                         borderRadius: 20,
                         borderColor: Colors.white,
                         borderWidth: 5,
@@ -67,8 +68,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       Get.snackbar(
                         '',
                         '',
-                        duration: const Duration(milliseconds: 900),
-                        backgroundColor: Colors.red.withOpacity(0.8),
+                        maxWidth: 350,
+                        duration: const Duration(milliseconds: 800),
+                        backgroundColor: Colors.red.withOpacity(0.7),
                         borderRadius: 20,
                         borderColor: Colors.white,
                         borderWidth: 5,
@@ -105,8 +107,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     borderRadius: BorderRadius.circular(60),
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFFd54062),
-                        Color(0xFFb52b65),
+                        Color(0xFF198FD8),
+                        Color(0xFFe0dede),
                       ],
                     ),
                   ),

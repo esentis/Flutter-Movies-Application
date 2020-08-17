@@ -42,8 +42,6 @@ class NewsCard extends StatelessWidget {
                 color: borderColor,
               )),
           child: Container(
-            height: 200,
-            width: 300,
             decoration: BoxDecoration(
               color: Colors.transparent,
               image: DecorationImage(
@@ -57,8 +55,14 @@ class NewsCard extends StatelessWidget {
                   bottom: 0,
                   child: Container(
                     height: overlayHeight,
+                    decoration: BoxDecoration(
+                      color: overlayColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                      ),
+                    ),
                     width: MediaQuery.of(context).size.width,
-                    color: overlayColor,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14.0, vertical: 14),
@@ -75,12 +79,23 @@ class NewsCard extends StatelessWidget {
                               color: textColor,
                             ),
                           ),
-                          Text(
-                            author,
-                            style: GoogleFonts.newsCycle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: textColor,
+                          Card(
+                            color: const Color(0xFFEC1E79).withOpacity(0.8),
+                            shape: const StadiumBorder(
+                                side: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            )),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14.0),
+                              child: Text(
+                                author,
+                                style: GoogleFonts.newsCycle(
+                                  fontSize: 20,
+                                  color: textColor,
+                                ),
+                              ),
                             ),
                           ),
                         ],

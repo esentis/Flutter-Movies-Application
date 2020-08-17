@@ -23,7 +23,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   Future fetchArticles() async {
-    var articles = await getHeadlinesFromCountry('us');
+    var articles = await getHeadlinesFromCountry('gr');
     return articles;
   }
 
@@ -72,16 +72,19 @@ class _MainScreenState extends State<MainScreen> {
       decoration: const BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          Color(0xFFf5f5f5),
-          Color(0xFFf7f7ee),
+          Color(0xFF198FD8),
+          Color(0xFFe0dede),
         ],
       )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         drawer: NewsDrawer(),
         appBar: AppBar(
-          backgroundColor: const Color(0xFFe0dede),
-          elevation: 12,
+          backgroundColor: Colors.white.withOpacity(0.2),
+          elevation: 15,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          toolbarHeight: 110,
           leading: Builder(
             builder: (BuildContext context) => IconButton(
               icon: Icon(
@@ -96,21 +99,13 @@ class _MainScreenState extends State<MainScreen> {
             builder: (context, sizingInformation) => Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               textBaseline: TextBaseline.ideographic,
               children: [
                 const SizedBox(),
-                Text(
-                  'Flutter News ${MediaQuery.of(context).size.width}',
-                  style: GoogleFonts.luckiestGuy(
-                      fontSize: sizingInformation.isMobile ? 38 : 45,
-                      color: Colors.white,
-                      shadows: [
-                        const Shadow(
-                          color: Colors.black,
-                          blurRadius: 5,
-                        )
-                      ]),
+                Image.asset(
+                  'assets/images/logo.png',
+                  scale: 2.5,
                 ),
                 PopupMenuButton<SettingsMenu>(
                   shape: RoundedRectangleBorder(
@@ -118,8 +113,8 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   icon: Icon(
                     Icons.more_vert,
-                    size: 35,
-                    color: Colors.black.withOpacity(0.5),
+                    size: 45,
+                    color: Colors.black.withOpacity(0.7),
                   ),
                   onSelected: (SettingsMenu result) {
                     setState(() {
@@ -166,6 +161,9 @@ class _MainScreenState extends State<MainScreen> {
               ),
               child: Column(
                 children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 400),
                     switchOutCurve: Curves.easeOut,
@@ -174,6 +172,19 @@ class _MainScreenState extends State<MainScreen> {
                     child: !_hideSearchBar
                         ? Row(
                             children: [
+                              Text(
+                                '${MediaQuery.of(context).size.width}',
+                                style: GoogleFonts.luckiestGuy(
+                                    fontSize:
+                                        sizingInformation.isMobile ? 38 : 45,
+                                    color: Colors.white,
+                                    shadows: [
+                                      const Shadow(
+                                        color: Colors.black,
+                                        blurRadius: 5,
+                                      )
+                                    ]),
+                              ),
                               const Icon(
                                 Icons.search,
                                 size: 50,
@@ -198,13 +209,14 @@ class _MainScreenState extends State<MainScreen> {
                                             padding: const EdgeInsets.only(
                                                 top: 14.0),
                                             child: FlatButton(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  20,
-                                                ),
+                                              shape: StadiumBorder(
+                                                side: BorderSide(
+                                                    color:
+                                                        const Color(0xFFEC1E79)
+                                                            .withOpacity(0.2),
+                                                    width: 3),
                                               ),
-                                              color: const Color(0xFFe0dede)
+                                              color: const Color(0xFF198FD8)
                                                   .withOpacity(0.6),
                                               onPressed: () {
                                                 {
@@ -214,6 +226,12 @@ class _MainScreenState extends State<MainScreen> {
                                                     Get.snackbar(
                                                       '',
                                                       '',
+                                                      borderRadius: 20,
+                                                      borderColor: Colors.white,
+                                                      borderWidth: 5,
+                                                      maxWidth: 350,
+                                                      duration: const Duration(
+                                                          milliseconds: 800),
                                                       backgroundColor: Colors
                                                           .redAccent[400]
                                                           .withOpacity(0.7),
@@ -229,6 +247,8 @@ class _MainScreenState extends State<MainScreen> {
                                                                   ? 20
                                                                   : 35,
                                                           color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     );
@@ -242,7 +262,9 @@ class _MainScreenState extends State<MainScreen> {
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 12.0),
+                                                  horizontal: 12.0,
+                                                  vertical: 4,
+                                                ),
                                                 child: Text(
                                                   'Search articles',
                                                   style: GoogleFonts.newsCycle(
@@ -267,16 +289,10 @@ class _MainScreenState extends State<MainScreen> {
                               )
                             ],
                           )
-                        : Text(
-                            DateTime.now().toString().substring(0, 16),
-                            style: GoogleFonts.newsCycle(
-                              fontSize: sizingInformation.isMobile ? 20 : 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        : const SizedBox(),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Expanded(
                     child: FutureBuilder(
@@ -307,9 +323,9 @@ class _MainScreenState extends State<MainScreen> {
                                         'assets/images/404.png',
                                     borderColor: const Color(0xFFe0dede)
                                         .withOpacity(0.5),
-                                    overlayColor: const Color(0xFFe0dede)
-                                        .withOpacity(0.9),
-                                    textColor: Colors.black.withOpacity(0.8),
+                                    overlayColor: const Color(0xFF198FD8)
+                                        .withOpacity(0.8),
+                                    textColor: Colors.white,
                                     elevation:
                                         _selectedTheme == ThemeSelected.dark
                                             ? 10
@@ -318,7 +334,7 @@ class _MainScreenState extends State<MainScreen> {
                                         _selectedTheme == ThemeSelected.dark
                                             ? Colors.white
                                             : Colors.black,
-                                    overlayHeight: 100,
+                                    overlayHeight: 115,
                                     onTap: () =>
                                         Get.toNamed('/article', arguments: {
                                       'title': data['articles'][index]['title'],
