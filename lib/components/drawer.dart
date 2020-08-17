@@ -54,25 +54,13 @@ class _NewsDrawerState extends State<NewsDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: 'Welcome to\n',
-                style: GoogleFonts.newsCycle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                      text: 'Flutter News',
-                      style:
-                          GoogleFonts.luckiestGuy(fontWeight: FontWeight.bold)),
-                ],
-              ),
+            child: Column(
+              children: [
+                Image.asset('assets/images/logo.png'),
+              ],
             ),
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.7),
             ),
           ),
           Center(
