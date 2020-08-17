@@ -9,12 +9,12 @@ import 'package:url_launcher/url_launcher.dart';
 Map arguments;
 Color _heartColor = Colors.white;
 
-class ArticleSreen extends StatefulWidget {
+class ArticleScreen extends StatefulWidget {
   @override
-  _ArticleSreenState createState() => _ArticleSreenState();
+  _ArticleScreenState createState() => _ArticleScreenState();
 }
 
-class _ArticleSreenState extends State<ArticleSreen> {
+class _ArticleScreenState extends State<ArticleScreen> {
   @override
   void initState() {
     super.initState();
@@ -45,8 +45,9 @@ class _ArticleSreenState extends State<ArticleSreen> {
                       Get.snackbar(
                         '',
                         '',
-                        duration: const Duration(milliseconds: 900),
-                        backgroundColor: Colors.green.withOpacity(0.8),
+                        maxWidth: 350,
+                        duration: const Duration(milliseconds: 800),
+                        backgroundColor: Colors.green.withOpacity(0.7),
                         borderRadius: 20,
                         borderColor: Colors.white,
                         borderWidth: 5,
@@ -67,8 +68,9 @@ class _ArticleSreenState extends State<ArticleSreen> {
                       Get.snackbar(
                         '',
                         '',
-                        duration: const Duration(milliseconds: 900),
-                        backgroundColor: Colors.red.withOpacity(0.8),
+                        maxWidth: 350,
+                        duration: const Duration(milliseconds: 800),
+                        backgroundColor: Colors.red.withOpacity(0.7),
                         borderRadius: 20,
                         borderColor: Colors.white,
                         borderWidth: 5,
@@ -100,10 +102,27 @@ class _ArticleSreenState extends State<ArticleSreen> {
                     }
                   });
                 },
-                child: Icon(
-                  Icons.favorite,
-                  color: _heartColor,
-                  size: 60,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(60),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF198FD8),
+                        Color(0xFFe0dede),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: Colors.blue.withOpacity(0.3),
+                    ),
+                    child: Icon(
+                      Icons.favorite,
+                      color: _heartColor,
+                      size: 60,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -137,7 +156,7 @@ class _ArticleSreenState extends State<ArticleSreen> {
                       builder: (context, sizingInformation) => Column(
                             children: [
                               Text(
-                                arguments['title'],
+                                arguments['title'] ?? 'No title found',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
@@ -150,7 +169,8 @@ class _ArticleSreenState extends State<ArticleSreen> {
                                 color: Colors.black.withOpacity(0.6),
                               ),
                               Text(
-                                arguments['description'],
+                                arguments['description'] ??
+                                    'No description found',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
