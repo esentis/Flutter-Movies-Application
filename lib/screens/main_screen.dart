@@ -82,8 +82,9 @@ class _MainScreenState extends State<MainScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white.withOpacity(0.2),
           elevation: 15,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           toolbarHeight: 110,
           leading: Builder(
             builder: (BuildContext context) => IconButton(
@@ -105,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                 const SizedBox(),
                 Image.asset(
                   'assets/images/logo.png',
-                  scale: 2.5,
+                  scale: sizingInformation.isDesktop ? 2.5 : 3,
                 ),
                 PopupMenuButton<SettingsMenu>(
                   shape: RoundedRectangleBorder(
@@ -173,7 +174,7 @@ class _MainScreenState extends State<MainScreen> {
                         ? Row(
                             children: [
                               Text(
-                                '${MediaQuery.of(context).size.width}',
+                                '${MediaQuery.of(context).size.width.round()}',
                                 style: GoogleFonts.luckiestGuy(
                                     fontSize:
                                         sizingInformation.isMobile ? 38 : 45,
@@ -334,7 +335,8 @@ class _MainScreenState extends State<MainScreen> {
                                         _selectedTheme == ThemeSelected.dark
                                             ? Colors.white
                                             : Colors.black,
-                                    overlayHeight: 115,
+                                    overlayHeight:
+                                        sizingInformation.isMobile ? 105 : 115,
                                     onTap: () =>
                                         Get.toNamed('/article', arguments: {
                                       'title': data['articles'][index]['title'],

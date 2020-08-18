@@ -35,8 +35,12 @@ class NewsCard extends StatelessWidget {
         child: Material(
           elevation: elevation,
           shadowColor: shadowColor,
+          color: Colors.transparent,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
               side: BorderSide(
                 width: 3,
                 color: borderColor,
@@ -44,6 +48,11 @@ class NewsCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.transparent,
+              shape: BoxShape.rectangle,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
               image: DecorationImage(
                 image: NetworkImage(image),
                 fit: BoxFit.cover,
@@ -53,52 +62,50 @@ class NewsCard extends StatelessWidget {
               children: [
                 Positioned(
                   bottom: 0,
-                  child: Container(
-                    height: overlayHeight,
-                    decoration: BoxDecoration(
-                      color: overlayColor,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
+                  child: Builder(
+                    builder: (BuildContext ctx) => Container(
+                      decoration: BoxDecoration(
+                        color: overlayColor,
+                        shape: BoxShape.rectangle,
                       ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14.0, vertical: 14),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            '${title.substring(0, 28)}...',
-                            style: GoogleFonts.newsCycle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: textColor,
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14.0, vertical: 14),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '${title.substring(0, 20)}...',
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: textColor,
+                              ),
                             ),
-                          ),
-                          Card(
-                            color: const Color(0xFFEC1E79).withOpacity(0.8),
-                            shape: const StadiumBorder(
-                                side: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            )),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14.0),
-                              child: Text(
-                                author,
-                                style: GoogleFonts.newsCycle(
-                                  fontSize: 20,
-                                  color: textColor,
+                            Card(
+                              color: const Color(0xFFEC1E79).withOpacity(0.8),
+                              shape: const StadiumBorder(
+                                  side: BorderSide(
+                                color: Colors.white,
+                                width: 2,
+                              )),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0),
+                                child: Text(
+                                  author,
+                                  style: GoogleFonts.newsCycle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
