@@ -22,12 +22,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Future fetchArticles() async {
-    var articles = await getHeadlinesFromCountry('gr');
-    return articles;
-  }
-
-  void checkScrolling() {
+  /// When a scroll is detected, serch TextField is hidden.
+  void hideSearchOnScroll() {
     if (_scrollController.offset >= 10) {
       _hideSearchBar = true;
       setState(() {});
@@ -38,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  /// Returns row count based on [sizeInformation] of the device.
   int getRowCount(SizingInformation sizeInformation) {
     if (sizeInformation.isTablet) {
       return 2;
@@ -56,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(checkScrolling);
+    _scrollController.addListener(hideSearchOnScroll);
   }
 
   @override
@@ -297,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Expanded(
                     child: FutureBuilder(
-                        future: fetchArticles(),
+                        future: countryHeadlines('gr'),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
