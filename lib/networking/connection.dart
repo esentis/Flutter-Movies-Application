@@ -9,8 +9,8 @@ BaseOptions dioOptions = BaseOptions(
 );
 Dio dio = Dio(dioOptions);
 
-// METHOD FOR RETRIEVING HEADLNES FROM A SPECIFIC COUNTRY
-Future getHeadlinesFromCountry(String countryCode) async {
+/// Returns headlines from a country using [countryCode].
+Future countryHeadlines(String countryCode) async {
   Response response;
   try {
     response = await dio.get(
@@ -21,8 +21,8 @@ Future getHeadlinesFromCountry(String countryCode) async {
   return response.data;
 }
 
-// METHOD FOR RETRIEVING NEWS BASED ON A SEARCH TERM
-Future getFromEverything(String term) async {
+/// Returns articles based on a search [term].
+Future searchArcticles(String term) async {
   Response response;
   try {
     response =
