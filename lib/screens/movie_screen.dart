@@ -3,31 +3,25 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/drawer.dart';
 import 'package:news_api/constants.dart';
+import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Map arguments;
+List movie;
 Color _heartColor = Colors.white;
+bool loaded = false;
 
-class ArticleScreen extends StatefulWidget {
+class MovieScreen extends StatefulWidget {
   @override
-  _ArticleScreenState createState() => _ArticleScreenState();
+  _MovieScreenState createState() => _MovieScreenState();
 }
 
-class _ArticleScreenState extends State<ArticleScreen> {
+class _MovieScreenState extends State<MovieScreen> {
   @override
   void initState() {
     super.initState();
 
-    arguments = Get.arguments;
-    savedArticles.forEach((element) {
-      print(element['key']);
-    });
-    if (savedArticles.any((article) => article['key'] == arguments['key'])) {
-      _heartColor = Colors.red;
-    } else {
-      _heartColor = Colors.white;
-    }
+    movie = Get.arguments;
   }
 
   @override
@@ -61,8 +55,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           ),
                         ),
                       );
-                      savedArticles.add(arguments);
-                      logger.i(savedArticles);
+                      savedMovies.add(movie);
+                      logger.i(savedMovies);
                     } else {
                       _heartColor = Colors.white;
                       Get.snackbar(
@@ -84,13 +78,12 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           ),
                         ),
                       );
-                      savedArticles.remove(savedArticles.firstWhere(
-                          (article) => article['title'] == arguments['title']));
+                      savedMovies.remove(savedMovies.firstWhere(
+                          (article) => article['title'] == movie[0]));
                       try {
                         widgetsToDraw.remove(
                           widgetsToDraw.firstWhere(
-                            (listTile) =>
-                                listTile.key == Key(arguments['title']),
+                            (listTile) => listTile.key == Key(movie[0]),
                           ),
                         );
                       } catch (e) {
@@ -134,9 +127,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
               fit: StackFit.expand,
               children: [
                 Hero(
-                  tag: arguments['title'],
+                  tag: movie,
                   child: Image.network(
-                    arguments['image'],
+                    movie[1],
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -156,7 +149,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       builder: (context, sizingInformation) => Column(
                             children: [
                               Text(
-                                arguments['title'] ?? 'No title found',
+                                movie[2]['title'],
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
@@ -168,34 +161,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                 thickness: 2,
                                 color: Colors.black.withOpacity(0.6),
                               ),
-                              Text(
-                                arguments['description'] ??
-                                    'No description found',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.newsCycle(
-                                  fontSize:
-                                      sizingInformation.isMobile ? 25 : 35,
-                                ),
-                              ),
                               const SizedBox(height: 15),
-                              FlatButton(
-                                onPressed: () async {
-                                  var url = arguments['url'];
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
-                                  } else {
-                                    throw 'Could not launch $url';
-                                  }
-                                },
-                                child: Text(
-                                  '...continue reading',
-                                  style: GoogleFonts.newsCycle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        sizingInformation.isMobile ? 25 : 35,
-                                  ),
-                                ),
-                              ),
+                              Text(movie[2]['plot']),
                             ],
                           ))),
               // Builds 1000 ListTiles

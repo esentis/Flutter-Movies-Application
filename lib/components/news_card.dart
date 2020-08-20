@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class NewsCard extends StatelessWidget {
-  const NewsCard({
+class MovieCard extends StatelessWidget {
+  const MovieCard({
     this.image,
     this.overlayColor,
     this.author,
@@ -78,7 +78,7 @@ class NewsCard extends StatelessWidget {
                           textBaseline: TextBaseline.alphabetic,
                           children: [
                             Text(
-                              '${title.substring(0, 20)}...',
+                              title,
                               style: GoogleFonts.newsCycle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,

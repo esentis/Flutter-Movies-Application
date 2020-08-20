@@ -9,7 +9,7 @@ class SearchResults extends StatefulWidget {
 
 class _SearchResultsState extends State<SearchResults> {
   Future fetchArticles(String term) async {
-    var articles = await searchArcticles(term);
+    var articles = await searchMovies(term);
     return articles;
   }
 

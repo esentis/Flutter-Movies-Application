@@ -1,3 +1,6 @@
+import 'dart:js_util';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,8 +18,6 @@ enum ThemeSelected { dark, light }
 var logger = Logger();
 var _selection;
 var _selectedTheme = ThemeSelected.light;
-dynamic topArticle;
-Widget topArticleWidget;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -24,16 +25,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Future getData() async {
-    var response = await countryHeadlines('gr');
-
-    Widget image = Image.asset(topArticle['articles'][0]['urlToImage']);
-    topArticleWidget = image;
-    topArticle = response;
-    setState(() {});
-    return response;
-  }
-
   /// When a scroll is detected, serch TextField is hidden.
   void hideSearchOnScroll() {
     if (_scrollController.offset >= 10) {
@@ -186,14 +177,6 @@ class _MainScreenState extends State<MainScreen> {
                     child: !_hideSearchBar
                         ? Column(
                             children: [
-                              topArticle == null
-                                  ? Builder(
-                                      builder: (context) => const Center(
-                                          child: CircularProgressIndicator(
-                                        strokeWidth: 10,
-                                      )),
-                                    )
-                                  : topArticleWidget,
                               Row(
                                 children: [
                                   Text(
@@ -302,7 +285,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       vertical: 4,
                                                     ),
                                                     child: Text(
-                                                      'Search articles',
+                                                      'Search movie',
                                                       style: GoogleFonts.newsCycle(
                                                           fontSize: 30,
                                                           fontWeight:
@@ -350,31 +333,30 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Expanded(
                     child: FutureBuilder(
-                        future: getData(),
+                        future: searchMovies('taken'),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             var data = snapshot.data;
+                            if (data.runtimeType == DioErrorType) {
+                              return Text(data.toString());
+                            }
                             return GridView.builder(
                               controller: _scrollController,
-                              itemCount: data['articles'].length,
+                              itemCount: data['titles'].length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: getRowCount(sizingInformation),
                               ),
                               itemBuilder: (BuildContext context, int index) =>
                                   Hero(
-                                tag: data['articles'][index]['title'],
+                                tag: index,
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: NewsCard(
-                                    title: data['articles'][index]['title'] ??
-                                        'No title found',
-                                    author: data['articles'][index]['author'] ??
-                                        'No author found',
-                                    image: data['articles'][index]
-                                            ['urlToImage'] ??
-                                        'assets/images/404.png',
+                                  child: MovieCard(
+                                    title: data['titles'][index]['title'],
+                                    author: data['titles'][index]['id'],
+                                    image: data['titles'][index]['image'],
                                     borderColor: const Color(0xFFe0dede)
                                         .withOpacity(0.5),
                                     overlayColor:
@@ -394,19 +376,18 @@ class _MainScreenState extends State<MainScreen> {
                                             : Colors.white,
                                     overlayHeight:
                                         sizingInformation.isMobile ? 105 : 115,
-                                    onTap: () =>
-                                        Get.toNamed('/article', arguments: {
-                                      'title': data['articles'][index]['title'],
-                                      'author': data['articles'][index]
-                                          ['author'],
-                                      'image': data['articles'][index]
-                                              ['urlToImage'] ??
-                                          'assets/images/404.png',
-                                      'url': data['articles'][index]['url'],
-                                      'key': data['articles'][index]['title'],
-                                      'description': data['articles'][index]
-                                          ['description'],
-                                    }),
+                                    onTap: () async {
+                                      var movie = await getMovie(
+                                          data['titles'][index]['id']);
+                                      await Get.toNamed(
+                                        '/movie',
+                                        arguments: [
+                                          data['titles'][index]['id'],
+                                          data['titles'][index]['image'],
+                                          movie,
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

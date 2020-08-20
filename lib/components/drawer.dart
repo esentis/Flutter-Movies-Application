@@ -12,7 +12,7 @@ class NewsDrawer extends StatefulWidget {
 
 class _NewsDrawerState extends State<NewsDrawer> {
   void drawWidgets() {
-    savedArticles.forEach((article) {
+    savedMovies.forEach((article) {
       var articleWidget = ListTile(
         leading: Image.network(article['image']),
         title: Text(article['title']),
@@ -65,7 +65,7 @@ class _NewsDrawerState extends State<NewsDrawer> {
           ),
           Center(
             child: Text(
-              'Bookmarked articles',
+              'Favorite movies',
               style: GoogleFonts.newsCycle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class _NewsDrawerState extends State<NewsDrawer> {
             ),
           ),
           widgetsToDraw == null
-              ? const Center(child: Text('No favorite articles yet'))
+              ? const Center(child: Text('No favorite movies yet'))
               : Column(
                   children: widgetsToDraw,
                 ),
