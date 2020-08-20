@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:news_api/screens/article_screen.dart';
+import 'package:news_api/screens/movie_screen.dart';
 import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/screens/search_screen.dart';
 import 'package:news_api/states/test_state.dart';
@@ -28,14 +28,14 @@ class MyApp extends StatelessWidget {
           GetPage(name: '/', page: () => MainScreen()),
           GetPage(name: '/search', page: () => SearchResults()),
           GetPage(
-            name: '/article',
-            page: () => ArticleScreen(),
+            name: '/movie',
+            page: () => MovieScreen(),
             transition: Transition.cupertinoDialog,
             curve: Curves.bounceIn,
             transitionDuration: const Duration(milliseconds: 350),
           ),
         ],
-        title: 'Flutter News Api',
+        title: 'Flutter Movies Api',
         home: MainScreen(),
       ),
     );

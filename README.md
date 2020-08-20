@@ -1,4 +1,6 @@
-# Flutter News API
+# Flutter Movies Application
+
+<img src="assets/images/logo.png" alt="drawing" width="500"/>
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
@@ -10,7 +12,7 @@
 
 ## Overview
 
-A news application that connects to [News API](https://newsapi.org/) to display news from around the world.
+A movies application that connects to the [IMDB - Internet Movie Database (Unofficial) API](https://rapidapi.com/hmerritt/api/imdb-internet-movie-database-unofficial/). Get detailed information about movies.
 
 ## Screenshots
 
@@ -19,20 +21,23 @@ A news application that connects to [News API](https://newsapi.org/) to display 
 ## Features
 
 - [x] When the app is loaded, top headlines are fetched based on your country.
-- [x] You can search for articles by typing in the search field.
+- [x] You can search for movies by typing in the search field.
 **When on desktop there is a search button below TextField.**
 **On Mobile or Tablet you can press the ok button on the virtual keyboard to start searching.**
 - [x] When you tap on a news card, you get redirected to a new screen with the article details.
-***Due to the API's limitation, the article is not fully displayed, rather than a small portion. However a link is provided that redirects to source.***
-- [x] Some articles have no image, so an image placeholder is shown instead. Same goes for the other fields that may be **null** (*author, title, source, date added*).
-- [x] On article screen there is a heart icon, by tapping it you bookmark the article. On successful addition, a snackbar is shown.
-- [x] A bookmarked article is indicated by a red heart. By tapping on the heart the article will be removed from your bookmarks. On successful deletion, a snackbar is shown.
-- [x] Bookmarked articles can be retrieved by opening the app's drawer.
-- [ ] Bookmarked articles don't hold state since the project has no back-end, meaning on refresh all bookmarked articles will be flushed. ***This is not an issue***.
+- [x] Some articles have no image, so an image placeholder is shown instead.
+- [x] On movie's screen there is a heart icon, by tapping it you favorite the movie. On successful addition, a snackbar is shown.
+- [x] A favorited movie is indicated by a red heart. By tapping on the heart the movie will be removed from your favorites. On successful deletion, a snackbar is shown.
+- [x] Favorited movies can be retrieved by opening the app's drawer.
+- [ ] Favorited movies don't hold state since the project has no back-end, meaning on refresh all will be flushed. ***This is not an issue***.
 - [x] The grid design is responsive.
-***4 cards per row on Desktop.
-2 cards per row on Tablet
-1 card on each row on Mobile***.
+
+- 5 cards per row on Desktop (widescreen).
+- 4 cards per row on Desktop.
+- 3 cards per row on Laptop.
+- 2 cards per row on Tablet.
+- 1 card per row on Mobile.
+
 - [x] There is a settings icon (three dots) where you can change theme (Dark, Light), send e-mail and visit the source code of the app.
 
 ## Libraries

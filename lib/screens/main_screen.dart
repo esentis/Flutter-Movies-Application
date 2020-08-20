@@ -1,3 +1,6 @@
+import 'dart:js_util';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,12 +25,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Future fetchArticles() async {
-    var articles = await getHeadlinesFromCountry('gr');
-    return articles;
-  }
-
-  void checkScrolling() {
+  /// When a scroll is detected, serch TextField is hidden.
+  void hideSearchOnScroll() {
     if (_scrollController.offset >= 10) {
       _hideSearchBar = true;
       setState(() {});
@@ -38,6 +37,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  /// Returns row count based on [sizeInformation] of the device.
   int getRowCount(SizingInformation sizeInformation) {
     if (sizeInformation.isTablet) {
       return 2;
@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(checkScrolling);
+    _scrollController.addListener(hideSearchOnScroll);
   }
 
   @override
@@ -69,11 +69,15 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     //var counter = context.watch<CounterController>();
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          Color(0xFF198FD8),
-          Color(0xFFe0dede),
+          _selectedTheme == ThemeSelected.light
+              ? Color(0xFFf7f7f7)
+              : Color(0xFF0f4c75),
+          _selectedTheme == ThemeSelected.light
+              ? Color(0xFF198FD8)
+              : Color(0xFF1b262c),
         ],
       )),
       child: Scaffold(
@@ -171,123 +175,155 @@ class _MainScreenState extends State<MainScreen> {
                     switchInCurve: Curves.easeIn,
                     key: const Key('topBar'),
                     child: !_hideSearchBar
-                        ? Row(
+                        ? Column(
                             children: [
-                              Text(
-                                '${MediaQuery.of(context).size.width.round()}',
-                                style: GoogleFonts.luckiestGuy(
-                                    fontSize:
-                                        sizingInformation.isMobile ? 38 : 45,
-                                    color: Colors.white,
-                                    shadows: [
-                                      const Shadow(
-                                        color: Colors.black,
-                                        blurRadius: 5,
-                                      )
-                                    ]),
-                              ),
-                              const Icon(
-                                Icons.search,
-                                size: 50,
-                              ),
-                              const SizedBox(width: 5),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    TextField(
-                                      textAlign: TextAlign.center,
-                                      controller: _textController,
-                                      style: GoogleFonts.newsCycle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      onChanged: (value) {
-                                        logger.i(value);
-                                      },
-                                    ),
-                                    sizingInformation.isDesktop
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 14.0),
-                                            child: FlatButton(
-                                              shape: StadiumBorder(
-                                                side: BorderSide(
-                                                    color:
-                                                        const Color(0xFFEC1E79)
-                                                            .withOpacity(0.2),
-                                                    width: 3),
-                                              ),
-                                              color: const Color(0xFF198FD8)
-                                                  .withOpacity(0.6),
-                                              onPressed: () {
-                                                {
-                                                  if (_textController
-                                                          .text.length <=
-                                                      3) {
-                                                    Get.snackbar(
-                                                      '',
-                                                      '',
-                                                      borderRadius: 20,
-                                                      borderColor: Colors.white,
-                                                      borderWidth: 5,
-                                                      maxWidth: 350,
-                                                      duration: const Duration(
-                                                          milliseconds: 800),
-                                                      backgroundColor: Colors
-                                                          .redAccent[400]
-                                                          .withOpacity(0.7),
-                                                      titleText: Text(
-                                                        'At least 3 characters are needed.',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: GoogleFonts
-                                                            .newsCycle(
-                                                          fontSize:
-                                                              sizingInformation
-                                                                      .isMobile
-                                                                  ? 20
-                                                                  : 35,
-                                                          color: Colors.white,
+                              Row(
+                                children: [
+                                  Text(
+                                    '${MediaQuery.of(context).size.width.round()}',
+                                    style: GoogleFonts.luckiestGuy(
+                                        fontSize: sizingInformation.isMobile
+                                            ? 38
+                                            : 45,
+                                        color: Colors.white,
+                                        shadows: [
+                                          const Shadow(
+                                            color: Colors.black,
+                                            blurRadius: 5,
+                                          )
+                                        ]),
+                                  ),
+                                  const Icon(
+                                    Icons.search,
+                                    size: 50,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        TextField(
+                                          textAlign: TextAlign.center,
+                                          controller: _textController,
+                                          style: GoogleFonts.newsCycle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          onChanged: (value) {
+                                            logger.i(value);
+                                          },
+                                        ),
+                                        sizingInformation.isDesktop
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 14.0),
+                                                child: FlatButton(
+                                                  shape: StadiumBorder(
+                                                    side: BorderSide(
+                                                        color: const Color(
+                                                                0xFF1b262c)
+                                                            .withOpacity(0.3),
+                                                        width: 3),
+                                                  ),
+                                                  color: _selectedTheme ==
+                                                          ThemeSelected.light
+                                                      ? Colors.white
+                                                          .withOpacity(0.6)
+                                                      : Colors.white,
+                                                  onPressed: () {
+                                                    {
+                                                      if (_textController
+                                                              .text.length <=
+                                                          3) {
+                                                        Get.snackbar(
+                                                          '',
+                                                          '',
+                                                          borderRadius: 20,
+                                                          borderColor:
+                                                              Colors.white,
+                                                          borderWidth: 5,
+                                                          maxWidth: 350,
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      800),
+                                                          backgroundColor:
+                                                              Colors.redAccent[
+                                                                      400]
+                                                                  .withOpacity(
+                                                                      0.7),
+                                                          titleText: Text(
+                                                            'At least 3 characters are needed.',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: GoogleFonts
+                                                                .newsCycle(
+                                                              fontSize:
+                                                                  sizingInformation
+                                                                          .isMobile
+                                                                      ? 20
+                                                                      : 35,
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        );
+                                                        return;
+                                                      }
+                                                      Get.toNamed('/search',
+                                                          arguments:
+                                                              _textController
+                                                                  .text);
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 4,
+                                                    ),
+                                                    child: Text(
+                                                      'Search movie',
+                                                      style: GoogleFonts.newsCycle(
+                                                          fontSize: 30,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    );
-                                                    return;
-                                                  }
-                                                  Get.toNamed('/search',
-                                                      arguments:
-                                                          _textController.text);
-                                                }
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 12.0,
-                                                  vertical: 4,
+                                                          color: _selectedTheme ==
+                                                                  ThemeSelected
+                                                                      .light
+                                                              ? const Color(
+                                                                  0xFF198FD8)
+                                                              : const Color(
+                                                                  0xFF1b262c),
+                                                          shadows: [
+                                                            Shadow(
+                                                              color: _selectedTheme ==
+                                                                      ThemeSelected
+                                                                          .light
+                                                                  ? Colors.black
+                                                                      .withOpacity(
+                                                                          0.5)
+                                                                  : Colors.white
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                              blurRadius: 2,
+                                                              offset:
+                                                                  const Offset(
+                                                                      0, 2),
+                                                            )
+                                                          ]),
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Text(
-                                                  'Search articles',
-                                                  style: GoogleFonts.newsCycle(
-                                                      fontSize: 30,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                      shadows: [
-                                                        const Shadow(
-                                                            color: Colors.black,
-                                                            blurRadius: 5,
-                                                            offset:
-                                                                Offset(0, 3))
-                                                      ]),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                              )
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ],
                           )
                         : const SizedBox(),
@@ -297,59 +333,61 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Expanded(
                     child: FutureBuilder(
-                        future: fetchArticles(),
+                        future: searchMovies('taken'),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             var data = snapshot.data;
+                            if (data.runtimeType == DioErrorType) {
+                              return Text(data.toString());
+                            }
                             return GridView.builder(
                               controller: _scrollController,
-                              itemCount: data['articles'].length,
+                              itemCount: data['titles'].length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: getRowCount(sizingInformation),
                               ),
                               itemBuilder: (BuildContext context, int index) =>
                                   Hero(
-                                tag: data['articles'][index]['title'],
+                                tag: index,
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: NewsCard(
-                                    title: data['articles'][index]['title'] ??
-                                        'No title found',
-                                    author: data['articles'][index]['author'] ??
-                                        'No author found',
-                                    image: data['articles'][index]
-                                            ['urlToImage'] ??
-                                        'assets/images/404.png',
+                                  child: MovieCard(
+                                    title: data['titles'][index]['title'],
+                                    author: data['titles'][index]['id'],
+                                    image: data['titles'][index]['image'],
                                     borderColor: const Color(0xFFe0dede)
                                         .withOpacity(0.5),
-                                    overlayColor: const Color(0xFF198FD8)
-                                        .withOpacity(0.8),
+                                    overlayColor:
+                                        _selectedTheme == ThemeSelected.light
+                                            ? const Color(0xFF198FD8)
+                                                .withOpacity(0.7)
+                                            : const Color(0xFF1b262c)
+                                                .withOpacity(0.7),
                                     textColor: Colors.white,
                                     elevation:
-                                        _selectedTheme == ThemeSelected.dark
-                                            ? 10
-                                            : 11,
+                                        _selectedTheme == ThemeSelected.light
+                                            ? 11
+                                            : 10,
                                     shadowColor:
-                                        _selectedTheme == ThemeSelected.dark
-                                            ? Colors.white
-                                            : Colors.black,
+                                        _selectedTheme == ThemeSelected.light
+                                            ? Colors.black
+                                            : Colors.white,
                                     overlayHeight:
                                         sizingInformation.isMobile ? 105 : 115,
-                                    onTap: () =>
-                                        Get.toNamed('/article', arguments: {
-                                      'title': data['articles'][index]['title'],
-                                      'author': data['articles'][index]
-                                          ['author'],
-                                      'image': data['articles'][index]
-                                              ['urlToImage'] ??
-                                          'assets/images/404.png',
-                                      'url': data['articles'][index]['url'],
-                                      'key': data['articles'][index]['title'],
-                                      'description': data['articles'][index]
-                                          ['description'],
-                                    }),
+                                    onTap: () async {
+                                      var movie = await getMovie(
+                                          data['titles'][index]['id']);
+                                      await Get.toNamed(
+                                        '/movie',
+                                        arguments: [
+                                          data['titles'][index]['id'],
+                                          data['titles'][index]['image'],
+                                          movie,
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

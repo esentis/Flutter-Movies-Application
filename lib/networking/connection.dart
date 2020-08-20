@@ -1,33 +1,42 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../constants.dart';
+
 BaseOptions dioOptions = BaseOptions(
-  baseUrl: 'https://newsapi.org/v2/',
-  receiveDataWhenStatusError: true,
-  connectTimeout: 6 * 1000, // 6 seconds
-  receiveTimeout: 6 * 1000, // 6 seconds
-);
+    baseUrl: 'https://imdb-internet-movie-database-unofficial.p.rapidapi.com',
+    receiveDataWhenStatusError: true,
+    connectTimeout: 6 * 1000, // 6 seconds
+    receiveTimeout: 6 * 1000, // 6 seconds
+    headers: {
+      'x-rapidapi-host':
+          'imdb-internet-movie-database-unofficial.p.rapidapi.com',
+      'x-rapidapi-key': DotEnv().env['API_KEY'],
+      'useQueryString': true
+    });
 Dio dio = Dio(dioOptions);
 
-// METHOD FOR RETRIEVING HEADLNES FROM A SPECIFIC COUNTRY
-Future getHeadlinesFromCountry(String countryCode) async {
+/// Returns movies based on a search [term].
+Future searchMovies(String term) async {
   Response response;
   try {
-    response = await dio.get(
-        'top-headlines?country=$countryCode&apiKey=${DotEnv().env['API_KEY']}');
+    response = await dio.get('/search/$term');
+    logger.i(response.data);
   } on DioError catch (e) {
+    logger.e(e);
     return e.type;
   }
   return response.data;
 }
 
-// METHOD FOR RETRIEVING NEWS BASED ON A SEARCH TERM
-Future getFromEverything(String term) async {
+/// Returns movies based on [id].
+Future getMovie(String id) async {
   Response response;
   try {
-    response =
-        await dio.get('everything?q=$term&apiKey=${DotEnv().env['API_KEY']}');
+    response = await dio.get('/film/$id');
+    logger.i(response.data);
   } on DioError catch (e) {
+    logger.e(e);
     return e.type;
   }
   return response.data;
