@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +17,8 @@ enum ThemeSelected { dark, light }
 var logger = Logger();
 var _selection;
 var _selectedTheme = ThemeSelected.light;
+bool hasLoaded = false;
+var cachedData;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -52,6 +52,14 @@ class _MainScreenState extends State<MainScreen> {
     } else {
       return 5;
     }
+  }
+
+  Future getData() async {
+    var response = await searchMovies('arnold');
+    hasLoaded = true;
+    cachedData = response;
+    logger.w(cachedData);
+    return response;
   }
 
   @override
@@ -219,73 +227,127 @@ class _MainScreenState extends State<MainScreen> {
                     height: 10,
                   ),
                   Expanded(
-                    child: FutureBuilder(
-                        future: searchMovies('arnold'),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            var data = snapshot.data;
-                            if (data.runtimeType == DioErrorType) {
-                              return Text(data.toString());
-                            }
-                            return GridView.builder(
-                              controller: _scrollController,
-                              itemCount: data['titles'].length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: getRowCount(sizingInformation),
+                    child: hasLoaded
+                        ? GridView.builder(
+                            controller: _scrollController,
+                            itemCount: cachedData['titles'].length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: getRowCount(sizingInformation),
+                            ),
+                            itemBuilder: (BuildContext context, int index) =>
+                                Hero(
+                              tag: index,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: MovieCard(
+                                  title: cachedData['titles'][index]['title'],
+                                  author: cachedData['titles'][index]['id'],
+                                  image: cachedData['titles'][index]['image'],
+                                  borderColor:
+                                      const Color(0xFFe0dede).withOpacity(0.5),
+                                  overlayColor: _selectedTheme ==
+                                          ThemeSelected.light
+                                      ? const Color(0xFF198FD8).withOpacity(0.7)
+                                      : const Color(0xFF1b262c)
+                                          .withOpacity(0.7),
+                                  textColor: Colors.white,
+                                  elevation:
+                                      _selectedTheme == ThemeSelected.light
+                                          ? 11
+                                          : 10,
+                                  shadowColor:
+                                      _selectedTheme == ThemeSelected.light
+                                          ? Colors.black
+                                          : Colors.white,
+                                  overlayHeight:
+                                      sizingInformation.isMobile ? 105 : 115,
+                                  onTap: () async {
+                                    var movie = await getMovie(
+                                        cachedData['titles'][index]['id']);
+                                    await Get.toNamed(
+                                      '/movie',
+                                      arguments: [
+                                        cachedData['titles'][index]['id'],
+                                        cachedData['titles'][index]['image'],
+                                        movie,
+                                      ],
+                                    );
+                                  },
+                                ),
                               ),
-                              itemBuilder: (BuildContext context, int index) =>
-                                  Hero(
-                                tag: index,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: MovieCard(
-                                    title: data['titles'][index]['title'],
-                                    author: data['titles'][index]['id'],
-                                    image: data['titles'][index]['image'],
-                                    borderColor: const Color(0xFFe0dede)
-                                        .withOpacity(0.5),
-                                    overlayColor:
-                                        _selectedTheme == ThemeSelected.light
+                            ),
+                          )
+                        : FutureBuilder(
+                            future: getData(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                var data = snapshot.data;
+                                if (data.runtimeType == DioErrorType) {
+                                  return Text(data.toString());
+                                }
+                                return GridView.builder(
+                                  controller: _scrollController,
+                                  itemCount: data['titles'].length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount:
+                                        getRowCount(sizingInformation),
+                                  ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) => Hero(
+                                    tag: index,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: MovieCard(
+                                        title: data['titles'][index]['title'],
+                                        author: data['titles'][index]['id'],
+                                        image: data['titles'][index]['image'],
+                                        borderColor: const Color(0xFFe0dede)
+                                            .withOpacity(0.5),
+                                        overlayColor: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? const Color(0xFF198FD8)
                                                 .withOpacity(0.7)
                                             : const Color(0xFF1b262c)
                                                 .withOpacity(0.7),
-                                    textColor: Colors.white,
-                                    elevation:
-                                        _selectedTheme == ThemeSelected.light
+                                        textColor: Colors.white,
+                                        elevation: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? 11
                                             : 10,
-                                    shadowColor:
-                                        _selectedTheme == ThemeSelected.light
+                                        shadowColor: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? Colors.black
                                             : Colors.white,
-                                    overlayHeight:
-                                        sizingInformation.isMobile ? 105 : 115,
-                                    onTap: () async {
-                                      var movie = await getMovie(
-                                          data['titles'][index]['id']);
-                                      await Get.toNamed(
-                                        '/movie',
-                                        arguments: [
-                                          data['titles'][index]['id'],
-                                          data['titles'][index]['image'],
-                                          movie,
-                                        ],
-                                      );
-                                    },
+                                        overlayHeight:
+                                            sizingInformation.isMobile
+                                                ? 105
+                                                : 115,
+                                        onTap: () async {
+                                          var movie = await getMovie(
+                                              data['titles'][index]['id']);
+                                          await Get.toNamed(
+                                            '/movie',
+                                            arguments: [
+                                              data['titles'][index]['id'],
+                                              data['titles'][index]['image'],
+                                              movie,
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
+                                );
+                              }
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 10,
                                 ),
-                              ),
-                            );
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 10,
-                            ),
-                          );
-                        }),
+                              );
+                            }),
                   ),
                 ],
               ),
