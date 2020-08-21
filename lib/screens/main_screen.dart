@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:news_api/components/drawer.dart';
 import 'package:news_api/components/news_card.dart';
+import 'package:news_api/components/search_field.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -18,6 +17,8 @@ enum ThemeSelected { dark, light }
 var logger = Logger();
 var _selection;
 var _selectedTheme = ThemeSelected.light;
+bool hasLoaded = false;
+var cachedData;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -53,6 +54,14 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future getData() async {
+    var response = await searchMovies('arnold');
+    hasLoaded = true;
+    cachedData = response;
+    logger.w(cachedData);
+    return response;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -73,11 +82,11 @@ class _MainScreenState extends State<MainScreen> {
           gradient: LinearGradient(
         colors: [
           _selectedTheme == ThemeSelected.light
-              ? Color(0xFFf7f7f7)
-              : Color(0xFF0f4c75),
+              ? const Color(0xFFf7f7f7)
+              : const Color(0xFF0f4c75),
           _selectedTheme == ThemeSelected.light
-              ? Color(0xFF198FD8)
-              : Color(0xFF1b262c),
+              ? const Color(0xFF198FD8)
+              : const Color(0xFF1b262c),
         ],
       )),
       child: Scaffold(
@@ -107,6 +116,18 @@ class _MainScreenState extends State<MainScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               textBaseline: TextBaseline.ideographic,
               children: [
+                Text(
+                  '${MediaQuery.of(context).size.width.round()}',
+                  style: GoogleFonts.luckiestGuy(
+                      fontSize: sizingInformation.isMobile ? 38 : 45,
+                      color: Colors.white,
+                      shadows: [
+                        const Shadow(
+                          color: Colors.black,
+                          blurRadius: 5,
+                        )
+                      ]),
+                ),
                 const SizedBox(),
                 Image.asset(
                   'assets/images/logo.png',
@@ -179,147 +200,21 @@ class _MainScreenState extends State<MainScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    '${MediaQuery.of(context).size.width.round()}',
-                                    style: GoogleFonts.luckiestGuy(
-                                        fontSize: sizingInformation.isMobile
-                                            ? 38
-                                            : 45,
-                                        color: Colors.white,
-                                        shadows: [
-                                          const Shadow(
-                                            color: Colors.black,
-                                            blurRadius: 5,
-                                          )
-                                        ]),
-                                  ),
-                                  const Icon(
-                                    Icons.search,
-                                    size: 50,
-                                  ),
                                   const SizedBox(width: 5),
                                   Expanded(
-                                    child: Column(
-                                      children: [
-                                        TextField(
-                                          textAlign: TextAlign.center,
-                                          controller: _textController,
-                                          style: GoogleFonts.newsCycle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          onChanged: (value) {
-                                            logger.i(value);
-                                          },
-                                        ),
-                                        sizingInformation.isDesktop
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 14.0),
-                                                child: FlatButton(
-                                                  shape: StadiumBorder(
-                                                    side: BorderSide(
-                                                        color: const Color(
-                                                                0xFF1b262c)
-                                                            .withOpacity(0.3),
-                                                        width: 3),
-                                                  ),
-                                                  color: _selectedTheme ==
-                                                          ThemeSelected.light
-                                                      ? Colors.white
-                                                          .withOpacity(0.6)
-                                                      : Colors.white,
-                                                  onPressed: () {
-                                                    {
-                                                      if (_textController
-                                                              .text.length <=
-                                                          3) {
-                                                        Get.snackbar(
-                                                          '',
-                                                          '',
-                                                          borderRadius: 20,
-                                                          borderColor:
-                                                              Colors.white,
-                                                          borderWidth: 5,
-                                                          maxWidth: 350,
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      800),
-                                                          backgroundColor:
-                                                              Colors.redAccent[
-                                                                      400]
-                                                                  .withOpacity(
-                                                                      0.7),
-                                                          titleText: Text(
-                                                            'At least 3 characters are needed.',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: GoogleFonts
-                                                                .newsCycle(
-                                                              fontSize:
-                                                                  sizingInformation
-                                                                          .isMobile
-                                                                      ? 20
-                                                                      : 35,
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        );
-                                                        return;
-                                                      }
-                                                      Get.toNamed('/search',
-                                                          arguments:
-                                                              _textController
-                                                                  .text);
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 12.0,
-                                                      vertical: 4,
-                                                    ),
-                                                    child: Text(
-                                                      'Search movie',
-                                                      style: GoogleFonts.newsCycle(
-                                                          fontSize: 30,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: _selectedTheme ==
-                                                                  ThemeSelected
-                                                                      .light
-                                                              ? const Color(
-                                                                  0xFF198FD8)
-                                                              : const Color(
-                                                                  0xFF1b262c),
-                                                          shadows: [
-                                                            Shadow(
-                                                              color: _selectedTheme ==
-                                                                      ThemeSelected
-                                                                          .light
-                                                                  ? Colors.black
-                                                                      .withOpacity(
-                                                                          0.5)
-                                                                  : Colors.white
-                                                                      .withOpacity(
-                                                                          0.5),
-                                                              blurRadius: 2,
-                                                              offset:
-                                                                  const Offset(
-                                                                      0, 2),
-                                                            )
-                                                          ]),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                      ],
+                                    child: SearchField(
+                                      borderColor: Colors.red,
+                                      sizingInformation: sizingInformation,
+                                      shadowColor: Colors.white,
+                                      buttonColor:
+                                          _selectedTheme == ThemeSelected.light
+                                              ? Colors.white.withOpacity(0.6)
+                                              : Colors.white,
+                                      buttonTextColor: const Color(0xFFEC1E79)
+                                          .withOpacity(0.7),
+                                      controller: _textController,
+                                      textFontSize: 30,
+                                      buttonTextFontSize: 25,
                                     ),
                                   )
                                 ],
@@ -332,73 +227,127 @@ class _MainScreenState extends State<MainScreen> {
                     height: 10,
                   ),
                   Expanded(
-                    child: FutureBuilder(
-                        future: searchMovies('taken'),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            var data = snapshot.data;
-                            if (data.runtimeType == DioErrorType) {
-                              return Text(data.toString());
-                            }
-                            return GridView.builder(
-                              controller: _scrollController,
-                              itemCount: data['titles'].length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: getRowCount(sizingInformation),
+                    child: hasLoaded
+                        ? GridView.builder(
+                            controller: _scrollController,
+                            itemCount: cachedData['titles'].length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: getRowCount(sizingInformation),
+                            ),
+                            itemBuilder: (BuildContext context, int index) =>
+                                Hero(
+                              tag: index,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: MovieCard(
+                                  title: cachedData['titles'][index]['title'],
+                                  author: cachedData['titles'][index]['id'],
+                                  image: cachedData['titles'][index]['image'],
+                                  borderColor:
+                                      const Color(0xFFe0dede).withOpacity(0.5),
+                                  overlayColor: _selectedTheme ==
+                                          ThemeSelected.light
+                                      ? const Color(0xFF198FD8).withOpacity(0.7)
+                                      : const Color(0xFF1b262c)
+                                          .withOpacity(0.7),
+                                  textColor: Colors.white,
+                                  elevation:
+                                      _selectedTheme == ThemeSelected.light
+                                          ? 11
+                                          : 10,
+                                  shadowColor:
+                                      _selectedTheme == ThemeSelected.light
+                                          ? Colors.black
+                                          : Colors.white,
+                                  overlayHeight:
+                                      sizingInformation.isMobile ? 105 : 115,
+                                  onTap: () async {
+                                    var movie = await getMovie(
+                                        cachedData['titles'][index]['id']);
+                                    await Get.toNamed(
+                                      '/movie',
+                                      arguments: [
+                                        cachedData['titles'][index]['id'],
+                                        cachedData['titles'][index]['image'],
+                                        movie,
+                                      ],
+                                    );
+                                  },
+                                ),
                               ),
-                              itemBuilder: (BuildContext context, int index) =>
-                                  Hero(
-                                tag: index,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: MovieCard(
-                                    title: data['titles'][index]['title'],
-                                    author: data['titles'][index]['id'],
-                                    image: data['titles'][index]['image'],
-                                    borderColor: const Color(0xFFe0dede)
-                                        .withOpacity(0.5),
-                                    overlayColor:
-                                        _selectedTheme == ThemeSelected.light
+                            ),
+                          )
+                        : FutureBuilder(
+                            future: getData(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                var data = snapshot.data;
+                                if (data.runtimeType == DioErrorType) {
+                                  return Text(data.toString());
+                                }
+                                return GridView.builder(
+                                  controller: _scrollController,
+                                  itemCount: data['titles'].length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount:
+                                        getRowCount(sizingInformation),
+                                  ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) => Hero(
+                                    tag: index,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: MovieCard(
+                                        title: data['titles'][index]['title'],
+                                        author: data['titles'][index]['id'],
+                                        image: data['titles'][index]['image'],
+                                        borderColor: const Color(0xFFe0dede)
+                                            .withOpacity(0.5),
+                                        overlayColor: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? const Color(0xFF198FD8)
                                                 .withOpacity(0.7)
                                             : const Color(0xFF1b262c)
                                                 .withOpacity(0.7),
-                                    textColor: Colors.white,
-                                    elevation:
-                                        _selectedTheme == ThemeSelected.light
+                                        textColor: Colors.white,
+                                        elevation: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? 11
                                             : 10,
-                                    shadowColor:
-                                        _selectedTheme == ThemeSelected.light
+                                        shadowColor: _selectedTheme ==
+                                                ThemeSelected.light
                                             ? Colors.black
                                             : Colors.white,
-                                    overlayHeight:
-                                        sizingInformation.isMobile ? 105 : 115,
-                                    onTap: () async {
-                                      var movie = await getMovie(
-                                          data['titles'][index]['id']);
-                                      await Get.toNamed(
-                                        '/movie',
-                                        arguments: [
-                                          data['titles'][index]['id'],
-                                          data['titles'][index]['image'],
-                                          movie,
-                                        ],
-                                      );
-                                    },
+                                        overlayHeight:
+                                            sizingInformation.isMobile
+                                                ? 105
+                                                : 115,
+                                        onTap: () async {
+                                          var movie = await getMovie(
+                                              data['titles'][index]['id']);
+                                          await Get.toNamed(
+                                            '/movie',
+                                            arguments: [
+                                              data['titles'][index]['id'],
+                                              data['titles'][index]['image'],
+                                              movie,
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
+                                );
+                              }
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 10,
                                 ),
-                              ),
-                            );
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 10,
-                            ),
-                          );
-                        }),
+                              );
+                            }),
                   ),
                 ],
               ),
@@ -409,3 +358,120 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+// Column(
+//                                       children: [
+//                                         TextField(
+//                                           textAlign: TextAlign.center,
+//                                           controller: _textController,
+//                                           style: GoogleFonts.newsCycle(
+//                                             fontSize: 30,
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                           onChanged: (value) {
+//                                             logger.i(value);
+//                                           },
+//                                         ),
+//                                         sizingInformation.isDesktop
+//                                             ? Padding(
+//                                                 padding: const EdgeInsets.only(
+//                                                     top: 14.0),
+//                                                 child: FlatButton(
+//                                                   shape: StadiumBorder(
+//                                                     side: BorderSide(
+//                                                         color: const Color(
+//                                                                 0xFF1b262c)
+//                                                             .withOpacity(0.3),
+//                                                         width: 3),
+//                                                   ),
+//                                                   onPressed: () {
+//                                                     {
+//                                                       if (_textController
+//                                                               .text.length <=
+//                                                           3) {
+//                                                         Get.snackbar(
+//                                                           '',
+//                                                           '',
+//                                                           borderRadius: 20,
+//                                                           borderColor:
+//                                                               Colors.white,
+//                                                           borderWidth: 5,
+//                                                           maxWidth: 350,
+//                                                           duration:
+//                                                               const Duration(
+//                                                                   milliseconds:
+//                                                                       800),
+//                                                           backgroundColor:
+//                                                               Colors.redAccent[
+//                                                                       400]
+//                                                                   .withOpacity(
+//                                                                       0.7),
+//                                                           titleText: Text(
+//                                                             'At least 3 characters are needed.',
+//                                                             textAlign: TextAlign
+//                                                                 .center,
+//                                                             style: GoogleFonts
+//                                                                 .newsCycle(
+//                                                               fontSize:
+//                                                                   sizingInformation
+//                                                                           .isMobile
+//                                                                       ? 20
+//                                                                       : 35,
+//                                                               color:
+//                                                                   Colors.white,
+//                                                               fontWeight:
+//                                                                   FontWeight
+//                                                                       .bold,
+//                                                             ),
+//                                                           ),
+//                                                         );
+//                                                         return;
+//                                                       }
+//                                                       Get.toNamed('/search',
+//                                                           arguments:
+//                                                               _textController
+//                                                                   .text);
+//                                                     }
+//                                                   },
+//                                                   child: Padding(
+//                                                     padding: const EdgeInsets
+//                                                         .symmetric(
+//                                                       horizontal: 12.0,
+//                                                       vertical: 4,
+//                                                     ),
+//                                                     child: Text(
+//                                                       'Search movie',
+//                                                       style: GoogleFonts.newsCycle(
+//                                                           fontSize: 30,
+//                                                           fontWeight:
+//                                                               FontWeight.bold,
+//                                                           color: _selectedTheme ==
+//                                                                   ThemeSelected
+//                                                                       .light
+//                                                               ? const Color(
+//                                                                   0xFF198FD8)
+//                                                               : const Color(
+//                                                                   0xFF1b262c),
+//                                                           shadows: [
+//                                                             Shadow(
+//                                                               color: _selectedTheme ==
+//                                                                       ThemeSelected
+//                                                                           .light
+//                                                                   ? Colors.black
+//                                                                       .withOpacity(
+//                                                                           0.5)
+//                                                                   : Colors.white
+//                                                                       .withOpacity(
+//                                                                           0.5),
+//                                                               blurRadius: 2,
+//                                                               offset:
+//                                                                   const Offset(
+//                                                                       0, 2),
+//                                                             )
+//                                                           ]),
+//                                                     ),
+//                                                   ),
+//                                                 ),
+//                                               )
+//                                             : const SizedBox(),
+//                                       ],
+//                                     )
