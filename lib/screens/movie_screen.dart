@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/drawer.dart';
 import 'package:news_api/constants.dart';
-import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 List movie;
 Color _heartColor = Colors.white;
