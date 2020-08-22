@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news_api/components/news_card.dart';
 import 'package:news_api/networking/connection.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+
+import '../constants.dart';
+
+dynamic arguments;
+ScrollController _scrollController;
 
 class SearchResults extends StatefulWidget {
   @override
@@ -8,9 +15,11 @@ class SearchResults extends StatefulWidget {
 }
 
 class _SearchResultsState extends State<SearchResults> {
-  Future fetchArticles(String term) async {
-    var articles = await searchMovies(term);
-    return articles;
+  @override
+  void initState() {
+    super.initState();
+    arguments = Get.arguments;
+    logger.w(arguments['titles'].length);
   }
 
   @override
@@ -26,46 +35,59 @@ class _SearchResultsState extends State<SearchResults> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
-              'Searching for ${Get.arguments}',
-              style: const TextStyle(
+              'Searching for ',
+              style: TextStyle(
                 fontSize: 30,
               ),
             ),
           ),
-          FutureBuilder(
-              future: fetchArticles(Get.arguments),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  var data = snapshot.data;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: data['articles'].length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          ListTile(
-                        title: Text(data['articles'][index]['title']) ??
-                            const Text('No title found'),
-                        subtitle: Text(data['articles'][index]['author'] ??
-                            'No author found'),
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(180),
-                          child: Image(
-                              image: NetworkImage(data['articles'][index]
-                                      ['urlToImage'] ??
-                                  'No image found')),
-                        ),
-                      ),
+          Expanded(
+            child: ResponsiveBuilder(
+              builder: (context, sizingInformation) => GridView.builder(
+                controller: _scrollController,
+                itemCount: arguments['titles'].length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getRowCount(sizingInformation),
+                ),
+                itemBuilder: (BuildContext context, int index) => Hero(
+                  tag: index,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: MovieCard(
+                      title: arguments['titles'][index]['title'],
+                      author: arguments['titles'][index]['id'],
+                      image: arguments['titles'][index]['image'],
+                      borderColor: const Color(0xFFe0dede).withOpacity(0.5),
+                      overlayColor: selectedTheme == ThemeSelected.light
+                          ? const Color(0xFF198FD8).withOpacity(0.7)
+                          : const Color(0xFF1b262c).withOpacity(0.7),
+                      textColor: Colors.white,
+                      elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
+                      shadowColor: selectedTheme == ThemeSelected.light
+                          ? Colors.black
+                          : Colors.white,
+                      overlayHeight: sizingInformation.isMobile ? 105 : 115,
+                      onTap: () async {
+                        var movie =
+                            await getMovie(arguments['titles'][index]['id']);
+                        await Get.toNamed(
+                          '/movie',
+                          arguments: [
+                            arguments['titles'][index]['id'],
+                            arguments['titles'][index]['image'],
+                            movie,
+                          ],
+                        );
+                      },
                     ),
-                  );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 10,
                   ),
-                );
-              }),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
