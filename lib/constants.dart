@@ -1,8 +1,11 @@
 import 'package:logger/logger.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 List<String> favMovieTitles = [];
 List savedMovies = [];
 var logger = Logger();
+enum ThemeSelected { dark, light }
+var selectedTheme = ThemeSelected.light;
 
 /// Maps the article information
 extension Mapping on List<dynamic> {
@@ -14,5 +17,21 @@ extension Mapping on List<dynamic> {
       'key': this[0]['titles'][index]['id'],
       'description': this[0]['articles'][index]['description'],
     };
+  }
+}
+
+/// Returns row count based on [sizeInformation] of the device.
+int getRowCount(SizingInformation sizeInformation) {
+  if (sizeInformation.isTablet) {
+    return 2;
+  } else if (sizeInformation.isMobile) {
+    return 1;
+  } else if (sizeInformation.screenSize.width >= 950 &&
+      sizeInformation.screenSize.width <= 1200) {
+    return 3;
+  } else if (sizeInformation.screenSize.width <= 1920) {
+    return 4;
+  } else {
+    return 5;
   }
 }
