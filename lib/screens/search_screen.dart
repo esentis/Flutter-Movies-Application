@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:news_api/components/news_card.dart';
+import 'package:news_api/components/movie_card.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -58,7 +58,7 @@ class _SearchResultsState extends State<SearchResults> {
                     padding: const EdgeInsets.all(12.0),
                     child: MovieCard(
                       title: arguments['titles'][index]['title'],
-                      author: arguments['titles'][index]['id'],
+                      date: arguments['titles'][index]['date'] ?? 'no date',
                       image: arguments['titles'][index]['image'],
                       borderColor: const Color(0xFFe0dede).withOpacity(0.5),
                       overlayColor: selectedTheme == ThemeSelected.light

@@ -16,6 +16,8 @@ class SearchField extends StatefulWidget {
     this.buttonTextColor,
     this.shadowColor,
     this.buttonTextFontSize,
+    this.hintTextColor,
+    this.textColor,
   });
 
   final TextEditingController controller;
@@ -26,6 +28,8 @@ class SearchField extends StatefulWidget {
   final Color buttonColor;
   final Color buttonTextColor;
   final Color shadowColor;
+  final Color hintTextColor;
+  final Color textColor;
   @override
   _SearchFieldState createState() => _SearchFieldState();
 }
@@ -46,38 +50,42 @@ class _SearchFieldState extends State<SearchField> {
             selectAll: true,
           ),
           decoration: InputDecoration(
-            filled: true,
-            enabledBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(
-                color: Color(0xFFEC1E79),
-                width: 12,
-              ),
-            ),
-            disabledBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(
-                color: Colors.red.withOpacity(0.3),
-                width: 12,
-              ),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(
-                color: Colors.green,
-                width: 12,
-              ),
-            ),
-            border: UnderlineInputBorder(
+              filled: true,
+              enabledBorder: UnderlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
                 borderSide: const BorderSide(
-                  width: 2,
-                  color: Colors.white,
-                )),
-            hintText: 'Start typing',
-          ),
+                  color: Color(0xFFEC1E79),
+                  width: 12,
+                ),
+              ),
+              disabledBorder: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: Colors.red.withOpacity(0.3),
+                  width: 12,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(
+                  color: Colors.green,
+                  width: 12,
+                ),
+              ),
+              border: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: const BorderSide(
+                    width: 2,
+                    color: Colors.white,
+                  )),
+              hintText: 'Start typing',
+              hintStyle: GoogleFonts.newsCycle(
+                color: widget.hintTextColor,
+                fontSize: 25,
+              )),
           style: GoogleFonts.newsCycle(
             fontSize: widget.textFontSize,
+            color: widget.textColor,
             fontWeight: FontWeight.bold,
           ),
           onChanged: (value) {

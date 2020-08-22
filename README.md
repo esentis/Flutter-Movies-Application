@@ -12,7 +12,8 @@
 
 ## Overview
 
-A movies application that connects to the [IMDB - Internet Movie Database (Unofficial) API](https://rapidapi.com/hmerritt/api/imdb-internet-movie-database-unofficial/). Get detailed information about movies.
+A movies application that connects to the <a href="https://www.themoviedb.org/"><img src="assets/images/tmdb.png" width="100" title="TMDB" alt="TMDB Log"></a> .
+Get trending and newly released movies with in-depth details.
 
 ## Screenshots
 
@@ -52,3 +53,4 @@ A movies application that connects to the [IMDB - Internet Movie Database (Unoff
 | [google_fonts](https://pub.dev/packages/google_fonts) |  ^1.1.0   | ***Fonts***  |
 | [responsive_builder](https://pub.dev/packages/responsive_builder) | ^0.2.0+2   | ***Responsiveness***  |
 | [logger](https://pub.dev/packages/logger) | ^0.9.2  | ***Logging***  |
+| [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) | ^2.1.0  | ***Environment Variables***  |
