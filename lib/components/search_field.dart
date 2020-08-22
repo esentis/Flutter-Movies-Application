@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constants.dart';
@@ -62,7 +63,7 @@ class _SearchFieldState extends State<SearchField> {
             ),
             focusedBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.green,
                 width: 12,
               ),
@@ -94,9 +95,9 @@ class _SearchFieldState extends State<SearchField> {
                     ),
                   ),
                   color: widget.buttonColor,
-                  onPressed: () {
+                  onPressed: () async {
                     {
-                      if (widget.controller.text.length <= 3) {
+                      if (widget.controller.text.length <= 2) {
                         Get.snackbar(
                           '',
                           '',
@@ -120,7 +121,8 @@ class _SearchFieldState extends State<SearchField> {
                         );
                         return;
                       }
-                      Get.toNamed('/search', arguments: widget.controller.text);
+                      var response = await searchMovies(widget.controller.text);
+                      await Get.toNamed('/search', arguments: response);
                     }
                   },
                   child: Padding(

@@ -9,14 +9,16 @@ import 'package:news_api/components/search_field.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../constants.dart';
+
 var _textController = TextEditingController();
 var _scrollController = ScrollController();
 var _hideSearchBar = false;
 enum SettingsMenu { theme, email, linkedIn }
-enum ThemeSelected { dark, light }
+
 var logger = Logger();
 var _selection;
-var _selectedTheme = ThemeSelected.light;
+
 bool hasLoaded = false;
 var cachedData;
 
@@ -35,22 +37,6 @@ class _MainScreenState extends State<MainScreen> {
     if (_scrollController.offset == 0) {
       _hideSearchBar = false;
       setState(() {});
-    }
-  }
-
-  /// Returns row count based on [sizeInformation] of the device.
-  int getRowCount(SizingInformation sizeInformation) {
-    if (sizeInformation.isTablet) {
-      return 2;
-    } else if (sizeInformation.isMobile) {
-      return 1;
-    } else if (sizeInformation.screenSize.width >= 950 &&
-        sizeInformation.screenSize.width <= 1200) {
-      return 3;
-    } else if (sizeInformation.screenSize.width <= 1920) {
-      return 4;
-    } else {
-      return 5;
     }
   }
 
@@ -81,10 +67,10 @@ class _MainScreenState extends State<MainScreen> {
       decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          _selectedTheme == ThemeSelected.light
+          selectedTheme == ThemeSelected.light
               ? const Color(0xFFf7f7f7)
               : const Color(0xFF0f4c75),
-          _selectedTheme == ThemeSelected.light
+          selectedTheme == ThemeSelected.light
               ? const Color(0xFF198FD8)
               : const Color(0xFF1b262c),
         ],
@@ -146,12 +132,12 @@ class _MainScreenState extends State<MainScreen> {
                     setState(() {
                       _selection = result;
                       logger.i('Menu item selected : $_selection');
-                      if (_selectedTheme == ThemeSelected.light) {
+                      if (selectedTheme == ThemeSelected.light) {
                         Get.changeTheme(ThemeData.dark());
-                        _selectedTheme = ThemeSelected.dark;
+                        selectedTheme = ThemeSelected.dark;
                       } else {
                         Get.changeTheme(ThemeData.light());
-                        _selectedTheme = ThemeSelected.light;
+                        selectedTheme = ThemeSelected.light;
                       }
                     });
                   },
@@ -159,7 +145,7 @@ class _MainScreenState extends State<MainScreen> {
                       <PopupMenuEntry<SettingsMenu>>[
                     PopupMenuItem<SettingsMenu>(
                       value: SettingsMenu.theme,
-                      child: Text(_selectedTheme == ThemeSelected.dark
+                      child: Text(selectedTheme == ThemeSelected.dark
                           ? 'Light mode'
                           : 'Dark mode'),
                     ),
@@ -207,7 +193,7 @@ class _MainScreenState extends State<MainScreen> {
                                       sizingInformation: sizingInformation,
                                       shadowColor: Colors.white,
                                       buttonColor:
-                                          _selectedTheme == ThemeSelected.light
+                                          selectedTheme == ThemeSelected.light
                                               ? Colors.white.withOpacity(0.6)
                                               : Colors.white,
                                       buttonTextColor: const Color(0xFFEC1E79)
@@ -246,18 +232,18 @@ class _MainScreenState extends State<MainScreen> {
                                   image: cachedData['titles'][index]['image'],
                                   borderColor:
                                       const Color(0xFFe0dede).withOpacity(0.5),
-                                  overlayColor: _selectedTheme ==
+                                  overlayColor: selectedTheme ==
                                           ThemeSelected.light
                                       ? const Color(0xFF198FD8).withOpacity(0.7)
                                       : const Color(0xFF1b262c)
                                           .withOpacity(0.7),
                                   textColor: Colors.white,
                                   elevation:
-                                      _selectedTheme == ThemeSelected.light
+                                      selectedTheme == ThemeSelected.light
                                           ? 11
                                           : 10,
                                   shadowColor:
-                                      _selectedTheme == ThemeSelected.light
+                                      selectedTheme == ThemeSelected.light
                                           ? Colors.black
                                           : Colors.white,
                                   overlayHeight:
@@ -306,21 +292,21 @@ class _MainScreenState extends State<MainScreen> {
                                         image: data['titles'][index]['image'],
                                         borderColor: const Color(0xFFe0dede)
                                             .withOpacity(0.5),
-                                        overlayColor: _selectedTheme ==
-                                                ThemeSelected.light
-                                            ? const Color(0xFF198FD8)
-                                                .withOpacity(0.7)
-                                            : const Color(0xFF1b262c)
-                                                .withOpacity(0.7),
+                                        overlayColor:
+                                            selectedTheme == ThemeSelected.light
+                                                ? const Color(0xFF198FD8)
+                                                    .withOpacity(0.7)
+                                                : const Color(0xFF1b262c)
+                                                    .withOpacity(0.7),
                                         textColor: Colors.white,
-                                        elevation: _selectedTheme ==
-                                                ThemeSelected.light
-                                            ? 11
-                                            : 10,
-                                        shadowColor: _selectedTheme ==
-                                                ThemeSelected.light
-                                            ? Colors.black
-                                            : Colors.white,
+                                        elevation:
+                                            selectedTheme == ThemeSelected.light
+                                                ? 11
+                                                : 10,
+                                        shadowColor:
+                                            selectedTheme == ThemeSelected.light
+                                                ? Colors.black
+                                                : Colors.white,
                                         overlayHeight:
                                             sizingInformation.isMobile
                                                 ? 105
