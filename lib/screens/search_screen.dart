@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_api/components/movie_card.dart';
-import 'package:news_api/networking/connection.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
 import '../constants.dart';
 
 dynamic arguments;
@@ -19,7 +18,8 @@ class _SearchResultsState extends State<SearchResults> {
   void initState() {
     super.initState();
     arguments = Get.arguments;
-    logger.w(arguments['titles'].length);
+    logger.w(arguments['results'].length);
+    logger.w(arguments['results'][0]['release_date']);
   }
 
   @override
@@ -27,7 +27,7 @@ class _SearchResultsState extends State<SearchResults> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Flutter News API',
+          'Flutter Movies API',
           style: TextStyle(
             fontSize: 28,
           ),
@@ -48,7 +48,7 @@ class _SearchResultsState extends State<SearchResults> {
             child: ResponsiveBuilder(
               builder: (context, sizingInformation) => GridView.builder(
                 controller: _scrollController,
-                itemCount: arguments['titles'].length,
+                itemCount: arguments['results'].length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: getRowCount(sizingInformation),
                 ),
@@ -57,31 +57,34 @@ class _SearchResultsState extends State<SearchResults> {
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: MovieCard(
-                      title: arguments['titles'][index]['title'],
-                      date: arguments['titles'][index]['date'] ?? 'no date',
-                      image: arguments['titles'][index]['image'],
+                      rating: arguments['results'][index]['vote_average']
+                              .toString() ??
+                          'No votes',
+                      percentage:
+                          (arguments['results'][index]['popularity']).floor() ??
+                              0,
+                      ratingBannerColor: Colors.red.withOpacity(0.5),
+                      voteCount: arguments['results'][index]['vote_count'] ??
+                          'No votes',
+                      title: arguments['results'][index]['original_name'] ??
+                          arguments['results'][index]['title'],
+                      date: arguments['results'][index]['release_date'] ??
+                          'No release date',
+                      image: arguments['results'][index]['poster_path'] == null
+                          ? 'assets/images/404.png'
+                          : baseImgUrl +
+                              arguments['results'][index]['poster_path'],
                       borderColor: const Color(0xFFe0dede).withOpacity(0.5),
                       overlayColor: selectedTheme == ThemeSelected.light
                           ? const Color(0xFF198FD8).withOpacity(0.7)
-                          : const Color(0xFF1b262c).withOpacity(0.7),
+                          : const Color(0xFF1b262c).withOpacity(0.93),
                       textColor: Colors.white,
                       elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
                       shadowColor: selectedTheme == ThemeSelected.light
                           ? Colors.black
                           : Colors.white,
                       overlayHeight: sizingInformation.isMobile ? 105 : 115,
-                      onTap: () async {
-                        var movie =
-                            await getMovie(arguments['titles'][index]['id']);
-                        await Get.toNamed(
-                          '/movie',
-                          arguments: [
-                            arguments['titles'][index]['id'],
-                            arguments['titles'][index]['image'],
-                            movie,
-                          ],
-                        );
-                      },
+                      onTap: () async {},
                     ),
                   ),
                 ),
