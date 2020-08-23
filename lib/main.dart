@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:news_api/screens/movie_screen.dart';
 import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/screens/search_screen.dart';
-import 'package:news_api/states/test_state.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
@@ -18,9 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ListenableProvider<FavoriteArticlesState>(
-            create: (_) =>
-                FavoriteArticlesState(counter: 0, widgetsToDraw: [])),
+        ListenableProvider<SetThemeState>(
+            create: (_) => SetThemeState(selectedTheme: ThemeSelected.dark)),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
