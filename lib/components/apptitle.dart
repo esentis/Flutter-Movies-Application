@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
+import 'package:provider/provider.dart';
 import '../constants.dart';
 
 enum SettingsMenu { theme, email, linkedIn }
@@ -15,6 +15,7 @@ class AppTitle extends StatefulWidget {
 class _AppTitleState extends State<AppTitle> {
   @override
   Widget build(BuildContext context) {
+    var themeState = context.watch<SetThemeState>();
     return ResponsiveBuilder(
       builder: (context, sizingInformation) => Row(
         mainAxisSize: MainAxisSize.max,
@@ -37,23 +38,15 @@ class _AppTitleState extends State<AppTitle> {
               color: Colors.black.withOpacity(0.7),
             ),
             onSelected: (SettingsMenu result) {
-              setState(() {
-                _selection = result;
-                logger.i('Menu item selected : $_selection');
-                if (selectedTheme == ThemeSelected.light) {
-                  Get.changeTheme(ThemeData.dark());
-                  selectedTheme = ThemeSelected.dark;
-                } else {
-                  Get.changeTheme(ThemeData.light());
-                  selectedTheme = ThemeSelected.light;
-                }
-              });
+              _selection = result;
+              logger.i('Menu item selected : $_selection');
+              themeState.toggleTheme();
             },
             itemBuilder: (BuildContext context) =>
                 <PopupMenuEntry<SettingsMenu>>[
               PopupMenuItem<SettingsMenu>(
                 value: SettingsMenu.theme,
-                child: Text(selectedTheme == ThemeSelected.dark
+                child: Text(themeState.selectedTheme == ThemeSelected.dark
                     ? 'Light mode'
                     : 'Dark mode'),
               ),

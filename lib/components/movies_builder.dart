@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
 import '../constants.dart';
 import 'movie_card.dart';
 
@@ -10,11 +10,13 @@ class MoviesBuilder extends StatelessWidget {
     this.itemCount,
     this.sizingInformation,
     this.data,
+    this.progressColor,
   });
   final ScrollController scrollController;
   final int itemCount;
   final SizingInformation sizingInformation;
   final dynamic data;
+  final Color progressColor;
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -29,6 +31,8 @@ class MoviesBuilder extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: MovieCard(
             rating: data['results'][index]['vote_average'].toString(),
+            percentage:
+                (data['results'][index]['popularity']).floor().toDouble(),
             ratingBannerColor: Colors.red.withOpacity(0.5),
             voteCount: data['results'][index]['vote_count'],
             title: data['results'][index]['original_name'] ??
@@ -38,7 +42,7 @@ class MoviesBuilder extends StatelessWidget {
             borderColor: const Color(0xFFe0dede).withOpacity(0.5),
             overlayColor: selectedTheme == ThemeSelected.light
                 ? const Color(0xFF198FD8).withOpacity(0.7)
-                : const Color(0xFF1b262c).withOpacity(0.7),
+                : const Color(0xFF1b262c).withOpacity(0.93),
             textColor: Colors.white,
             elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
             shadowColor: selectedTheme == ThemeSelected.light

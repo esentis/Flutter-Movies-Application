@@ -4,8 +4,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 List<String> favMovieTitles = [];
 List savedMovies = [];
 var logger = Logger();
-enum ThemeSelected { dark, light }
-var selectedTheme = ThemeSelected.dark;
+
 String baseImgUrl = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2';
 
 /// Maps the article information

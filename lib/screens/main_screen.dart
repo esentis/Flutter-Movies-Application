@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:news_api/components/appbar.dart';
+import 'package:news_api/components/apptitle.dart';
 import 'package:news_api/components/drawer.dart';
 import 'package:news_api/components/movies_builder.dart';
 import 'package:news_api/components/search_field.dart';
 import 'package:news_api/networking/connection.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../constants.dart';
+import 'package:provider/provider.dart';
 
 var _textController = TextEditingController();
 var _scrollController = ScrollController();
@@ -50,26 +50,25 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(hideSearchOnScroll);
-    getTrending();
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(() {});
     super.dispose();
+    _scrollController.removeListener(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    //var counter = context.watch<CounterController>();
+    var themeState = context.watch<SetThemeState>();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          selectedTheme == ThemeSelected.light
+          themeState.selectedTheme == ThemeSelected.light
               ? const Color(0xFFf7f7f7)
               : const Color(0xFF0f4c75),
-          selectedTheme == ThemeSelected.light
+          themeState.selectedTheme == ThemeSelected.light
               ? const Color(0xFF198FD8)
               : const Color(0xFF1b262c),
         ],

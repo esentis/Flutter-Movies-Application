@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({
@@ -17,6 +18,7 @@ class MovieCard extends StatelessWidget {
     this.rating,
     this.ratingBannerColor,
     this.voteCount,
+    this.percentage,
   });
   final String image;
   final Color overlayColor;
@@ -32,6 +34,49 @@ class MovieCard extends StatelessWidget {
   final Color ratingBannerColor;
   final String rating;
   final int voteCount;
+  final double percentage;
+
+  LinearGradient getGradient(percentage) {
+    if (percentage <= 20) {
+      return const LinearGradient(colors: [
+        Colors.redAccent,
+        Colors.red,
+      ]);
+    }
+    if (percentage > 20 && percentage <= 40) {
+      return const LinearGradient(colors: [
+        Colors.orange,
+        Colors.red,
+      ]);
+    }
+    if (percentage > 40 && percentage <= 60) {
+      return const LinearGradient(colors: [
+        Colors.yellowAccent,
+        Colors.orange,
+        Colors.redAccent,
+      ]);
+    }
+    if (percentage > 60 && percentage <= 80) {
+      return LinearGradient(colors: [
+        Colors.green[200],
+        Colors.yellowAccent,
+      ]);
+    }
+    if (percentage > 80 && percentage <= 90) {
+      return LinearGradient(colors: [
+        Colors.green[900],
+        Colors.yellowAccent,
+      ]);
+    }
+    if (percentage > 90) {
+      return const LinearGradient(colors: [
+        Colors.greenAccent,
+        Colors.green,
+      ]);
+    }
+    return const LinearGradient(colors: [Colors.red]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,14 +88,10 @@ class MovieCard extends StatelessWidget {
           shadowColor: shadowColor,
           color: Colors.transparent,
           shape: RoundedRectangleBorder(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
               side: BorderSide(
-                width: 3,
-                color: borderColor,
-              )),
+            width: 3,
+            color: borderColor,
+          )),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.transparent,
@@ -99,7 +140,7 @@ class MovieCard extends StatelessWidget {
                       children: [
                         Container(
                           width: double.infinity,
-                          height: 100,
+                          height: 110,
                           decoration: BoxDecoration(
                             color: overlayColor,
                             shape: BoxShape.rectangle,
@@ -113,7 +154,7 @@ class MovieCard extends StatelessWidget {
                           child: Text(
                             title,
                             style: GoogleFonts.newsCycle(
-                              fontSize: 22,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: textColor,
                             ),
@@ -137,7 +178,7 @@ class MovieCard extends StatelessWidget {
                               child: Text(
                                 date,
                                 style: GoogleFonts.newsCycle(
-                                  fontSize: 20,
+                                  fontSize: 15,
                                   color: textColor,
                                 ),
                               ),
@@ -149,46 +190,33 @@ class MovieCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  right: 0,
-                  child: Material(
-                    color: const Color(0xFFEC1E79).withOpacity(0.8),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.only(topRight: Radius.circular(20)),
-                      side: BorderSide(
-                        color: Colors.white,
-                        width: 2,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 12,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$rating/10',
-                            style: GoogleFonts.newsCycle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  bottom: 0,
+                  right: 10,
+                  child: Column(
+                    children: [
+                      CircularPercentIndicator(
+                        radius: 80,
+                        circularStrokeCap: CircularStrokeCap.round,
+                        animateFromLastPercent: true,
+                        animationDuration: 2000,
+                        curve: Curves.easeIn,
+                        lineWidth: 10,
+                        animation: true,
+                        percent: percentage / 100 > 1 ? 1 : percentage / 100,
+                        backgroundColor: Colors.transparent,
+                        linearGradient: getGradient(percentage),
+                        center: Text(
+                          '${(percentage).toString()}%',
+                          style: GoogleFonts.newsCycle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            '$voteCount votes',
-                            style: GoogleFonts.newsCycle(
-                              fontSize: 15,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
           ),
