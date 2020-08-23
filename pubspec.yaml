@@ -36,6 +36,7 @@ dependencies:
   responsive_builder: ^0.2.0+2
   logger: ^0.9.2
   flutter_dotenv: ^2.1.0
+  percent_indicator: ^2.1.5
 
 dev_dependencies:
   flutter_test:
