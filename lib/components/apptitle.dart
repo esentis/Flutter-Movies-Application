@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_api/states/test_state.dart';
+import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';

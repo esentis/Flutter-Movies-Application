@@ -130,6 +130,7 @@ class _SearchFieldState extends State<SearchField> {
                         return;
                       }
                       var response = await searchMovies(widget.controller.text);
+
                       await Get.toNamed('/search', arguments: response);
                     }
                   },
