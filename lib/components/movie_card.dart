@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/components/popularity.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MovieCard extends StatelessWidget {
@@ -36,47 +37,6 @@ class MovieCard extends StatelessWidget {
   final int voteCount;
   final double percentage;
 
-  LinearGradient getGradient(percentage) {
-    if (percentage <= 20) {
-      return const LinearGradient(colors: [
-        Colors.redAccent,
-        Colors.red,
-      ]);
-    }
-    if (percentage > 20 && percentage <= 40) {
-      return const LinearGradient(colors: [
-        Colors.orange,
-        Colors.red,
-      ]);
-    }
-    if (percentage > 40 && percentage <= 60) {
-      return const LinearGradient(colors: [
-        Colors.yellowAccent,
-        Colors.orange,
-        Colors.redAccent,
-      ]);
-    }
-    if (percentage > 60 && percentage <= 80) {
-      return LinearGradient(colors: [
-        Colors.green[200],
-        Colors.yellowAccent,
-      ]);
-    }
-    if (percentage > 80 && percentage <= 90) {
-      return LinearGradient(colors: [
-        Colors.green[900],
-        Colors.yellowAccent,
-      ]);
-    }
-    if (percentage > 90) {
-      return const LinearGradient(colors: [
-        Colors.greenAccent,
-        Colors.green,
-      ]);
-    }
-    return const LinearGradient(colors: [Colors.red]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -108,6 +68,7 @@ class MovieCard extends StatelessWidget {
               ),
             ),
             child: Stack(
+              alignment: Alignment.center,
               children: [
                 Positioned(
                   left: 0,
@@ -192,29 +153,9 @@ class MovieCard extends StatelessWidget {
                 Positioned(
                   bottom: 0,
                   right: 10,
-                  child: Column(
-                    children: [
-                      CircularPercentIndicator(
-                        radius: 80,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        animateFromLastPercent: true,
-                        animationDuration: 2000,
-                        curve: Curves.easeIn,
-                        lineWidth: 10,
-                        animation: true,
-                        percent: percentage / 100 > 1 ? 1 : percentage / 100,
-                        backgroundColor: Colors.transparent,
-                        linearGradient: getGradient(percentage),
-                        center: Text(
-                          '${(percentage).toString()}%',
-                          style: GoogleFonts.newsCycle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: PopularityRating(
+                    percentage: percentage,
+                    centerTextColor: Colors.white.withOpacity(0.8),
                   ),
                 )
               ],
