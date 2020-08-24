@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:news_api/components/drawer.dart';
 import 'package:news_api/components/loading.dart';
 import 'package:news_api/components/popularity.dart';
