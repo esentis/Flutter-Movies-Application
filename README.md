@@ -21,8 +21,8 @@ Get trending and newly released movies with in-depth details.
 
 ## Features
 
-- [x] When the app is loaded, top headlines are fetched based on your country.
-- [x] You can search for movies by typing in the search field.
+- [x] When the app is loaded, trending movies are loaded.
+- [x] You can search for movies by typing in the search field and pressing enter.
 **When on desktop there is a search button below TextField.**
 **On Mobile or Tablet you can press the ok button on the virtual keyboard to start searching.**
 - [x] When you tap on a news card, you get redirected to a new screen with the article details.
@@ -54,3 +54,5 @@ Get trending and newly released movies with in-depth details.
 | [responsive_builder](https://pub.dev/packages/responsive_builder) | ^0.2.0+2   | ***Responsiveness***  |
 | [logger](https://pub.dev/packages/logger) | ^0.9.2  | ***Logging***  |
 | [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) | ^2.1.0  | ***Environment Variables***  |
+| [flutter_spinkit](https://pub.dev/packages/flutter_spinkit) | ^4.1.2+1  | ***Beautiful Spinkits***  |
+| [modal_progress_hud](https://pub.dev/packages/modal_progress_hud) | ^0.1.3  | ***Loading HUD***  |
