@@ -20,7 +20,8 @@ var _hideSearchBar = false;
 var logger = Logger();
 
 bool hasLoaded = false;
-var cachedData;
+var cachedTrendingMovies;
+var cachedLatestMovies;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -29,29 +30,29 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   /// When a scroll is detected, serch TextField is hidden.
-  void hideSearchOnScroll() {
-    if (_scrollController.offset >= 10) {
-      _hideSearchBar = true;
-      setState(() {});
-    }
-    if (_scrollController.offset == 0) {
-      _hideSearchBar = false;
-      setState(() {});
-    }
-  }
+  // void hideSearchOnScroll() {
+  //   if (_scrollController.offset >= 10) {
+  //     _hideSearchBar = true;
+  //     setState(() {});
+  //   }
+  //   if (_scrollController.offset == 0) {
+  //     _hideSearchBar = false;
+  //     setState(() {});
+  //   }
+  // }
 
   Future getData() async {
-    var response = await getTrending();
+    var trendingMovies = await getTrending();
+    var upcomingMovies = await getUpcomingMovies();
     hasLoaded = true;
-    cachedData = response;
+    cachedTrendingMovies = trendingMovies;
+    cachedLatestMovies = upcomingMovies;
     setState(() {});
-    return response;
   }
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(hideSearchOnScroll);
     if (!hasLoaded) {
       getData();
     }
@@ -179,12 +180,49 @@ class _MainScreenState extends State<MainScreen> {
                       const SizedBox(
                         height: 10,
                       ),
+                      hasLoaded
+                          ? Text(
+                              'Trending Movies',
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: themeState.selectedTheme ==
+                                        ThemeSelected.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            )
+                          : const SizedBox(),
                       Expanded(
                         child: hasLoaded
                             ? MoviesBuilder(
-                                data: cachedData,
-                                itemCount: cachedData['results'].length,
-                                scrollController: _scrollController,
+                                widgetOrigin: 'Upcoming movies',
+                                data: cachedTrendingMovies,
+                                itemCount:
+                                    cachedTrendingMovies['results'].length,
+                                sizingInformation: sizingInformation,
+                              )
+                            : const Loading(),
+                      ),
+                      hasLoaded
+                          ? Text(
+                              'Latest Movies',
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: themeState.selectedTheme ==
+                                        ThemeSelected.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            )
+                          : const SizedBox(),
+                      Expanded(
+                        child: hasLoaded
+                            ? MoviesBuilder(
+                                widgetOrigin: 'Latest movies',
+                                data: cachedLatestMovies,
+                                itemCount: cachedLatestMovies['results'].length,
                                 sizingInformation: sizingInformation,
                               )
                             : const Loading(),
