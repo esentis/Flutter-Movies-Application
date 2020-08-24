@@ -40,10 +40,25 @@ Future searchMovies(String term) async {
 }
 
 /// Returns movies based on [id].
-Future getMovie(String id) async {
+Future getMovie(int id) async {
   Response response;
   try {
-    response = await tmdb.get('/film/$id');
+    response = await tmdb
+        .get('/3/movie/$id?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US');
+    logger.i(response.data);
+  } on DioError catch (e) {
+    logger.e(e);
+    return e.type;
+  }
+  return response.data;
+}
+
+/// Returns the cast and crew for a movie with [id].
+Future getCredits(int id) async {
+  Response response;
+  try {
+    response = await tmdb
+        .get('/3/movie/$id/credits?api_key=${DotEnv().env['TMDB_KEY']}');
     logger.i(response.data);
   } on DioError catch (e) {
     logger.e(e);

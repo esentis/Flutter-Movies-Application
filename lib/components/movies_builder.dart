@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:news_api/networking/connection.dart';
+import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import '../constants.dart';
 import 'movie_card.dart';
+import 'package:provider/provider.dart';
 
 class MoviesBuilder extends StatelessWidget {
   const MoviesBuilder({
@@ -17,8 +21,10 @@ class MoviesBuilder extends StatelessWidget {
   final SizingInformation sizingInformation;
   final dynamic data;
   final Color progressColor;
+
   @override
   Widget build(BuildContext context) {
+    var loader = context.watch<SetLoading>();
     return GridView.builder(
       controller: scrollController,
       itemCount: itemCount,
@@ -26,7 +32,7 @@ class MoviesBuilder extends StatelessWidget {
         crossAxisCount: getRowCount(sizingInformation),
       ),
       itemBuilder: (BuildContext context, int index) => Hero(
-        tag: index,
+        tag: data['results'][index]['id'],
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: MovieCard(
@@ -49,7 +55,16 @@ class MoviesBuilder extends StatelessWidget {
                 ? Colors.black
                 : Colors.white,
             overlayHeight: sizingInformation.isMobile ? 105 : 115,
-            onTap: () async {},
+            onTap: () async {
+              loader.toggleLoading();
+              logger.i(
+                  'Searching for movie with ID : ${data['results'][index]['id']}');
+              var movieDetails = await getMovie(data['results'][index]['id']);
+              var movieCredits = await getCredits(movieDetails['id']);
+              loader.toggleLoading();
+              await Get.toNamed('/movie',
+                  arguments: [movieDetails, movieCredits]);
+            },
           ),
         ),
       ),

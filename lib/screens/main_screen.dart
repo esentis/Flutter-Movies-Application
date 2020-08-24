@@ -1,12 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:news_api/components/apptitle.dart';
 import 'package:news_api/components/drawer.dart';
+import 'package:news_api/components/loading.dart';
 import 'package:news_api/components/movies_builder.dart';
 import 'package:news_api/components/search_field.dart';
 import 'package:news_api/networking/connection.dart';
+import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
     var response = await getTrending();
     hasLoaded = true;
     cachedData = response;
-    logger.w(response);
+    setState(() {});
     return response;
   }
 
@@ -50,6 +52,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(hideSearchOnScroll);
+    if (!hasLoaded) {
+      getData();
+    }
   }
 
   @override
@@ -61,78 +66,89 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     var themeState = context.watch<SetThemeState>();
+    var loader = context.watch<SetLoading>();
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-        colors: [
-          themeState.selectedTheme == ThemeSelected.light
-              ? const Color(0xFFf7f7f7)
-              : const Color(0xFF0f4c75),
-          themeState.selectedTheme == ThemeSelected.light
-              ? const Color(0xFF198FD8)
-              : const Color(0xFF1b262c),
-        ],
-      )),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        drawer: NewsDrawer(),
-        appBar: AppBar(
-          backgroundColor: Colors.white.withOpacity(0.2),
-          elevation: 15,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          toolbarHeight: 110,
-          leading: Builder(
-            builder: (BuildContext context) => IconButton(
-              icon: Icon(
-                Icons.menu,
-                size: 40,
-                color: Colors.black.withOpacity(0.5),
-              ),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
-          ),
-          title: AppTitle(),
+        gradient: LinearGradient(
+          colors: [
+            themeState.selectedTheme == ThemeSelected.light
+                ? const Color(0xFFf7f7f7)
+                : const Color(0xFF0f4c75),
+            themeState.selectedTheme == ThemeSelected.light
+                ? const Color(0xFF198FD8)
+                : const Color(0xFF1b262c),
+          ],
         ),
-        body: ResponsiveBuilder(
-          builder: (context, sizingInformation) {
-            return Padding(
-              padding: EdgeInsets.only(
-                top: 5.0,
-                left: sizingInformation.isMobile ? 30 : 60,
-                right: sizingInformation.isMobile ? 30 : 60,
+      ),
+      child: ModalProgressHUD(
+        inAsyncCall: loader.isLoading,
+        color: const Color(0xFFEC1E79),
+        progressIndicator: const Loading(),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            drawer: NewsDrawer(),
+            appBar: AppBar(
+              backgroundColor: Colors.white.withOpacity(0.2),
+              elevation: 15,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
+              toolbarHeight: 110,
+              leading: Builder(
+                builder: (BuildContext context) => IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    size: 40,
+                    color: Colors.black.withOpacity(0.5),
                   ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    switchOutCurve: Curves.easeOut,
-                    switchInCurve: Curves.easeIn,
-                    key: const Key('topBar'),
-                    child: !_hideSearchBar
-                        ? Column(
-                            children: [
-                              Text(
-                                '${MediaQuery.of(context).size.width.round()}',
-                                style: GoogleFonts.luckiestGuy(
-                                    fontSize:
-                                        sizingInformation.isMobile ? 38 : 45,
-                                    color: Colors.white,
-                                    shadows: [
-                                      const Shadow(
-                                        color: Colors.black,
-                                        blurRadius: 5,
-                                      )
-                                    ]),
-                              ),
-                              Row(
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
+              ),
+              title: AppTitle(),
+            ),
+            body: ResponsiveBuilder(
+              builder: (context, sizingInformation) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: 5.0,
+                    left: sizingInformation.isMobile ? 30 : 60,
+                    right: sizingInformation.isMobile ? 30 : 60,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        switchOutCurve: Curves.easeOut,
+                        switchInCurve: Curves.easeIn,
+                        key: const Key('topBar'),
+                        child: !_hideSearchBar
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const SizedBox(width: 5),
-                                  Expanded(
+                                  Flexible(
+                                    flex: 0,
+                                    child: Text(
+                                      '${MediaQuery.of(context).size.width.round()}',
+                                      style: GoogleFonts.luckiestGuy(
+                                          fontSize: sizingInformation.isMobile
+                                              ? 38
+                                              : 45,
+                                          color: Colors.white,
+                                          shadows: [
+                                            const Shadow(
+                                              color: Colors.black,
+                                              blurRadius: 5,
+                                            )
+                                          ]),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 0,
                                     child: SearchField(
                                       borderColor: Colors.red,
                                       sizingInformation: sizingInformation,
@@ -157,49 +173,28 @@ class _MainScreenState extends State<MainScreen> {
                                     ),
                                   )
                                 ],
-                              ),
-                            ],
-                          )
-                        : const SizedBox(),
+                              )
+                            : const SizedBox(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                        child: hasLoaded
+                            ? MoviesBuilder(
+                                data: cachedData,
+                                itemCount: cachedData['results'].length,
+                                scrollController: _scrollController,
+                                sizingInformation: sizingInformation,
+                              )
+                            : const Loading(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: hasLoaded
-                        ? MoviesBuilder(
-                            data: cachedData,
-                            itemCount: cachedData['results'].length,
-                            scrollController: _scrollController,
-                            sizingInformation: sizingInformation,
-                          )
-                        : FutureBuilder(
-                            future: getData(),
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData) {
-                                var data = snapshot.data;
-                                if (data.runtimeType == DioErrorType) {
-                                  return Text(data.toString());
-                                }
-                                return MoviesBuilder(
-                                  data: data,
-                                  itemCount: data['results'].length,
-                                  scrollController: _scrollController,
-                                  sizingInformation: sizingInformation,
-                                );
-                              }
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 10,
-                                ),
-                              );
-                            }),
-                  ),
-                ],
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
