@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/popularity.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({
