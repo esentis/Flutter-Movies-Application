@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:news_api/screens/movie_screen.dart';
 import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/screens/search_screen.dart';
+import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ListenableProvider<SetThemeState>(
-            create: (_) => SetThemeState(selectedTheme: ThemeSelected.dark)),
+          create: (_) => SetThemeState(selectedTheme: ThemeSelected.dark),
+        ),
+        ListenableProvider<SetLoading>(
+          create: (_) => SetLoading(isLoading: false),
+        ),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
