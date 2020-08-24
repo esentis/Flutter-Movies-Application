@@ -66,3 +66,17 @@ Future getCredits(int id) async {
   }
   return response.data;
 }
+
+/// Returns the cast and crew for a movie with [id].
+Future getUpcomingMovies() async {
+  Response response;
+  try {
+    response = await tmdb.get(
+        '/3/movie/upcoming?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US&page=1');
+    logger.w(response.data);
+  } on DioError catch (e) {
+    logger.e(e);
+    return e.type;
+  }
+  return response.data;
+}

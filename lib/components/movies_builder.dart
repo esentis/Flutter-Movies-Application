@@ -15,26 +15,31 @@ class MoviesBuilder extends StatelessWidget {
     this.sizingInformation,
     this.data,
     this.progressColor,
+    this.widgetOrigin,
   });
   final ScrollController scrollController;
   final int itemCount;
   final SizingInformation sizingInformation;
   final dynamic data;
   final Color progressColor;
+  final String widgetOrigin;
 
   @override
   Widget build(BuildContext context) {
     var loader = context.watch<SetLoading>();
     return GridView.builder(
       controller: scrollController,
+      scrollDirection: Axis.horizontal,
       itemCount: itemCount,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: getRowCount(sizingInformation),
       ),
-      itemBuilder: (BuildContext context, int index) => Hero(
-        tag: data['results'][index]['id'],
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
+      itemBuilder: (BuildContext context, int index) => Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Hero(
+          tag: widgetOrigin == 'Upcoming movies'
+              ? '${data['results'][index]['id']}+UpcomingMovies'
+              : '${data['results'][index]['id']}+LatestMovies',
           child: MovieCard(
             rating: data['results'][index]['vote_average'].toString(),
             percentage:
@@ -63,7 +68,8 @@ class MoviesBuilder extends StatelessWidget {
               var movieCredits = await getCredits(movieDetails['id']);
               loader.toggleLoading();
               await Get.toNamed('/movie',
-                  arguments: [movieDetails, movieCredits]);
+                  arguments:
+                      [movieDetails, movieCredits, index, widgetOrigin] ?? '');
             },
           ),
         ),

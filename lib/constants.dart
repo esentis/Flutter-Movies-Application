@@ -23,15 +23,15 @@ extension Mapping on List<dynamic> {
 /// Returns row count based on [sizeInformation] of the device.
 int getRowCount(SizingInformation sizeInformation) {
   if (sizeInformation.isTablet) {
-    return 2;
+    return 1;
   } else if (sizeInformation.isMobile) {
     return 1;
   } else if (sizeInformation.screenSize.width >= 950 &&
       sizeInformation.screenSize.width <= 1200) {
-    return 3;
+    return 1;
   } else if (sizeInformation.screenSize.width <= 1920) {
-    return 4;
+    return 1;
   } else {
-    return 5;
+    return 2;
   }
 }
