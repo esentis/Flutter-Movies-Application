@@ -16,7 +16,8 @@ class MovieScreen extends StatefulWidget {
   _MovieScreenState createState() => _MovieScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
+class _MovieScreenState extends State<MovieScreen>
+    with SingleTickerProviderStateMixin {
   List<Widget> getGenres(
       List<dynamic> genres, SizingInformation sizingInformation) {
     // ignore: omit_local_variable_types
@@ -71,6 +72,24 @@ class _MovieScreenState extends State<MovieScreen> {
         builder: (context, sizingInformation) => CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
+              elevation: 20,
+              shadowColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(60),
+              ),
+              leading: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    radius: 20,
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 40,
+                    )),
+              ),
               actions: [
                 GestureDetector(
                   onTap: () {
@@ -201,33 +220,60 @@ class _MovieScreenState extends State<MovieScreen> {
                                   children: [
                                     Column(
                                       children: [
-                                        Text(
-                                          movie[0]['original_title'].length > 30
-                                              ? sizingInformation.isMobile
-                                                  ? '${movie[0]['original_title'].toString().substring(0, 27)}...'
-                                                  : movie[0]['original_title']
-                                              : movie[0]['original_title'],
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.newsCycle(
-                                            fontSize: sizingInformation.isMobile
-                                                ? 25
-                                                : 40,
-                                            fontWeight: FontWeight.bold,
+                                        Tooltip(
+                                          message: movie[0]['original_title'],
+                                          textStyle: GoogleFonts.newsCycle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.black,
+                                          ),
+                                          child: Text(
+                                            movie[0]['original_title'].length >
+                                                    30
+                                                ? sizingInformation.isMobile
+                                                    ? '${movie[0]['original_title'].toString().substring(0, 27)}...'
+                                                    : movie[0]['original_title']
+                                                : movie[0]['original_title'],
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.newsCycle(
+                                              fontSize:
+                                                  sizingInformation.isMobile
+                                                      ? 25
+                                                      : 40,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        Text(
-                                          movie[0]['tagline'].length > 60
-                                              ? '${movie[0]['tagline'].toString().substring(0, 60)}...'
-                                              : movie[0]['tagline'],
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.newsCycle(
-                                            fontSize: sizingInformation.isMobile
-                                                ? 15
-                                                : sizingInformation.isTablet
-                                                    ? 20
-                                                    : 25,
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic,
+                                        Tooltip(
+                                          message: movie[0]['tagline'],
+                                          textStyle: GoogleFonts.newsCycle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.black,
+                                          ),
+                                          child: Text(
+                                            movie[0]['tagline'].length > 40
+                                                ? '${movie[0]['tagline'].toString().substring(0, 40)}...'
+                                                : movie[0]['tagline'],
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.newsCycle(
+                                              fontSize: sizingInformation
+                                                      .isMobile
+                                                  ? 15
+                                                  : sizingInformation.isTablet
+                                                      ? 20
+                                                      : 25,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -367,6 +413,8 @@ class _MovieScreenState extends State<MovieScreen> {
                                           ),
                                         ),
                                         PopularityRating(
+                                          fontSize: 15,
+                                          radius: 60,
                                           centerTextColor:
                                               Colors.black.withOpacity(0.8),
                                           percentage: movie[0]['popularity']
