@@ -46,8 +46,17 @@ class MoviesBuilder extends StatelessWidget {
                 (data['results'][index]['popularity']).floor().toDouble(),
             ratingBannerColor: Colors.red.withOpacity(0.5),
             voteCount: data['results'][index]['vote_count'],
-            title: data['results'][index]['original_name'] ??
-                data['results'][index]['title'],
+            title: data['results'][index]['original_name'] != null
+                ? data['results'][index]['original_name'].length > 10
+                    ? data['results'][index]['original_name']
+                        .toString()
+                        .substring(0, 10)
+                    : data['results'][index]['original_name']
+                : data['results'][index]['title'].length > 10
+                    ? data['results'][index]['title']
+                        .toString()
+                        .substring(0, 10)
+                    : data['results'][index]['title'],
             date: data['results'][index]['release_date'],
             image: baseImgUrl + data['results'][index]['poster_path'],
             borderColor: const Color(0xFFe0dede).withOpacity(0.5),

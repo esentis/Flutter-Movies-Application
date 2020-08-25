@@ -6,9 +6,13 @@ class PopularityRating extends StatelessWidget {
   const PopularityRating({
     @required this.percentage,
     @required this.centerTextColor,
+    @required this.radius,
+    @required this.fontSize,
   });
   final Color centerTextColor;
   final double percentage;
+  final double radius;
+  final double fontSize;
   LinearGradient getGradient(percentage) {
     if (percentage <= 20) {
       return const LinearGradient(colors: [
@@ -53,7 +57,7 @@ class PopularityRating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircularPercentIndicator(
-      radius: 80,
+      radius: radius,
       circularStrokeCap: CircularStrokeCap.round,
       animateFromLastPercent: true,
       animationDuration: 2000,
@@ -66,7 +70,7 @@ class PopularityRating extends StatelessWidget {
       center: Text(
         '${(percentage).toString()}%',
         style: GoogleFonts.newsCycle(
-          fontSize: 20,
+          fontSize: fontSize,
           color: centerTextColor,
           fontWeight: FontWeight.bold,
         ),
