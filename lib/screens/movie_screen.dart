@@ -5,10 +5,11 @@ import 'package:news_api/components/drawer.dart';
 import 'package:news_api/components/loading.dart';
 import 'package:news_api/components/popularity.dart';
 import 'package:news_api/constants.dart';
+import 'package:news_api/networking/connection.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 List<dynamic> movie;
-Color _heartColor = Colors.white;
+Color _heartColor;
 bool loaded = false;
 
 class MovieScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _MovieScreenState extends State<MovieScreen>
     for (var actor in actors) {
       actorWidgets.add(ListTile(
         leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+            borderRadius: BorderRadius.circular(20),
             child: actor['profile_path'] != null
                 ? Image.network('$baseImgUrl${actor['profile_path']}')
                 : Image.asset('assets/images/404_actor.png')),
@@ -63,6 +64,15 @@ class _MovieScreenState extends State<MovieScreen>
   void initState() {
     super.initState();
     movie = Get.arguments;
+    if (savedMovies.isNotEmpty) {
+      if (savedMovies.any((element) => element['id'] == movie[0]['id'])) {
+        _heartColor = Colors.red;
+      } else {
+        _heartColor = Colors.white;
+      }
+    } else {
+      _heartColor = Colors.white;
+    }
   }
 
   @override
@@ -74,8 +84,11 @@ class _MovieScreenState extends State<MovieScreen>
             SliverAppBar(
               elevation: 20,
               shadowColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(60),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(60),
+                  bottomLeft: Radius.circular(60),
+                ),
               ),
               leading: GestureDetector(
                 onTap: () {
@@ -115,8 +128,34 @@ class _MovieScreenState extends State<MovieScreen>
                             ),
                           ),
                         );
-                        savedMovies.add(movie);
-                        logger.i(savedMovies);
+                        savedMovies.add(movie[0]);
+                        widgetsToDraw.add(
+                          ListTile(
+                            key: Key(movie[0]['id'].toString()),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                  baseImgUrl + movie[0]['poster_path']),
+                            ),
+                            title: Text(
+                              movie[0]['original_title'] ?? movie[0]['title'],
+                            ),
+                            onTap: () async {
+                              var movieDetails = await getMovie(movie[0]['id']);
+                              var movieCredits =
+                                  await getCredits(movieDetails['id']);
+                              await Get.toNamed('/movie',
+                                  arguments: [
+                                        movieDetails,
+                                        movieCredits,
+                                        0,
+                                        'favorites'
+                                      ] ??
+                                      '');
+                            },
+                          ),
+                        );
+                        logger.w(savedMovies);
                       } else {
                         _heartColor = Colors.white;
                         Get.snackbar(
@@ -138,17 +177,23 @@ class _MovieScreenState extends State<MovieScreen>
                             ),
                           ),
                         );
-                        savedMovies.remove(savedMovies.firstWhere(
-                            (article) => article['title'] == movie[0]));
+                        savedMovies.remove(
+                          savedMovies.firstWhere(
+                              (element) => element['id'] == movie[0]['id']),
+                        );
+                        logger.d(savedMovies);
                         try {
                           widgetsToDraw.remove(
                             widgetsToDraw.firstWhere(
-                              (listTile) => listTile.key == Key(movie[0]),
+                              (listTile) =>
+                                  listTile.key ==
+                                  Key(movie[0]['id'].toString()),
                             ),
                           );
                         } catch (e) {
                           print(e);
                         }
+                        // logger.w(savedMovies);
                         widgetsToDraw.forEach((element) {
                           print(element.key);
                         });
@@ -187,9 +232,7 @@ class _MovieScreenState extends State<MovieScreen>
                 fit: StackFit.expand,
                 children: [
                   Hero(
-                    tag: movie[3] == 'Upcoming movies'
-                        ? '${movie[0]['id']}+UpcomingMovies'
-                        : '${movie[0]['id']}+LatestMovies',
+                    tag: '${movie[0]['id']}+${movie[3]}',
                     child: Image.network(
                       baseImgUrl + movie[0]['poster_path'],
                       fit: BoxFit.cover,
@@ -231,20 +274,25 @@ class _MovieScreenState extends State<MovieScreen>
                                                 BorderRadius.circular(20),
                                             color: Colors.black,
                                           ),
-                                          child: Text(
-                                            movie[0]['original_title'].length >
-                                                    30
-                                                ? sizingInformation.isMobile
-                                                    ? '${movie[0]['original_title'].toString().substring(0, 27)}...'
-                                                    : movie[0]['original_title']
-                                                : movie[0]['original_title'],
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 25
-                                                      : 40,
-                                              fontWeight: FontWeight.bold,
+                                          child: Hero(
+                                            tag: movie[0]['title'],
+                                            child: Text(
+                                              movie[0]['original_title']
+                                                          .length >
+                                                      30
+                                                  ? sizingInformation.isMobile
+                                                      ? '${movie[0]['original_title'].toString().substring(0, 27)}...'
+                                                      : movie[0]
+                                                          ['original_title']
+                                                  : movie[0]['original_title'],
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.newsCycle(
+                                                fontSize:
+                                                    sizingInformation.isMobile
+                                                        ? 25
+                                                        : 40,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),
