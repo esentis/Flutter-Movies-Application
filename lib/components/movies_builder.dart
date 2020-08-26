@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
@@ -16,6 +17,7 @@ class MoviesBuilder extends StatelessWidget {
     this.data,
     this.progressColor,
     this.widgetOrigin,
+    this.scrollDirection,
   });
   final ScrollController scrollController;
   final int itemCount;
@@ -23,13 +25,14 @@ class MoviesBuilder extends StatelessWidget {
   final dynamic data;
   final Color progressColor;
   final String widgetOrigin;
+  final Axis scrollDirection;
 
   @override
   Widget build(BuildContext context) {
     var loader = context.watch<SetLoading>();
     return GridView.builder(
       controller: scrollController,
-      scrollDirection: Axis.horizontal,
+      scrollDirection: scrollDirection,
       itemCount: itemCount,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: getRowCount(sizingInformation),
@@ -37,11 +40,9 @@ class MoviesBuilder extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) => Padding(
         padding: const EdgeInsets.all(12.0),
         child: Hero(
-          tag: widgetOrigin == 'Upcoming movies'
-              ? '${data['results'][index]['id']}+UpcomingMovies'
-              : '${data['results'][index]['id']}+LatestMovies',
+          tag: '${data['results'][index]['id']}+$widgetOrigin',
           child: MovieCard(
-            rating: data['results'][index]['vote_average'].toString(),
+            rating: '${data['results'][index]['vote_average'].toString()}/10',
             percentage:
                 (data['results'][index]['popularity']).floor().toDouble(),
             ratingBannerColor: Colors.red.withOpacity(0.5),

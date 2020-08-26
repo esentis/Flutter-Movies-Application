@@ -92,8 +92,11 @@ class _MainScreenState extends State<MainScreen> {
             appBar: AppBar(
               backgroundColor: Colors.white.withOpacity(0.2),
               elevation: 15,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(60),
+                  bottomLeft: Radius.circular(60),
+                ),
               ),
               toolbarHeight: 110,
               leading: Builder(
@@ -201,6 +204,7 @@ class _MainScreenState extends State<MainScreen> {
                                 itemCount:
                                     cachedTrendingMovies['results'].length,
                                 sizingInformation: sizingInformation,
+                                scrollDirection: Axis.horizontal,
                               )
                             : const Loading(),
                       ),
@@ -224,6 +228,7 @@ class _MainScreenState extends State<MainScreen> {
                                 data: cachedLatestMovies,
                                 itemCount: cachedLatestMovies['results'].length,
                                 sizingInformation: sizingInformation,
+                                scrollDirection: Axis.horizontal,
                               )
                             : const Loading(),
                       ),
