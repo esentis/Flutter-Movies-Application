@@ -8,6 +8,10 @@ enum SettingsMenu { theme, email, linkedIn }
 var _selection;
 
 class AppTitle extends StatefulWidget {
+  const AppTitle({
+    this.onSearchTap,
+  });
+  final Function onSearchTap;
   @override
   _AppTitleState createState() => _AppTitleState();
 }
@@ -28,35 +32,50 @@ class _AppTitleState extends State<AppTitle> {
             'assets/images/logo.png',
             scale: sizingInformation.isDesktop ? 2.5 : 3,
           ),
-          PopupMenuButton<SettingsMenu>(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            icon: Icon(
-              Icons.more_vert,
-              size: 45,
-              color: Colors.black.withOpacity(0.7),
-            ),
-            onSelected: (SettingsMenu result) {
-              _selection = result;
-              logger.i('Menu item selected : $_selection');
-              themeState.toggleTheme();
-            },
-            itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<SettingsMenu>>[
-              PopupMenuItem<SettingsMenu>(
-                value: SettingsMenu.theme,
-                child: Text(themeState.selectedTheme == ThemeSelected.dark
-                    ? 'Light mode'
-                    : 'Dark mode'),
-              ),
-              const PopupMenuItem<SettingsMenu>(
-                value: SettingsMenu.email,
-                child: Text('Email me'),
-              ),
-              const PopupMenuItem<SettingsMenu>(
-                value: SettingsMenu.linkedIn,
-                child: Text('LinkedIn profile'),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              GestureDetector(
+                  onTap: widget.onSearchTap,
+                  child: Icon(
+                    Icons.search,
+                    color: Colors.black.withOpacity(0.7),
+                    size: 40,
+                  )),
+              PopupMenuButton<SettingsMenu>(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 45,
+                  color: Colors.black.withOpacity(0.7),
+                ),
+                onSelected: (SettingsMenu result) {
+                  _selection = result;
+                  logger.i('Menu item selected : $_selection');
+                  themeState.toggleTheme();
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<SettingsMenu>>[
+                  PopupMenuItem<SettingsMenu>(
+                    value: SettingsMenu.theme,
+                    child: Text(themeState.selectedTheme == ThemeSelected.dark
+                        ? 'Light mode'
+                        : 'Dark mode'),
+                  ),
+                  const PopupMenuItem<SettingsMenu>(
+                    value: SettingsMenu.email,
+                    child: Text('Email me'),
+                  ),
+                  const PopupMenuItem<SettingsMenu>(
+                    value: SettingsMenu.linkedIn,
+                    child: Text('LinkedIn profile'),
+                  ),
+                ],
               ),
             ],
           ),

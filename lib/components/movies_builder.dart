@@ -18,6 +18,7 @@ class MoviesBuilder extends StatelessWidget {
     this.progressColor,
     this.widgetOrigin,
     this.scrollDirection,
+    this.rowCount,
   });
   final ScrollController scrollController;
   final int itemCount;
@@ -26,6 +27,7 @@ class MoviesBuilder extends StatelessWidget {
   final Color progressColor;
   final String widgetOrigin;
   final Axis scrollDirection;
+  final int rowCount;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class MoviesBuilder extends StatelessWidget {
       scrollDirection: scrollDirection,
       itemCount: itemCount,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: getRowCount(sizingInformation),
+        crossAxisCount: rowCount,
       ),
       itemBuilder: (BuildContext context, int index) => Padding(
         padding: const EdgeInsets.all(12.0),
