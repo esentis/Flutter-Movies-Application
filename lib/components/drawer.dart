@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:news_api/constants.dart';
+import 'package:news_api/states/themestate.dart';
+import 'package:provider/provider.dart';
 
 List<ListTile> widgetsToDraw = [];
 
@@ -11,73 +11,76 @@ class NewsDrawer extends StatefulWidget {
 }
 
 class _NewsDrawerState extends State<NewsDrawer> {
-  void drawWidgets() {
-    savedMovies.forEach((article) {
-      var articleWidget = ListTile(
-        leading: Image.network(article['image']),
-        title: Text(article['title']),
-        key: Key(article['key']),
-        onTap: () => Get.toNamed('/article', arguments: {
-          'title': article['title'],
-          'author': article['author'],
-          'image': article['image'],
-          'url': article['url'],
-          'key': article['key'],
-          'description': article['description'],
-        }),
-      );
-      widgetsToDraw.forEach((listTile) {
-        print(listTile.key);
-      });
-      if (!widgetsToDraw.any((listTile) => listTile.key == articleWidget.key)) {
-        widgetsToDraw.add(articleWidget);
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-
-    try {
-      drawWidgets();
-    } catch (e) {
-      print(e);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            child: Column(
-              children: [
-                Image.asset('assets/images/logo.png'),
+    var themeState = context.watch<SetThemeState>();
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: Colors.transparent,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        elevation: 25,
+        shadowColor: Colors.white.withOpacity(0.5),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(60),
+              bottomRight: Radius.circular(60),
+            ),
+            gradient: LinearGradient(
+              colors: [
+                themeState.selectedTheme == ThemeSelected.light
+                    ? const Color(0xFFf7f7f7)
+                    : const Color(0xFF0f4c75),
+                themeState.selectedTheme == ThemeSelected.light
+                    ? const Color(0xFF198FD8)
+                    : const Color(0xFF1b262c),
               ],
             ),
-            decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.7),
-            ),
           ),
-          Center(
-            child: Text(
-              'Favorite movies',
-              style: GoogleFonts.newsCycle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          widgetsToDraw == null
-              ? const Center(child: Text('No favorite movies yet'))
-              : Column(
-                  children: widgetsToDraw,
+          child: Drawer(
+            elevation: 35,
+            child: ListView(
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  child: Column(
+                    children: [
+                      Image.asset('assets/images/logo.png'),
+                    ],
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                  ),
                 ),
-        ],
+                Center(
+                  child: Text(
+                    'Favorite movies',
+                    style: GoogleFonts.newsCycle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: themeState.selectedTheme == ThemeSelected.light
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ),
+                ),
+                widgetsToDraw == null
+                    ? const Center(child: Text('No favorite movies yet'))
+                    : Column(
+                        children: widgetsToDraw,
+                      ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

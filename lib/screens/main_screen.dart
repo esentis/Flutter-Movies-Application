@@ -13,9 +13,11 @@ import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
+
 var _textController = TextEditingController();
 var _scrollController = ScrollController();
-var _hideSearchBar = false;
+bool _showSearchBar = true;
 
 var logger = Logger();
 
@@ -29,18 +31,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  /// When a scroll is detected, serch TextField is hidden.
-  // void hideSearchOnScroll() {
-  //   if (_scrollController.offset >= 10) {
-  //     _hideSearchBar = true;
-  //     setState(() {});
-  //   }
-  //   if (_scrollController.offset == 0) {
-  //     _hideSearchBar = false;
-  //     setState(() {});
-  //   }
-  // }
-
   Future getData() async {
     var trendingMovies = await getTrending();
     var upcomingMovies = await getUpcomingMovies();
@@ -90,8 +80,13 @@ class _MainScreenState extends State<MainScreen> {
             backgroundColor: Colors.transparent,
             drawer: NewsDrawer(),
             appBar: AppBar(
-              backgroundColor: Colors.white.withOpacity(0.2),
+              backgroundColor: themeState.selectedTheme == ThemeSelected.dark
+                  ? const Color(0xFF0f4c75).withOpacity(0.3)
+                  : Colors.white.withOpacity(0.7),
               elevation: 15,
+              shadowColor: themeState.selectedTheme == ThemeSelected.dark
+                  ? const Color(0xFFf7f7f7).withOpacity(0.3)
+                  : Colors.black.withOpacity(0.7),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(60),
@@ -109,7 +104,14 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
-              title: AppTitle(),
+              title: AppTitle(
+                onSearchTap: () {
+                  _showSearchBar
+                      ? _showSearchBar = false
+                      : _showSearchBar = true;
+                  setState(() {});
+                },
+              ),
             ),
             body: ResponsiveBuilder(
               builder: (context, sizingInformation) {
@@ -130,33 +132,20 @@ class _MainScreenState extends State<MainScreen> {
                         switchOutCurve: Curves.easeOut,
                         switchInCurve: Curves.easeIn,
                         key: const Key('topBar'),
-                        child: !_hideSearchBar
+                        child: _showSearchBar
                             ? Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Flexible(
-                                    flex: 0,
-                                    child: Text(
-                                      '${MediaQuery.of(context).size.width.round()}',
-                                      style: GoogleFonts.luckiestGuy(
-                                          fontSize: sizingInformation.isMobile
-                                              ? 38
-                                              : 45,
-                                          color: Colors.white,
-                                          shadows: [
-                                            const Shadow(
-                                              color: Colors.black,
-                                              blurRadius: 5,
-                                            )
-                                          ]),
-                                    ),
-                                  ),
                                   Flexible(
                                     flex: 0,
                                     child: SearchField(
                                       borderColor: Colors.red,
                                       sizingInformation: sizingInformation,
                                       shadowColor: Colors.white,
+                                      onClose: () {
+                                        _showSearchBar = false;
+                                        setState(() {});
+                                      },
                                       textColor:
                                           selectedTheme == ThemeSelected.light
                                               ? Colors.black.withOpacity(0.6)
@@ -180,14 +169,11 @@ class _MainScreenState extends State<MainScreen> {
                               )
                             : const SizedBox(),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       hasLoaded
                           ? Text(
                               'Trending Movies',
                               style: GoogleFonts.newsCycle(
-                                fontSize: 30,
+                                fontSize: sizingInformation.isMobile ? 23 : 30,
                                 fontWeight: FontWeight.bold,
                                 color: themeState.selectedTheme ==
                                         ThemeSelected.dark
@@ -200,6 +186,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: hasLoaded
                             ? MoviesBuilder(
                                 widgetOrigin: 'Upcoming movies',
+                                rowCount: upcomingRowCount(sizingInformation),
                                 data: cachedTrendingMovies,
                                 itemCount:
                                     cachedTrendingMovies['results'].length,
@@ -212,7 +199,7 @@ class _MainScreenState extends State<MainScreen> {
                           ? Text(
                               'Latest Movies',
                               style: GoogleFonts.newsCycle(
-                                fontSize: 30,
+                                fontSize: sizingInformation.isMobile ? 23 : 30,
                                 fontWeight: FontWeight.bold,
                                 color: themeState.selectedTheme ==
                                         ThemeSelected.dark
@@ -225,6 +212,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: hasLoaded
                             ? MoviesBuilder(
                                 widgetOrigin: 'Latest movies',
+                                rowCount: latestRowCount(sizingInformation),
                                 data: cachedLatestMovies,
                                 itemCount: cachedLatestMovies['results'].length,
                                 sizingInformation: sizingInformation,

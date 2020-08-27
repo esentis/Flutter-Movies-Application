@@ -49,14 +49,15 @@ class MovieCard extends StatelessWidget {
             shadowColor: shadowColor,
             color: Colors.transparent,
             shape: RoundedRectangleBorder(
-                side: BorderSide(
-              width: 3,
-              color: borderColor,
-            )),
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                width: 3,
+                color: borderColor,
+              ),
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.transparent,
-                shape: BoxShape.rectangle,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -94,10 +95,13 @@ class MovieCard extends StatelessWidget {
                       bottom: 0,
                       top: 0,
                       right: 0,
-                      child: Image.asset(
-                        'assets/images/frame.png',
-                        fit: BoxFit.fill,
-                        color: Colors.white.withOpacity(0.8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/images/frame.png',
+                          fit: BoxFit.fill,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -105,10 +109,13 @@ class MovieCard extends StatelessWidget {
                       bottom: 0,
                       top: 0,
                       right: 0,
-                      child: Image.asset(
-                        'assets/images/film.png',
-                        fit: BoxFit.fill,
-                        color: Colors.black.withOpacity(0.8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/images/film.png',
+                          fit: BoxFit.fill,
+                          color: Colors.black.withOpacity(0.8),
+                        ),
                       ),
                     ),
                     Builder(
@@ -127,6 +134,8 @@ class MovieCard extends StatelessWidget {
                                 borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(20),
                                   topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(50),
+                                  bottomRight: Radius.circular(50),
                                 ),
                               ),
                             ),
