@@ -29,14 +29,14 @@ class _MobileMenuState extends State<MobileMenu> {
               curve: Curves.easeIn,
             );
             setState(() {
-              currentPage = ActivePage.upcoming;
+              currentPage = ActivePage.trending;
             });
           },
           child: Text(
-            'Upcoming movies',
+            'Trending movies',
             style: GoogleFonts.newsCycle(
-              fontSize: 22,
-              color: currentPage == ActivePage.upcoming
+              fontSize: 17,
+              color: currentPage == ActivePage.trending
                   ? const Color(0xFFEC1E79)
                   : Colors.white,
               fontWeight: FontWeight.bold,
@@ -51,17 +51,19 @@ class _MobileMenuState extends State<MobileMenu> {
               curve: Curves.easeIn,
             );
             setState(() {
-              currentPage = ActivePage.latest;
+              currentPage = ActivePage.upcoming;
             });
           },
-          child: Text(
-            'Latest movies',
-            style: GoogleFonts.newsCycle(
-              fontSize: 22,
-              color: currentPage == ActivePage.latest
-                  ? const Color(0xFFEC1E79)
-                  : Colors.white,
-              fontWeight: FontWeight.bold,
+          child: Flexible(
+            child: Text(
+              'Upcoming movies',
+              style: GoogleFonts.newsCycle(
+                fontSize: 17,
+                color: currentPage == ActivePage.upcoming
+                    ? const Color(0xFFEC1E79)
+                    : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
