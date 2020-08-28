@@ -12,6 +12,8 @@
 
 ## Overview
 
+<img src="screenshots/showcase.png" alt="drawing" width="500"/>
+
 A movies application that connects to the <a href="https://www.themoviedb.org/"><img src="assets/images/tmdb.png" width="100" title="TMDB" alt="TMDB Log"></a> .
 Get trending and newly released movies with in-depth details.
 
