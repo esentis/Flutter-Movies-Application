@@ -38,7 +38,7 @@ class _AppTitleState extends State<AppTitle> {
             tag: 'MOVIESLOGO',
             child: Image.asset(
               'assets/images/logo.png',
-              scale: sizingInformation.isDesktop ? 2.5 : 3,
+              scale: sizingInformation.isDesktop ? 2.5 : 4.5,
             ),
           ),
           Column(
