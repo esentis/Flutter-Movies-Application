@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:news_api/components/popularity.dart';
+import 'package:news_api/components/general/popularity.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class MovieCard extends StatelessWidget {
@@ -20,6 +20,7 @@ class MovieCard extends StatelessWidget {
     this.ratingBannerColor,
     this.voteCount,
     this.percentage,
+    this.genres,
   });
   final String image;
   final Color overlayColor;
@@ -36,7 +37,7 @@ class MovieCard extends StatelessWidget {
   final String rating;
   final int voteCount;
   final double percentage;
-
+  final List<Widget> genres;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -90,34 +91,6 @@ class MovieCard extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      top: 0,
-                      right: 0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/images/frame.png',
-                          fit: BoxFit.fill,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      top: 0,
-                      right: 0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/images/film.png',
-                          fit: BoxFit.fill,
-                          color: Colors.black.withOpacity(0.8),
-                        ),
-                      ),
-                    ),
                     Builder(
                       builder: (BuildContext ctx) => Positioned(
                         bottom: 0,
@@ -127,15 +100,15 @@ class MovieCard extends StatelessWidget {
                           children: [
                             Container(
                               width: double.infinity,
-                              height: sizingInformation.isMobile ? 30 : 110,
+                              height: sizingInformation.isMobile ? 80 : 110,
                               decoration: BoxDecoration(
                                 color: overlayColor,
                                 shape: BoxShape.rectangle,
                                 borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(20),
                                   topLeft: Radius.circular(20),
-                                  bottomLeft: Radius.circular(50),
-                                  bottomRight: Radius.circular(50),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20),
                                 ),
                               ),
                             ),
@@ -149,49 +122,65 @@ class MovieCard extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            sizingInformation.isMobile
-                                ? const SizedBox()
-                                : Positioned(
-                                    bottom: 0,
-                                    child: Material(
-                                      color: Colors.black.withOpacity(0.8),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20)),
-                                        side: BorderSide(
-                                          color: Colors.white,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 14.0),
-                                        child: Text(
-                                          date,
-                                          style: GoogleFonts.newsCycle(
-                                            fontSize: 15,
-                                            color: textColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
+                            Positioned(
+                              bottom: 0,
+                              child: Material(
+                                color: Colors.black.withOpacity(0.8),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    bottomLeft: Radius.circular(20),
+                                  ),
+                                  side: BorderSide(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14.0),
+                                  child: Column(
+                                    children: [
+                                      ...genres,
+                                      sizingInformation.isMobile
+                                          ? const SizedBox()
+                                          : Text(
+                                              date,
+                                              style: GoogleFonts.newsCycle(
+                                                fontSize: 10,
+                                                color: textColor,
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
-                    sizingInformation.isMobile
-                        ? const SizedBox()
-                        : Positioned(
-                            bottom: 0,
-                            right: 10,
-                            child: PopularityRating(
-                              radius: sizingInformation.isMobile ? 40 : 80,
-                              fontSize: sizingInformation.isMobile ? 10 : 20,
-                              percentage: percentage,
-                              centerTextColor: Colors.white,
-                            ),
-                          )
+                    Positioned(
+                      bottom: 0,
+                      right: 10,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/popcorn.png',
+                            fit: BoxFit.cover,
+                            scale: 27,
+                          ),
+                          PopularityRating(
+                            radius: sizingInformation.isMobile ? 50 : 70,
+                            fontSize: sizingInformation.isMobile ? 14 : 20,
+                            percentage: percentage,
+                            centerTextColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

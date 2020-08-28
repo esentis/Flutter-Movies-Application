@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:news_api/components/drawer.dart';
-import 'package:news_api/components/loading.dart';
-import 'package:news_api/components/popularity.dart';
+import 'package:news_api/components/general/drawer.dart';
+import 'package:news_api/components/movie%20screen/favorited_movie_listtile.dart';
+import 'package:news_api/components/movie%20screen/genres.dart';
+import 'package:news_api/components/movie%20screen/heart_icon.dart';
+import 'package:news_api/components/general/loading.dart';
+import 'package:news_api/components/movie%20screen/movie_duration.dart';
+import 'package:news_api/components/movie%20screen/movie_language.dart';
+import 'package:news_api/components/movie%20screen/popularity_information.dart';
+import 'package:news_api/components/movie%20screen/rating.dart';
+import 'package:news_api/components/movie%20screen/release_date.dart';
+import 'package:news_api/components/general/snackbar.dart';
+import 'package:news_api/components/movie%20screen/title_and_tagline.dart';
 import 'package:news_api/constants.dart';
-import 'package:news_api/networking/connection.dart';
+import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
@@ -19,29 +28,7 @@ class MovieScreen extends StatefulWidget {
   _MovieScreenState createState() => _MovieScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen>
-    with SingleTickerProviderStateMixin {
-  List<Widget> getGenres(List<dynamic> genres,
-      SizingInformation sizingInformation, SetThemeState themeState) {
-    // ignore: omit_local_variable_types
-    List<Widget> genresWidgets = [];
-    if (genres.isNotEmpty) {
-      for (var genre in genres) {
-        genresWidgets.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Text(genre['name'],
-              style: GoogleFonts.newsCycle(
-                fontSize: sizingInformation.isMobile ? 15 : 30,
-                color: themeState.selectedTheme == ThemeSelected.light
-                    ? Colors.black
-                    : const Color(0xFFf7f7f7),
-              )),
-        ));
-      }
-    }
-    return genresWidgets;
-  }
-
+class _MovieScreenState extends State<MovieScreen> {
   List<Widget> getCast(List<dynamic> actors,
       SizingInformation sizingInformation, SetThemeState themeState) {
     // ignore: omit_local_variable_types
@@ -97,7 +84,7 @@ class _MovieScreenState extends State<MovieScreen>
     return Theme(
       data: ThemeData(
         canvasColor: themeState.selectedTheme == ThemeSelected.dark
-            ? const Color(0xFF0f4c75)
+            ? const Color(0xff1a1a2e)
             : const Color(0xFFf7f7f7),
       ),
       child: Scaffold(
@@ -106,6 +93,15 @@ class _MovieScreenState extends State<MovieScreen>
             slivers: <Widget>[
               SliverAppBar(
                 elevation: 20,
+                title: Hero(
+                  tag: 'MOVIESLOGO',
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      scale: 5.5,
+                    ),
+                  ),
+                ),
                 shadowColor: Colors.black,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -115,7 +111,13 @@ class _MovieScreenState extends State<MovieScreen>
                 ),
                 leading: GestureDetector(
                   onTap: () {
-                    Get.back();
+                    if (movie[3] == 'Latest Movies' ||
+                        movie[3] == 'Upcoming Movies' ||
+                        movie[3] == 'search') {
+                      Get.back();
+                    } else {
+                      Get.to(MainScreen());
+                    }
                   },
                   child: const CircleAvatar(
                       backgroundColor: Colors.white,
@@ -132,94 +134,35 @@ class _MovieScreenState extends State<MovieScreen>
                       setState(() {
                         if (_heartColor == Colors.white) {
                           _heartColor = Colors.red;
-                          Get.snackbar(
-                            '',
-                            '',
-                            maxWidth: sizingInformation.isMobile ? 270 : 350,
-                            duration: const Duration(milliseconds: 800),
+                          buildSnackbar(
+                            sizingInformation: sizingInformation,
+                            fontSize: 35,
+                            titleText: 'Added to favorites !',
                             backgroundColor: Colors.green.withOpacity(0.7),
-                            borderRadius: 20,
                             borderColor: Colors.white,
-                            borderWidth: 5,
-                            titleText: Text(
-                              'Added to favorites !',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.newsCycle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
                           );
                           savedMovies.add(movie[0]);
                           widgetsToDraw.add(
-                            ListTile(
+                            FavoriteMovieTile(
+                              movie: movie,
                               key: Key(movie[0]['id'].toString()),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(60),
-                                child: Image.network(
-                                    baseImgUrl + movie[0]['poster_path']),
-                              ),
-                              title: Text(
-                                movie[0]['original_title'] ?? movie[0]['title'],
-                                style: GoogleFonts.newsCycle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                ),
-                              ),
-                              subtitle: Text(
-                                movie[0]['tagline'] ?? '',
-                                style: GoogleFonts.newsCycle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                              onTap: () async {
-                                var movieDetails =
-                                    await getMovie(movie[0]['id']);
-                                var movieCredits =
-                                    await getCredits(movieDetails['id']);
-                                await Get.toNamed('/movie',
-                                    arguments: [
-                                          movieDetails,
-                                          movieCredits,
-                                          0,
-                                          'favorites'
-                                        ] ??
-                                        '');
-                              },
                             ),
                           );
                           logger.w(savedMovies);
                         } else {
                           _heartColor = Colors.white;
-                          Get.snackbar(
-                            '',
-                            '',
-                            maxWidth: sizingInformation.isMobile ? 270 : 350,
-                            duration: const Duration(milliseconds: 800),
-                            backgroundColor: Colors.red.withOpacity(0.7),
-                            borderRadius: 20,
+                          buildSnackbar(
+                            sizingInformation: sizingInformation,
                             borderColor: Colors.white,
-                            borderWidth: 5,
-                            titleText: Text(
-                              'Removed from favorites',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.newsCycle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                            backgroundColor: Colors.red.withOpacity(0.7),
+                            fontSize: 35,
+                            titleText: 'Removed from favorites',
                           );
                           savedMovies.remove(
                             savedMovies.firstWhere(
                                 (element) => element['id'] == movie[0]['id']),
                           );
-                          logger.d(savedMovies);
+
                           try {
                             widgetsToDraw.remove(
                               widgetsToDraw.firstWhere(
@@ -238,28 +181,7 @@ class _MovieScreenState extends State<MovieScreen>
                         }
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF198FD8),
-                            Color(0xFFe0dede),
-                          ],
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(60),
-                          color: Colors.blue.withOpacity(0.3),
-                        ),
-                        child: Icon(
-                          Icons.favorite,
-                          color: _heartColor,
-                          size: 60,
-                        ),
-                      ),
-                    ),
+                    child: HeartIcon(heartColor: _heartColor),
                   ),
                 ],
                 // Allows the user to reveal the app bar if they begin scrolling
@@ -299,113 +221,15 @@ class _MovieScreenState extends State<MovieScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
-                                        children: [
-                                          Tooltip(
-                                            message: movie[0]['original_title'],
-                                            textStyle: GoogleFonts.newsCycle(
-                                              fontSize: 20,
-                                              color: Colors.white,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: Colors.black,
-                                            ),
-                                            child: Hero(
-                                              tag: movie[0]['title'],
-                                              child: Text(
-                                                movie[0]['original_title']
-                                                            .length >
-                                                        25
-                                                    ? sizingInformation.isMobile
-                                                        ? '${movie[0]['original_title'].toString().substring(0, 15)}...'
-                                                        : movie[0]
-                                                            ['original_title']
-                                                    : movie[0]
-                                                        ['original_title'],
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.newsCycle(
-                                                  fontSize:
-                                                      sizingInformation.isMobile
-                                                          ? 20
-                                                          : 40,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: themeState
-                                                              .selectedTheme ==
-                                                          ThemeSelected.light
-                                                      ? Colors.black
-                                                      : const Color(0xFFf7f7f7),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Tooltip(
-                                            message: movie[0]['tagline'],
-                                            textStyle: GoogleFonts.newsCycle(
-                                              fontSize: 20,
-                                              color: Colors.white,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: Colors.black,
-                                            ),
-                                            child: Text(
-                                              movie[0]['tagline'].length > 40
-                                                  ? '${movie[0]['tagline'].toString().substring(0, 40)}...'
-                                                  : movie[0]['tagline'],
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.newsCycle(
-                                                fontSize: sizingInformation
-                                                        .isMobile
-                                                    ? 15
-                                                    : sizingInformation.isTablet
-                                                        ? 20
-                                                        : 25,
-                                                color: themeState
-                                                            .selectedTheme ==
-                                                        ThemeSelected.light
-                                                    ? Colors.black
-                                                    : const Color(0xFFf7f7f7),
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle: FontStyle.italic,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                      TitleAndTagline(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            '${movie[0]['vote_average'].toString()}/10',
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 25
-                                                      : 40,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          Text(
-                                            '${movie[0]['vote_count']} votes',
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 30,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          )
-                                        ],
+                                      Rating(
+                                        themeState: themeState,
+                                        movie: movie,
+                                        sizingInformation: sizingInformation,
                                       )
                                     ],
                                   ),
@@ -420,161 +244,30 @@ class _MovieScreenState extends State<MovieScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
-                                        children: [
-                                          Text(
-                                            'Release date',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          Text(
-                                            movie[0]['release_date'] ?? '',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                        ],
+                                      ReleaseDate(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            'Duration',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          Text(
-                                            "${movie[0]['runtime'].toString()}'",
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                        ],
+                                      MovieDuration(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            'Genre',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          Column(
-                                            children: getGenres(
-                                              movie[0]['genres'],
-                                              sizingInformation,
-                                              themeState,
-                                            ),
-                                          ),
-                                        ],
+                                      Genres(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            'Language',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          Text(
-                                            movie[0]['original_language'],
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                        ],
+                                      Language(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            'Popularity',
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.newsCycle(
-                                              fontSize:
-                                                  sizingInformation.isMobile
-                                                      ? 15
-                                                      : 25,
-                                              fontWeight: FontWeight.bold,
-                                              color: themeState.selectedTheme ==
-                                                      ThemeSelected.light
-                                                  ? Colors.black
-                                                  : const Color(0xFFf7f7f7),
-                                            ),
-                                          ),
-                                          PopularityRating(
-                                            fontSize: 15,
-                                            radius: 60,
-                                            centerTextColor:
-                                                themeState.selectedTheme ==
-                                                        ThemeSelected.light
-                                                    ? Colors.black
-                                                    : const Color(0xFFf7f7f7),
-                                            percentage: movie[0]['popularity']
-                                                .floor()
-                                                .toDouble(),
-                                          ),
-                                        ],
+                                      Popularity(
+                                        themeState: themeState,
+                                        sizingInformation: sizingInformation,
+                                        movie: movie,
                                       ),
                                     ],
                                   ),

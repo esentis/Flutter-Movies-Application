@@ -4,10 +4,14 @@ import 'package:get/get.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import '../constants.dart';
+import 'movie screen/genres.dart';
 import 'movie_card.dart';
 import 'package:provider/provider.dart';
+
+RefreshController _refreshController = RefreshController(initialRefresh: false);
 
 class MoviesBuilder extends StatelessWidget {
   const MoviesBuilder({
@@ -29,63 +33,161 @@ class MoviesBuilder extends StatelessWidget {
   final Axis scrollDirection;
   final int rowCount;
 
+  void onRefresh() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     var loader = context.watch<SetLoading>();
-    return GridView.builder(
-      controller: scrollController,
-      scrollDirection: scrollDirection,
-      itemCount: itemCount,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: rowCount,
-      ),
-      itemBuilder: (BuildContext context, int index) => Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Hero(
-          tag: '${data['results'][index]['id']}+$widgetOrigin',
-          child: MovieCard(
-            rating: '${data['results'][index]['vote_average'].toString()}/10',
-            percentage:
-                (data['results'][index]['popularity']).floor().toDouble(),
-            ratingBannerColor: Colors.red.withOpacity(0.5),
-            voteCount: data['results'][index]['vote_count'],
-            title: data['results'][index]['original_name'] != null
-                ? data['results'][index]['original_name'].length > 10
-                    ? data['results'][index]['original_name']
-                        .toString()
-                        .substring(0, 10)
-                    : data['results'][index]['original_name']
-                : data['results'][index]['title'].length > 10
-                    ? data['results'][index]['title']
-                        .toString()
-                        .substring(0, 10)
-                    : data['results'][index]['title'],
-            date: data['results'][index]['release_date'],
-            image: baseImgUrl + data['results'][index]['poster_path'],
-            borderColor: const Color(0xFFe0dede).withOpacity(0.5),
-            overlayColor: selectedTheme == ThemeSelected.light
-                ? const Color(0xFF198FD8).withOpacity(0.7)
-                : const Color(0xFF1b262c).withOpacity(0.93),
-            textColor: Colors.white,
-            elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
-            shadowColor: selectedTheme == ThemeSelected.light
-                ? Colors.black
-                : Colors.white,
-            overlayHeight: sizingInformation.isMobile ? 105 : 115,
-            onTap: () async {
-              loader.toggleLoading();
-              logger.i(
-                  'Searching for movie with ID : ${data['results'][index]['id']}');
-              var movieDetails = await getMovie(data['results'][index]['id']);
-              var movieCredits = await getCredits(movieDetails['id']);
-              loader.toggleLoading();
-              await Get.toNamed('/movie',
-                  arguments:
-                      [movieDetails, movieCredits, index, widgetOrigin] ?? '');
-            },
-          ),
-        ),
-      ),
-    );
+    return sizingInformation.isMobile
+        ? SmartRefresher(
+            controller: _refreshController,
+            onRefresh: onRefresh,
+            child: GridView.builder(
+              controller: scrollController,
+              scrollDirection: scrollDirection,
+              itemCount: itemCount,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: rowCount,
+              ),
+              itemBuilder: (BuildContext context, int index) => Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Hero(
+                  tag: '${data['results'][index]['id']}+$widgetOrigin',
+                  child: MovieCard(
+                    rating:
+                        '${data['results'][index]['vote_average'].toString()}/10',
+                    genres: getGenres(data['results'][index]['genre_ids'],
+                                    sizingInformation)
+                                .length >
+                            2
+                        ? getGenres(data['results'][index]['genre_ids'],
+                                sizingInformation)
+                            .sublist(0, 2)
+                        : getGenres(data['results'][index]['genre_ids'],
+                            sizingInformation),
+                    percentage: (data['results'][index]['popularity'])
+                        .floor()
+                        .toDouble(),
+                    ratingBannerColor: Colors.red.withOpacity(0.5),
+                    voteCount: data['results'][index]['vote_count'],
+                    title: data['results'][index]['original_name'] != null
+                        ? data['results'][index]['original_name'].length > 10
+                            ? data['results'][index]['original_name']
+                                .toString()
+                                .substring(0, 10)
+                            : data['results'][index]['original_name']
+                        : data['results'][index]['title'].length > 10
+                            ? data['results'][index]['title']
+                                .toString()
+                                .substring(0, 10)
+                            : data['results'][index]['title'],
+                    date: data['results'][index]['release_date'],
+                    image: baseImgUrl + data['results'][index]['poster_path'],
+                    borderColor: const Color(0xFFe0dede).withOpacity(0.5),
+                    overlayColor: selectedTheme == ThemeSelected.light
+                        ? const Color(0xFF198FD8).withOpacity(0.7)
+                        : const Color(0xFF1b262c).withOpacity(0.93),
+                    textColor: Colors.white,
+                    elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
+                    shadowColor: selectedTheme == ThemeSelected.light
+                        ? Colors.black
+                        : Colors.white,
+                    overlayHeight: sizingInformation.isMobile ? 105 : 115,
+                    onTap: () async {
+                      loader.toggleLoading();
+                      logger.i(
+                          'Searching for movie with ID : ${data['results'][index]['id']}');
+                      var movieDetails =
+                          await getMovie(data['results'][index]['id']);
+                      var movieCredits = await getCredits(movieDetails['id']);
+                      loader.toggleLoading();
+                      await Get.toNamed('/movie',
+                          arguments: [
+                                movieDetails,
+                                movieCredits,
+                                index,
+                                widgetOrigin
+                              ] ??
+                              '');
+                    },
+                  ),
+                ),
+              ),
+            ),
+          )
+        : GridView.builder(
+            controller: scrollController,
+            scrollDirection: scrollDirection,
+            itemCount: itemCount,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: rowCount,
+            ),
+            itemBuilder: (BuildContext context, int index) => Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Hero(
+                tag: '${data['results'][index]['id']}+$widgetOrigin',
+                child: MovieCard(
+                  rating:
+                      '${data['results'][index]['vote_average'].toString()}/10',
+                  genres: getGenres(data['results'][index]['genre_ids'],
+                                  sizingInformation)
+                              .length >
+                          2
+                      ? getGenres(data['results'][index]['genre_ids'],
+                              sizingInformation)
+                          .sublist(0, 2)
+                      : getGenres(data['results'][index]['genre_ids'],
+                          sizingInformation),
+                  percentage:
+                      (data['results'][index]['popularity']).floor().toDouble(),
+                  ratingBannerColor: Colors.red.withOpacity(0.5),
+                  voteCount: data['results'][index]['vote_count'],
+                  title: data['results'][index]['original_name'] != null
+                      ? data['results'][index]['original_name'].length > 10
+                          ? data['results'][index]['original_name']
+                              .toString()
+                              .substring(0, 10)
+                          : data['results'][index]['original_name']
+                      : data['results'][index]['title'].length > 10
+                          ? data['results'][index]['title']
+                              .toString()
+                              .substring(0, 10)
+                          : data['results'][index]['title'],
+                  date: data['results'][index]['release_date'],
+                  image: baseImgUrl + data['results'][index]['poster_path'],
+                  borderColor: const Color(0xFFe0dede).withOpacity(0.5),
+                  overlayColor: selectedTheme == ThemeSelected.light
+                      ? const Color(0xFF198FD8).withOpacity(0.7)
+                      : const Color(0xFF1b262c).withOpacity(0.93),
+                  textColor: Colors.white,
+                  elevation: selectedTheme == ThemeSelected.light ? 11 : 10,
+                  shadowColor: selectedTheme == ThemeSelected.light
+                      ? Colors.black
+                      : Colors.white,
+                  overlayHeight: sizingInformation.isMobile ? 105 : 115,
+                  onTap: () async {
+                    loader.toggleLoading();
+                    logger.i(
+                        'Searching for movie with ID : ${data['results'][index]['id']}');
+                    var movieDetails =
+                        await getMovie(data['results'][index]['id']);
+                    var movieCredits = await getCredits(movieDetails['id']);
+                    loader.toggleLoading();
+                    await Get.toNamed('/movie',
+                        arguments: [
+                              movieDetails,
+                              movieCredits,
+                              index,
+                              widgetOrigin
+                            ] ??
+                            '');
+                  },
+                ),
+              ),
+            ),
+          );
   }
 }
