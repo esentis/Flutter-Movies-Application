@@ -11,8 +11,6 @@ import 'movie screen/genres.dart';
 import 'movie_card.dart';
 import 'package:provider/provider.dart';
 
-RefreshController _refreshController = RefreshController(initialRefresh: false);
-
 class MoviesBuilder extends StatelessWidget {
   const MoviesBuilder({
     this.scrollController,
@@ -23,6 +21,8 @@ class MoviesBuilder extends StatelessWidget {
     this.widgetOrigin,
     this.scrollDirection,
     this.rowCount,
+    this.onRefresh,
+    this.refreshController,
   });
   final ScrollController scrollController;
   final int itemCount;
@@ -32,18 +32,15 @@ class MoviesBuilder extends StatelessWidget {
   final String widgetOrigin;
   final Axis scrollDirection;
   final int rowCount;
-
-  void onRefresh() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    _refreshController.refreshCompleted();
-  }
+  final Function onRefresh;
+  final RefreshController refreshController;
 
   @override
   Widget build(BuildContext context) {
     var loader = context.watch<SetLoading>();
-    return sizingInformation.isMobile
+    return sizingInformation.isMobile || sizingInformation.isTablet
         ? SmartRefresher(
-            controller: _refreshController,
+            controller: refreshController,
             onRefresh: onRefresh,
             child: GridView.builder(
               controller: scrollController,

@@ -10,21 +10,26 @@ import 'package:news_api/components/search_field.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
 var _textController = TextEditingController();
-var _scrollController = ScrollController();
+var _trendingScrollController = ScrollController();
+var _upcomingScrollController = ScrollController();
 var _pageController = PageController();
-enum ActivePage { upcoming, latest }
-var currentPage = ActivePage.upcoming;
+enum ActivePage { trending, upcoming }
+var currentPage = ActivePage.trending;
 bool _showSearchBar = false;
-
+RefreshController _refreshTrendingController =
+    RefreshController(initialRefresh: false);
+RefreshController _refreshUpcomingController =
+    RefreshController(initialRefresh: false);
 bool hasLoaded = false;
 var cachedTrendingMovies;
-var cachedLatestMovies;
+var cachedUpcomingMovies;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -33,12 +38,22 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   Future getData() async {
-    var trendingMovies = await getTrending();
-    var upcomingMovies = await getUpcomingMovies();
+    cachedTrendingMovies = await getTrending();
+    cachedUpcomingMovies = await getUpcoming();
     hasLoaded = true;
-    cachedTrendingMovies = trendingMovies;
-    cachedLatestMovies = upcomingMovies;
     setState(() {});
+  }
+
+  void refreshTrendingMovies() async {
+    cachedTrendingMovies = await getTrending();
+    setState(() {});
+    _refreshTrendingController.refreshCompleted();
+  }
+
+  void refreshUpcomingMovies() async {
+    cachedUpcomingMovies = await getUpcoming();
+    setState(() {});
+    _refreshTrendingController.refreshCompleted();
   }
 
   @override
@@ -49,9 +64,9 @@ class _MainScreenState extends State<MainScreen> {
     }
     _pageController.addListener(() {
       if (_pageController.page == 1) {
-        currentPage = ActivePage.latest;
-      } else if (_pageController.page == 0) {
         currentPage = ActivePage.upcoming;
+      } else if (_pageController.page == 0) {
+        currentPage = ActivePage.trending;
       }
       setState(() {});
     });
@@ -60,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     super.dispose();
-    _scrollController.removeListener(() {});
+    _pageController.removeListener(() {});
   }
 
   @override
@@ -193,7 +208,7 @@ class _MainScreenState extends State<MainScreen> {
                         ? !_showSearchBar
                             ? hasLoaded
                                 ? Text(
-                                    'Upcoming Movies',
+                                    'Trending Movies',
                                     style: GoogleFonts.newsCycle(
                                       fontSize:
                                           sizingInformation.isMobile ? 23 : 30,
@@ -221,9 +236,11 @@ class _MainScreenState extends State<MainScreen> {
                           ? !_showSearchBar
                               ? hasLoaded
                                   ? MoviesBuilder(
-                                      widgetOrigin: 'Upcoming Movies',
+                                      widgetOrigin: 'Trending Movies',
+                                      scrollController:
+                                          _trendingScrollController,
                                       rowCount:
-                                          upcomingRowCount(sizingInformation),
+                                          trendingRowCount(sizingInformation),
                                       data: cachedTrendingMovies,
                                       itemCount: cachedTrendingMovies['results']
                                           .length,
@@ -237,9 +254,14 @@ class _MainScreenState extends State<MainScreen> {
                                   controller: _pageController,
                                   children: [
                                     MoviesBuilder(
-                                      widgetOrigin: 'Upcoming Movies',
+                                      widgetOrigin: 'Trending Movies',
+                                      scrollController:
+                                          _trendingScrollController,
+                                      refreshController:
+                                          _refreshTrendingController,
+                                      onRefresh: refreshTrendingMovies,
                                       rowCount:
-                                          upcomingRowCount(sizingInformation),
+                                          trendingRowCount(sizingInformation),
                                       data: cachedTrendingMovies,
                                       itemCount: cachedTrendingMovies['results']
                                           .length,
@@ -247,12 +269,17 @@ class _MainScreenState extends State<MainScreen> {
                                       scrollDirection: Axis.vertical,
                                     ),
                                     MoviesBuilder(
-                                      widgetOrigin: 'Latest movies',
+                                      widgetOrigin: 'Upcoming movies',
+                                      scrollController:
+                                          _upcomingScrollController,
+                                      refreshController:
+                                          _refreshUpcomingController,
+                                      onRefresh: refreshUpcomingMovies,
                                       rowCount:
-                                          latestRowCount(sizingInformation),
-                                      data: cachedLatestMovies,
-                                      itemCount:
-                                          cachedLatestMovies['results'].length,
+                                          upcomingRowCount(sizingInformation),
+                                      data: cachedUpcomingMovies,
+                                      itemCount: cachedUpcomingMovies['results']
+                                          .length,
                                       sizingInformation: sizingInformation,
                                       scrollDirection: Axis.vertical,
                                     ),
@@ -266,7 +293,7 @@ class _MainScreenState extends State<MainScreen> {
                         ? !_showSearchBar
                             ? hasLoaded
                                 ? Text(
-                                    'Latest Movies',
+                                    'Upcoming Movies',
                                     style: GoogleFonts.newsCycle(
                                       fontSize:
                                           sizingInformation.isMobile ? 23 : 30,
@@ -285,12 +312,15 @@ class _MainScreenState extends State<MainScreen> {
                             child: !_showSearchBar
                                 ? hasLoaded
                                     ? MoviesBuilder(
-                                        widgetOrigin: 'Latest movies',
+                                        widgetOrigin: 'Upcoming movies',
+                                        scrollController:
+                                            _upcomingScrollController,
                                         rowCount:
-                                            latestRowCount(sizingInformation),
-                                        data: cachedLatestMovies,
-                                        itemCount: cachedLatestMovies['results']
-                                            .length,
+                                            upcomingRowCount(sizingInformation),
+                                        data: cachedUpcomingMovies,
+                                        itemCount:
+                                            cachedUpcomingMovies['results']
+                                                .length,
                                         sizingInformation: sizingInformation,
                                         scrollDirection: Axis.horizontal,
                                       )
