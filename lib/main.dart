@@ -34,9 +34,6 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/movie',
             page: () => MovieScreen(),
-            transition: Transition.cupertinoDialog,
-            curve: Curves.bounceIn,
-            transitionDuration: const Duration(milliseconds: 350),
           ),
         ],
         title: 'Flutter Movies Api',
