@@ -68,7 +68,7 @@ Future getCredits(int id) async {
 }
 
 /// Returns the upcoming movies.
-Future getUpcomingMovies() async {
+Future getUpcoming() async {
   Response response;
   try {
     response = await tmdb.get(
