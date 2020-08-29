@@ -111,12 +111,10 @@ class _MovieScreenState extends State<MovieScreen> {
                 ),
                 leading: GestureDetector(
                   onTap: () {
-                    if (movie[3] == 'Latest Movies' ||
-                        movie[3] == 'Upcoming Movies' ||
-                        movie[3] == 'search') {
-                      Get.back();
-                    } else {
+                    if (movie[3] == 'favorites') {
                       Get.to(MainScreen());
+                    } else {
+                      Get.back();
                     }
                   },
                   child: const CircleAvatar(
