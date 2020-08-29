@@ -100,7 +100,7 @@ class MovieCard extends StatelessWidget {
                           children: [
                             Container(
                               width: double.infinity,
-                              height: sizingInformation.isMobile ? 80 : 110,
+                              height: sizingInformation.isMobile ? 60 : 110,
                               decoration: BoxDecoration(
                                 color: overlayColor,
                                 shape: BoxShape.rectangle,
