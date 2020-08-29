@@ -54,16 +54,14 @@ class _MobileMenuState extends State<MobileMenu> {
               currentPage = ActivePage.upcoming;
             });
           },
-          child: Flexible(
-            child: Text(
-              'Upcoming movies',
-              style: GoogleFonts.newsCycle(
-                fontSize: 17,
-                color: currentPage == ActivePage.upcoming
-                    ? const Color(0xFFEC1E79)
-                    : Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+          child: Text(
+            'Upcoming movies',
+            style: GoogleFonts.newsCycle(
+              fontSize: 17,
+              color: currentPage == ActivePage.upcoming
+                  ? const Color(0xFFEC1E79)
+                  : Colors.white,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
