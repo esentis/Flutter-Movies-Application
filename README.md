@@ -8,7 +8,7 @@
 
 ![forthebadge](https://badgen.net/pub/flutter-platform/xml)
 
-[![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=http%3A%2F%2Fwww.esentis.gr)](www.esentis.gr)
+[![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=http%3A%2F%2Fhypothermal-mixture.000webhostapp.com)](https://hypothermal-mixture.000webhostapp.com/)
 
 ![Flutter CI](https://github.com/esentis/Flutter-News-Application/workflows/Flutter%20CI/badge.svg)
 
@@ -16,6 +16,7 @@
 
 A movies application that connects to the <a href="https://www.themoviedb.org/"><img src="assets/images/tmdb.png" width="100" title="TMDB" alt="TMDB Log"></a> .
 Get trending and newly released movies with in-depth details.
+[Live Version](https://hypothermal-mixture.000webhostapp.com)
 
 ## Screenshots
 
