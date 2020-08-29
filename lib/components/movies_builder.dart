@@ -38,10 +38,21 @@ class MoviesBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var loader = context.watch<SetLoading>();
+    var themeState = context.watch<SetThemeState>();
     return sizingInformation.isMobile || sizingInformation.isTablet
         ? SmartRefresher(
             controller: refreshController,
             onRefresh: onRefresh,
+            header: WaterDropMaterialHeader(
+              distance: 120,
+              color: themeState.selectedTheme == ThemeSelected.dark
+                  ? const Color(0xFFEC1E79)
+                  : const Color(0xff16213e),
+              backgroundColor: themeState.selectedTheme == ThemeSelected.dark
+                  ? const Color(0xff16213e)
+                  : const Color(0xFF198FD8),
+              offset: 5,
+            ),
             child: GridView.builder(
               controller: scrollController,
               scrollDirection: scrollDirection,
@@ -95,8 +106,6 @@ class MoviesBuilder extends StatelessWidget {
                     overlayHeight: sizingInformation.isMobile ? 105 : 115,
                     onTap: () async {
                       loader.toggleLoading();
-                      logger.i(
-                          'Searching for movie with ID : ${data['results'][index]['id']}');
                       var movieDetails =
                           await getMovie(data['results'][index]['id']);
                       var movieCredits = await getCredits(movieDetails['id']);
@@ -167,8 +176,6 @@ class MoviesBuilder extends StatelessWidget {
                   overlayHeight: sizingInformation.isMobile ? 105 : 115,
                   onTap: () async {
                     loader.toggleLoading();
-                    logger.i(
-                        'Searching for movie with ID : ${data['results'][index]['id']}');
                     var movieDetails =
                         await getMovie(data['results'][index]['id']);
                     var movieCredits = await getCredits(movieDetails['id']);

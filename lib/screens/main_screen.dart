@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
   void refreshUpcomingMovies() async {
     cachedUpcomingMovies = await getUpcoming();
     setState(() {});
-    _refreshTrendingController.refreshCompleted();
+    _refreshUpcomingController.refreshCompleted();
   }
 
   @override
@@ -222,10 +222,9 @@ class _MainScreenState extends State<MainScreen> {
                                 : const SizedBox()
                             : const SizedBox()
                         : const SizedBox(),
-                    sizingInformation.isMobile ||
-                            sizingInformation.isTablet &&
-                                !_showSearchBar &&
-                                hasLoaded
+                    (sizingInformation.isMobile ||
+                                sizingInformation.isTablet) &&
+                            !_showSearchBar
                         ? MobileMenu(
                             activePage: currentPage,
                             pageController: _pageController,
@@ -308,25 +307,24 @@ class _MainScreenState extends State<MainScreen> {
                             : const SizedBox()
                         : const SizedBox(),
                     sizingInformation.isDesktop
-                        ? Expanded(
-                            child: !_showSearchBar
-                                ? hasLoaded
-                                    ? MoviesBuilder(
-                                        widgetOrigin: 'Upcoming movies',
-                                        scrollController:
-                                            _upcomingScrollController,
-                                        rowCount:
-                                            upcomingRowCount(sizingInformation),
-                                        data: cachedUpcomingMovies,
-                                        itemCount:
-                                            cachedUpcomingMovies['results']
-                                                .length,
-                                        sizingInformation: sizingInformation,
-                                        scrollDirection: Axis.horizontal,
-                                      )
-                                    : const Loading()
-                                : const SizedBox(),
-                          )
+                        ? !_showSearchBar
+                            ? hasLoaded
+                                ? Expanded(
+                                    child: MoviesBuilder(
+                                      widgetOrigin: 'Upcoming movies',
+                                      scrollController:
+                                          _upcomingScrollController,
+                                      rowCount:
+                                          upcomingRowCount(sizingInformation),
+                                      data: cachedUpcomingMovies,
+                                      itemCount: cachedUpcomingMovies['results']
+                                          .length,
+                                      sizingInformation: sizingInformation,
+                                      scrollDirection: Axis.horizontal,
+                                    ),
+                                  )
+                                : const Loading()
+                            : const SizedBox()
                         : const SizedBox(),
                   ],
                 ),

@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,61 +94,90 @@ class _SearchResultsState extends State<SearchResults> {
                     horizontal: 8.0,
                     vertical: 15,
                   ),
-                  child: ListView.separated(
-                    itemCount: movie['results'].length,
-                    itemBuilder: (context, index) => ListTile(
-                      onTap: () async {
-                        var movieCredits =
-                            await getCredits(movie['results'][index]['id']);
-                        var movieDetails =
-                            await getMovie(movie['results'][index]['id']);
-                        await Get.toNamed('/movie',
-                            arguments: [
-                                  movieDetails,
-                                  movieCredits,
-                                  index,
-                                  'search'
-                                ] ??
-                                '');
-                      },
-                      leading: movie['results'][index]['poster_path'] != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.network(
-                                '$baseImgUrl${movie['results'][index]['poster_path']}',
+                  child: movie['results'].length == 0
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'No results',
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 45,
+                                fontWeight: FontWeight.bold,
+                                color: themeState.selectedTheme ==
+                                        ThemeSelected.dark
+                                    ? Colors.white
+                                    : const Color(0xFFEC1E79),
                               ),
-                            )
-                          : Image.asset('assets/images/404_actor.png'),
-                      title: Text(
-                        movie['results'][index]['title'],
-                        style: GoogleFonts.newsCycle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: themeState.selectedTheme == ThemeSelected.dark
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                      subtitle: Text(movie['results'][index]['release_date'],
-                          style: GoogleFonts.newsCycle(
-                            fontSize: 15,
-                            color:
-                                themeState.selectedTheme == ThemeSelected.dark
+                            ),
+                            const Expanded(
+                              child: FlareActor(
+                                'assets/animations/not_found_404.flr',
+                                alignment: Alignment.center,
+                                fit: BoxFit.contain,
+                                animation: 'idle',
+                              ),
+                            ),
+                          ],
+                        )
+                      : ListView.separated(
+                          itemCount: movie['results'].length,
+                          itemBuilder: (context, index) => ListTile(
+                            onTap: () async {
+                              var movieCredits = await getCredits(
+                                  movie['results'][index]['id']);
+                              var movieDetails =
+                                  await getMovie(movie['results'][index]['id']);
+                              await Get.toNamed('/movie',
+                                  arguments: [
+                                        movieDetails,
+                                        movieCredits,
+                                        index,
+                                        'search'
+                                      ] ??
+                                      '');
+                            },
+                            leading: movie['results'][index]['poster_path'] !=
+                                    null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(60),
+                                    child: Image.network(
+                                      '$baseImgUrl${movie['results'][index]['poster_path']}',
+                                    ),
+                                  )
+                                : Image.asset('assets/images/404_actor.png'),
+                            title: Text(
+                              movie['results'][index]['title'],
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: themeState.selectedTheme ==
+                                        ThemeSelected.dark
                                     ? Colors.white
                                     : Colors.black,
-                          )),
-                      trailing: Text(
-                        '${movie['results'][index]['vote_average']}/10',
-                        style: GoogleFonts.newsCycle(
-                          fontSize: 20,
-                          color: themeState.selectedTheme == ThemeSelected.dark
-                              ? Colors.white
-                              : Colors.black,
+                              ),
+                            ),
+                            subtitle:
+                                Text(movie['results'][index]['release_date'],
+                                    style: GoogleFonts.newsCycle(
+                                      fontSize: 15,
+                                      color: themeState.selectedTheme ==
+                                              ThemeSelected.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    )),
+                            trailing: Text(
+                              '${movie['results'][index]['vote_average']}/10',
+                              style: GoogleFonts.newsCycle(
+                                fontSize: 20,
+                                color: themeState.selectedTheme ==
+                                        ThemeSelected.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                          separatorBuilder: (context, index) => const Divider(),
                         ),
-                      ),
-                    ),
-                    separatorBuilder: (context, index) => const Divider(),
-                  ),
                 ),
               ),
             ),

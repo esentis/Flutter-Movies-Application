@@ -148,7 +148,6 @@ class _MovieScreenState extends State<MovieScreen> {
                               key: Key(movie[0]['id'].toString()),
                             ),
                           );
-                          logger.w(savedMovies);
                         } else {
                           _heartColor = Colors.white;
                           buildSnackbar(
@@ -174,7 +173,6 @@ class _MovieScreenState extends State<MovieScreen> {
                           } catch (e) {
                             print(e);
                           }
-                          // logger.w(savedMovies);
                           widgetsToDraw.forEach((element) {
                             print(element.key);
                           });
