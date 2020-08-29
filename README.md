@@ -20,7 +20,7 @@ Get trending and newly released movies with in-depth details.
 
 ## Screenshots
 
-On Load |Navigation| Search Product |
+On Load |Navigation| Toggle Theme |
 ------------ |------------ | -------------|
 ![On Load](/screenshots/on_load.gif?raw=true "On load") | ![Navigation](/screenshots/navigation.gif?raw=true "Navigation") |![Toggle Theme](/screenshots/toggle_theme.gif?raw=true "Toggle Theme")
 
