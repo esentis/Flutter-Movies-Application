@@ -309,16 +309,19 @@ class _MainScreenState extends State<MainScreen> {
                     sizingInformation.isDesktop
                         ? !_showSearchBar
                             ? hasLoaded
-                                ? MoviesBuilder(
-                                    widgetOrigin: 'Upcoming movies',
-                                    scrollController: _upcomingScrollController,
-                                    rowCount:
-                                        upcomingRowCount(sizingInformation),
-                                    data: cachedUpcomingMovies,
-                                    itemCount:
-                                        cachedUpcomingMovies['results'].length,
-                                    sizingInformation: sizingInformation,
-                                    scrollDirection: Axis.horizontal,
+                                ? Expanded(
+                                    child: MoviesBuilder(
+                                      widgetOrigin: 'Upcoming movies',
+                                      scrollController:
+                                          _upcomingScrollController,
+                                      rowCount:
+                                          upcomingRowCount(sizingInformation),
+                                      data: cachedUpcomingMovies,
+                                      itemCount: cachedUpcomingMovies['results']
+                                          .length,
+                                      sizingInformation: sizingInformation,
+                                      scrollDirection: Axis.horizontal,
+                                    ),
                                   )
                                 : const Loading()
                             : const SizedBox()
