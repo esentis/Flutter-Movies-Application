@@ -53,8 +53,11 @@ Email |LinkedIn| Source |
 - [x] The grid design is responsive.
 
 **Mobile & Tablet**
-<img src="/screenshots/pageview.gif" alt="drawing" width="150"/>
+<br>
+<img src="/screenshots/pageview.gif" alt="drawing" width="200"/>
+<br>
 **Laptop & Tablet**
+<br>
 <img src="/screenshots/desktop.gif" alt="drawing" width="450"/>
 
 - [x] There is a settings icon (three dots) where you can change theme (Dark, Light), send e-mail and visit the source code of the app.
