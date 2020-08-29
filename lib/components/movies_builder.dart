@@ -95,8 +95,6 @@ class MoviesBuilder extends StatelessWidget {
                     overlayHeight: sizingInformation.isMobile ? 105 : 115,
                     onTap: () async {
                       loader.toggleLoading();
-                      logger.i(
-                          'Searching for movie with ID : ${data['results'][index]['id']}');
                       var movieDetails =
                           await getMovie(data['results'][index]['id']);
                       var movieCredits = await getCredits(movieDetails['id']);
@@ -167,8 +165,6 @@ class MoviesBuilder extends StatelessWidget {
                   overlayHeight: sizingInformation.isMobile ? 105 : 115,
                   onTap: () async {
                     loader.toggleLoading();
-                    logger.i(
-                        'Searching for movie with ID : ${data['results'][index]['id']}');
                     var movieDetails =
                         await getMovie(data['results'][index]['id']);
                     var movieCredits = await getCredits(movieDetails['id']);

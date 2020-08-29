@@ -17,6 +17,7 @@ Future getTrending() async {
   try {
     response = await tmdb
         .get('/3/trending/movie/day?api_key=${DotEnv().env['TMDB_KEY']}');
+    logger.i('Getting trending movies.');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
@@ -30,6 +31,7 @@ Future searchMovies(String term) async {
   try {
     response = await tmdb.get(
         '/3/search/movie?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US&query=$term&page=1&include_adult=false');
+    logger.i('Searching $term in movies.');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
@@ -43,6 +45,7 @@ Future getMovie(int id) async {
   try {
     response = await tmdb
         .get('/3/movie/$id?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US');
+    logger.i('Searching movie with ID : $id.');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
@@ -56,6 +59,7 @@ Future getCredits(int id) async {
   try {
     response = await tmdb
         .get('/3/movie/$id/credits?api_key=${DotEnv().env['TMDB_KEY']}');
+    logger.i('Getting credings for movie with ID : $id.');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
@@ -69,6 +73,7 @@ Future getUpcoming() async {
   try {
     response = await tmdb.get(
         '/3/movie/upcoming?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US&page=1');
+    logger.i('Getting upcoming movies');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
@@ -82,6 +87,7 @@ Future getLatest() async {
   try {
     response = await tmdb.get(
         '/3/movie/latest?api_key=${DotEnv().env['TMDB_KEY']}&language=en-US');
+    logger.i('Getting latest movie added');
   } on DioError catch (e) {
     logger.e(e);
     return e.type;
