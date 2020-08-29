@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
   void refreshUpcomingMovies() async {
     cachedUpcomingMovies = await getUpcoming();
     setState(() {});
-    _refreshTrendingController.refreshCompleted();
+    _refreshUpcomingController.refreshCompleted();
   }
 
   @override
