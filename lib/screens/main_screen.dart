@@ -222,10 +222,9 @@ class _MainScreenState extends State<MainScreen> {
                                 : const SizedBox()
                             : const SizedBox()
                         : const SizedBox(),
-                    sizingInformation.isMobile ||
-                            sizingInformation.isTablet &&
-                                !_showSearchBar &&
-                                hasLoaded
+                    (sizingInformation.isMobile ||
+                                sizingInformation.isTablet) &&
+                            !_showSearchBar
                         ? MobileMenu(
                             activePage: currentPage,
                             pageController: _pageController,
