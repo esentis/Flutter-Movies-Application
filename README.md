@@ -57,7 +57,7 @@ Email |LinkedIn| Source |
 <br>
 <img src="/screenshots/pageview.gif" alt="drawing" width="200"/>
 <br>
-**Laptop & Tablet**
+**Laptop & Desktop**
 <br>
 <img src="/screenshots/desktop.gif" alt="drawing" width="450"/>
 
