@@ -51,24 +51,12 @@ class _SearchFieldState extends State<SearchField> {
               onSubmitted: (value) async {
                 {
                   if (value.length <= 2) {
-                    Get.snackbar(
-                      '',
-                      '',
-                      borderRadius: 20,
-                      borderColor: Colors.white,
-                      borderWidth: 5,
-                      maxWidth: 350,
-                      duration: const Duration(milliseconds: 800),
+                    buildSnackbar(
                       backgroundColor: Colors.redAccent[400].withOpacity(0.7),
-                      titleText: Text(
-                        'At least 3 characters are needed.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.newsCycle(
-                          fontSize: widget.sizingInformation.isMobile ? 20 : 35,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      borderColor: Colors.white,
+                      fontSize: widget.sizingInformation.isMobile ? 20 : 35,
+                      sizingInformation: widget.sizingInformation,
+                      titleText: 'At least 3 characters are needed.',
                     );
                     return;
                   }
