@@ -13,17 +13,27 @@ import 'package:provider/provider.dart';
 
 class MoviesBuilder extends StatelessWidget {
   const MoviesBuilder({
-    this.scrollController,
-    this.itemCount,
-    this.sizingInformation,
-    this.data,
+    @required this.scrollController,
+    @required this.itemCount,
+    @required this.sizingInformation,
+    @required this.data,
+    @required this.widgetOrigin,
+    @required this.scrollDirection,
+    @required this.rowCount,
     this.progressColor,
-    this.widgetOrigin,
-    this.scrollDirection,
-    this.rowCount,
     this.onRefresh,
     this.refreshController,
-  });
+  }) : assert(
+          scrollController != null &&
+              itemCount != null &&
+              sizingInformation != null &&
+              sizingInformation != null &&
+              data != null &&
+              widgetOrigin != null &&
+              scrollDirection != null &&
+              rowCount != null,
+          'Required fields are missing',
+        );
   final ScrollController scrollController;
   final int itemCount;
   final SizingInformation sizingInformation;

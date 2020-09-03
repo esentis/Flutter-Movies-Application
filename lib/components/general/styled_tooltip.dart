@@ -11,7 +11,15 @@ class StyledTooltip extends StatelessWidget {
     @required this.text,
     @required this.fontSize,
     Key key,
-  }) : super(key: key);
+  })  : assert(
+          themeState != null &&
+              maxTextLength != null &&
+              sizingInformation != null &&
+              text != null &&
+              fontSize != null,
+          'Required fields are missing',
+        ),
+        super(key: key);
 
   final SizingInformation sizingInformation;
   final SetThemeState themeState;

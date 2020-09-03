@@ -7,9 +7,13 @@ import '../../constants.dart';
 
 class FavoriteMovieTile extends StatelessWidget {
   const FavoriteMovieTile({
-    this.movie,
+    @required this.movie,
     Key key,
-  }) : super(key: key);
+  })  : assert(
+          movie != null,
+          'Required field is missing',
+        ),
+        super(key: key);
   final dynamic movie;
   @override
   Widget build(BuildContext context) {

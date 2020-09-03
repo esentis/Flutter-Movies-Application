@@ -8,7 +8,13 @@ class PopularityRating extends StatelessWidget {
     @required this.centerTextColor,
     @required this.radius,
     @required this.fontSize,
-  });
+  }) : assert(
+          percentage != null &&
+              centerTextColor != null &&
+              radius != null &&
+              fontSize != null,
+          'Required fields are missing',
+        );
   final Color centerTextColor;
   final double percentage;
   final double radius;

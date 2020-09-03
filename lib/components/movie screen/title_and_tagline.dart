@@ -8,8 +8,11 @@ class TitleAndTagline extends StatelessWidget {
     @required this.themeState,
     @required this.sizingInformation,
     @required this.movie,
-    Key key,
-  }) : super(key: key);
+  }) : assert(
+            sizingInformation != null &&
+                sizingInformation != null &&
+                themeState != null,
+            'Required fields are missing');
 
   final SetThemeState themeState;
   final dynamic movie;

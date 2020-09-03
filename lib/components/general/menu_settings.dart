@@ -12,7 +12,8 @@ class MenuSettings extends StatelessWidget {
     @required this.themeState,
     @required this.iconColor,
     Key key,
-  }) : super(key: key);
+  })  : assert(themeState != null, 'Required fields are missing'),
+        super(key: key);
 
   final SetThemeState themeState;
   final Color iconColor;

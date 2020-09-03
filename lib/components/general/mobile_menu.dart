@@ -4,10 +4,12 @@ import 'package:news_api/screens/main_screen.dart';
 
 class MobileMenu extends StatefulWidget {
   const MobileMenu({
-    this.pageController,
-    this.activePage,
+    @required this.pageController,
+    @required this.activePage,
     Key key,
-  }) : super(key: key);
+  })  : assert(pageController != null && activePage != null,
+            'Required fields are missing'),
+        super(key: key);
 
   final PageController pageController;
   final ActivePage activePage;

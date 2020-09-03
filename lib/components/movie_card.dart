@@ -5,23 +5,40 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({
-    this.image,
-    this.overlayColor,
-    this.date,
-    this.title,
-    this.textColor,
-    this.onTap,
-    this.overlayHeight,
-    this.width,
-    this.elevation,
-    this.shadowColor,
-    this.borderColor,
-    this.rating,
-    this.ratingBannerColor,
-    this.voteCount,
-    this.percentage,
-    this.genres,
-  });
+    @required this.image,
+    @required this.overlayColor,
+    @required this.date,
+    @required this.title,
+    @required this.textColor,
+    @required this.onTap,
+    @required this.overlayHeight,
+    @required this.elevation,
+    @required this.shadowColor,
+    @required this.borderColor,
+    @required this.rating,
+    @required this.ratingBannerColor,
+    @required this.voteCount,
+    @required this.percentage,
+    @required this.genres,
+  }) : assert(
+          image != null &&
+              overlayColor != null &&
+              date != null &&
+              title != null &&
+              textColor != null &&
+              onTap != null &&
+              shadowColor != null &&
+              overlayHeight != null &&
+              elevation != null &&
+              shadowColor != null &&
+              borderColor != null &&
+              rating != null &&
+              ratingBannerColor != null &&
+              voteCount != null &&
+              percentage != null &&
+              genres != null,
+          'Required fields are missing',
+        );
   final String image;
   final Color overlayColor;
   final Color textColor;
@@ -29,7 +46,6 @@ class MovieCard extends StatelessWidget {
   final String title;
   final Function onTap;
   final double overlayHeight;
-  final double width;
   final double elevation;
   final Color shadowColor;
   final Color borderColor;
