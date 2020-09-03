@@ -9,7 +9,11 @@ class Genres extends StatelessWidget {
     @required this.sizingInformation,
     @required this.movie,
     Key key,
-  }) : super(key: key);
+  })  : assert(
+          themeState != null && movie != null && sizingInformation != null,
+          'Required fields are missing',
+        ),
+        super(key: key);
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;

@@ -9,18 +9,31 @@ import '../constants.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({
-    this.controller,
-    this.textFontSize,
-    this.sizingInformation,
-    this.borderColor,
-    this.buttonColor,
-    this.buttonTextColor,
-    this.shadowColor,
-    this.buttonTextFontSize,
-    this.hintTextColor,
-    this.textColor,
-    this.onClose,
-  });
+    @required this.controller,
+    @required this.textFontSize,
+    @required this.sizingInformation,
+    @required this.borderColor,
+    @required this.buttonColor,
+    @required this.buttonTextColor,
+    @required this.shadowColor,
+    @required this.buttonTextFontSize,
+    @required this.hintTextColor,
+    @required this.textColor,
+    @required this.onClose,
+  }) : assert(
+          controller != null &&
+              textFontSize != null &&
+              sizingInformation != null &&
+              borderColor != null &&
+              buttonColor != null &&
+              buttonTextColor != null &&
+              shadowColor != null &&
+              buttonTextFontSize != null &&
+              hintTextColor != null &&
+              textColor != null &&
+              onClose != null,
+          'Required fields are missing',
+        );
 
   final TextEditingController controller;
   final double textFontSize;

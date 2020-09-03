@@ -10,7 +10,11 @@ class Popularity extends StatelessWidget {
     @required this.movie,
     @required this.sizingInformation,
     Key key,
-  }) : super(key: key);
+  })  : assert(
+          themeState != null && movie != null && sizingInformation != null,
+          'Required fields are missing',
+        ),
+        super(key: key);
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;
