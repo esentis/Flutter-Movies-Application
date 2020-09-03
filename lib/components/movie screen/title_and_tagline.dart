@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/general/styled_tooltip.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
