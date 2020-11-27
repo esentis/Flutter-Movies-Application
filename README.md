@@ -6,6 +6,8 @@
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
+![Last commit](https://img.shields.io/github/last-commit/esentis/Flutter-Movies-Application?style=for-the-badge)
+
 ![forthebadge](https://badgen.net/pub/flutter-platform/xml)
 
 [![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=http%3A%2F%2Fhypothermal-mixture.000webhostapp.com)](https://hypothermal-mixture.000webhostapp.com/)
