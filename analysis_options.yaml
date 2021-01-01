@@ -86,7 +86,6 @@ linter:
     - use_raw_strings
     - use_setters_to_change_properties
     - void_checks
-    - sort_pub_dependencies
     - avoid_returning_null_for_future
     - avoid_slow_async_io
     - unsafe_html
