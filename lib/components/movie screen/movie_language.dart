@@ -34,7 +34,7 @@ class Language extends StatelessWidget {
           ),
         ),
         Text(
-          movie[0]['original_language'],
+          movie[0].originalLanguage,
           textAlign: TextAlign.center,
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 15 : 25,

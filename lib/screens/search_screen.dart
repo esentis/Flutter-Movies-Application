@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,10 +8,10 @@ import 'package:news_api/components/general/apptitle.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:news_api/models/movie_search_results.dart';
 import '../constants.dart';
 import 'package:provider/provider.dart';
 
-dynamic movie;
 bool _isLoading = false;
 
 class SearchResults extends StatefulWidget {
@@ -19,10 +20,11 @@ class SearchResults extends StatefulWidget {
 }
 
 class _SearchResultsState extends State<SearchResults> {
+  MovieSearchResults searchResults;
   @override
   void initState() {
     super.initState();
-    movie = Get.arguments;
+    searchResults = Get.arguments;
   }
 
   @override
@@ -62,7 +64,9 @@ class _SearchResultsState extends State<SearchResults> {
                   ),
                 ),
                 toolbarHeight: sizingInformation.isMobile
-                    ? sizingInformation.isTablet ? 110 : 110
+                    ? sizingInformation.isTablet
+                        ? 110
+                        : 110
                     : 140,
                 leading: Builder(
                   builder: (BuildContext context) => IconButton(
@@ -94,7 +98,7 @@ class _SearchResultsState extends State<SearchResults> {
                     horizontal: 8.0,
                     vertical: 15,
                   ),
-                  child: movie['results'].length == 0
+                  child: searchResults.results.isEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -120,13 +124,13 @@ class _SearchResultsState extends State<SearchResults> {
                           ],
                         )
                       : ListView.separated(
-                          itemCount: movie['results'].length,
+                          itemCount: searchResults.results.length,
                           itemBuilder: (context, index) => ListTile(
                             onTap: () async {
                               var movieCredits = await getCredits(
-                                  movie['results'][index]['id']);
-                              var movieDetails =
-                                  await getMovie(movie['results'][index]['id']);
+                                  searchResults.results[index].id);
+                              var movieDetails = await getMovie(
+                                  searchResults.results[index].id);
                               await Get.toNamed('/movie',
                                   arguments: [
                                         movieDetails,
@@ -136,17 +140,17 @@ class _SearchResultsState extends State<SearchResults> {
                                       ] ??
                                       '');
                             },
-                            leading: movie['results'][index]['poster_path'] !=
+                            leading: searchResults.results[index].posterPath !=
                                     null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
                                     child: Image.network(
-                                      '$baseImgUrl${movie['results'][index]['poster_path']}',
+                                      '$baseImgUrl${searchResults.results[index].posterPath}',
                                     ),
                                   )
                                 : Image.asset('assets/images/404_actor.png'),
                             title: Text(
-                              movie['results'][index]['title'],
+                              searchResults.results[index].title,
                               style: GoogleFonts.newsCycle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
@@ -156,17 +160,19 @@ class _SearchResultsState extends State<SearchResults> {
                                     : Colors.black,
                               ),
                             ),
-                            subtitle:
-                                Text(movie['results'][index]['release_date'],
-                                    style: GoogleFonts.newsCycle(
-                                      fontSize: 15,
-                                      color: themeState.selectedTheme ==
-                                              ThemeSelected.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                    )),
+                            subtitle: Text(
+                                formatDate(
+                                    searchResults.results[index].releaseDate,
+                                    [d, '-', M, '-', yy]),
+                                style: GoogleFonts.newsCycle(
+                                  fontSize: 15,
+                                  color: themeState.selectedTheme ==
+                                          ThemeSelected.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                )),
                             trailing: Text(
-                              '${movie['results'][index]['vote_average']}/10',
+                              '${searchResults.results[index].voteAverage}/10',
                               style: GoogleFonts.newsCycle(
                                 fontSize: 20,
                                 color: themeState.selectedTheme ==

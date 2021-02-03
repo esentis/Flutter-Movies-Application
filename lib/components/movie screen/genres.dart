@@ -26,7 +26,7 @@ class Genres extends StatelessWidget {
       for (var genre in genres) {
         genresWidgets.add(Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Text(genre['name'],
+          child: Text(genre.name,
               style: GoogleFonts.newsCycle(
                 fontSize: sizingInformation.isMobile ? 15 : 30,
                 color: themeState.selectedTheme == ThemeSelected.light
@@ -56,7 +56,7 @@ class Genres extends StatelessWidget {
         ),
         Column(
           children: getGenres(
-            movie[0]['genres'],
+            movie[0].genres,
             sizingInformation,
             themeState,
           ),

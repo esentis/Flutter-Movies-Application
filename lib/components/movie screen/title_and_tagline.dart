@@ -22,7 +22,7 @@ class TitleAndTagline extends StatelessWidget {
     return Column(
       children: [
         StyledTooltip(
-          text: movie[0]['original_title'],
+          text: movie[0].originalTitle,
           sizingInformation: sizingInformation,
           themeState: themeState,
           maxTextLength: 40,
@@ -32,10 +32,12 @@ class TitleAndTagline extends StatelessWidget {
           sizingInformation: sizingInformation,
           themeState: themeState,
           maxTextLength: 15,
-          text: movie[0]['tagline'],
+          text: movie[0].tagline,
           fontSize: sizingInformation.isMobile
               ? 15
-              : sizingInformation.isTablet ? 20 : 25,
+              : sizingInformation.isTablet
+                  ? 20
+                  : 25,
         )
       ],
     );

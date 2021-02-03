@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:news_api/models/movie.dart';
+import 'package:news_api/models/movie_credits.dart';
+import 'package:news_api/models/movie_detailed.dart';
+import 'package:news_api/models/movie_search_results.dart';
 
 import '../constants.dart';
 
@@ -22,7 +26,12 @@ Future getTrending() async {
     logger.e(e);
     return e.type;
   }
-  return response.data;
+  // ignore: omit_local_variable_types
+  List<Movie> trendingMovies = [];
+  response.data['results'].forEach((jsonMovie) {
+    trendingMovies.add(Movie.fromMap(jsonMovie));
+  });
+  return trendingMovies;
 }
 
 /// Returns movies based on a search [term].
@@ -36,7 +45,10 @@ Future searchMovies(String term) async {
     logger.e(e);
     return e.type;
   }
-  return response.data;
+  // ignore: omit_local_variable_types
+  MovieSearchResults searchResults = MovieSearchResults.fromMap(response.data);
+
+  return searchResults;
 }
 
 /// Returns movies based on [id].
@@ -50,7 +62,9 @@ Future getMovie(int id) async {
     logger.e(e);
     return e.type;
   }
-  return response.data;
+  // ignore: omit_local_variable_types
+  MovieDetailed detailedMovie = MovieDetailed.fromMap(response.data);
+  return detailedMovie;
 }
 
 /// Returns the cast and crew for a movie with [id].
@@ -64,7 +78,9 @@ Future getCredits(int id) async {
     logger.e(e);
     return e.type;
   }
-  return response.data;
+  // ignore: omit_local_variable_types
+  MovieCredits movieCredits = MovieCredits.fromMap(response.data);
+  return movieCredits;
 }
 
 /// Returns the upcoming movies.
@@ -78,7 +94,12 @@ Future getUpcoming() async {
     logger.e(e);
     return e.type;
   }
-  return response.data;
+  // ignore: omit_local_variable_types
+  List<Movie> upcomingMovies = [];
+  response.data['results'].forEach((jsonMovie) {
+    upcomingMovies.add(Movie.fromMap(jsonMovie));
+  });
+  return upcomingMovies;
 }
 
 /// Returns the latest movie created in the database.
