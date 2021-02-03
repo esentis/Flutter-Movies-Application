@@ -26,7 +26,6 @@ class _NewsDrawerState extends State<NewsDrawer> {
           canvasColor: Colors.transparent,
         ),
         child: Material(
-          color: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
               color: sizingInformation.isMobile

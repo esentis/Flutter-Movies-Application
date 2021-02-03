@@ -34,14 +34,15 @@ class _MovieScreenState extends State<MovieScreen> {
     // ignore: omit_local_variable_types
     List<Widget> actorWidgets = [];
     for (var actor in actors) {
+      logger.wtf(actor.profilePath);
       actorWidgets.add(ListTile(
         leading: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: actor['profile_path'] != null
-                ? Image.network('$baseImgUrl${actor['profile_path']}')
+            child: actor.profilePath != null && actor.profilePath.isNotEmpty
+                ? Image.network('$baseImgUrl${actor.profilePath}')
                 : Image.asset('assets/images/404_actor.png')),
         title: Text(
-          actor['name'],
+          actor.name,
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isDesktop ? 35 : 20,
             color: themeState.selectedTheme == ThemeSelected.light
@@ -50,7 +51,7 @@ class _MovieScreenState extends State<MovieScreen> {
           ),
         ),
         subtitle: Text(
-          actor['character'],
+          actor.character,
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isDesktop ? 25 : 15,
             color: themeState.selectedTheme == ThemeSelected.light
@@ -68,7 +69,7 @@ class _MovieScreenState extends State<MovieScreen> {
     super.initState();
     movie = Get.arguments;
     if (savedMovies.isNotEmpty) {
-      if (savedMovies.any((element) => element['id'] == movie[0]['id'])) {
+      if (savedMovies.any((element) => element['id'] == movie[0].id)) {
         _heartColor = Colors.red;
       } else {
         _heartColor = Colors.white;
@@ -143,7 +144,7 @@ class _MovieScreenState extends State<MovieScreen> {
                           widgetsToDraw.add(
                             FavoriteMovieTile(
                               movie: movie,
-                              key: Key(movie[0]['id'].toString()),
+                              key: Key(movie[0].id.toString()),
                             ),
                           );
                         } else {
@@ -157,15 +158,14 @@ class _MovieScreenState extends State<MovieScreen> {
                           );
                           savedMovies.remove(
                             savedMovies.firstWhere(
-                                (element) => element['id'] == movie[0]['id']),
+                                (element) => element['id'] == movie[0].id),
                           );
 
                           try {
                             widgetsToDraw.remove(
                               widgetsToDraw.firstWhere(
                                 (listTile) =>
-                                    listTile.key ==
-                                    Key(movie[0]['id'].toString()),
+                                    listTile.key == Key(movie[0].id.toString()),
                               ),
                             );
                           } catch (e) {
@@ -188,9 +188,9 @@ class _MovieScreenState extends State<MovieScreen> {
                   fit: StackFit.expand,
                   children: [
                     Hero(
-                      tag: '${movie[0]['id']}+${movie[3]}',
+                      tag: '${movie[0].id}+${movie[3]}',
                       child: Image.network(
-                        baseImgUrl + movie[0]['poster_path'],
+                        baseImgUrl + movie[0].posterPath,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -217,15 +217,19 @@ class _MovieScreenState extends State<MovieScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      TitleAndTagline(
-                                        themeState: themeState,
-                                        sizingInformation: sizingInformation,
-                                        movie: movie,
+                                      Flexible(
+                                        child: TitleAndTagline(
+                                          themeState: themeState,
+                                          sizingInformation: sizingInformation,
+                                          movie: movie,
+                                        ),
                                       ),
-                                      Rating(
-                                        themeState: themeState,
-                                        movie: movie,
-                                        sizingInformation: sizingInformation,
+                                      Flexible(
+                                        child: Rating(
+                                          themeState: themeState,
+                                          movie: movie,
+                                          sizingInformation: sizingInformation,
+                                        ),
                                       )
                                     ],
                                   ),
@@ -278,7 +282,7 @@ class _MovieScreenState extends State<MovieScreen> {
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                movie[0]['overview'],
+                                movie[0].overview,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
                                       sizingInformation.isDesktop ? 35 : 25,
@@ -303,8 +307,8 @@ class _MovieScreenState extends State<MovieScreen> {
                               color: Colors.black.withOpacity(0.6),
                             ),
                             Column(
-                              children: getCast(movie[1]['cast'],
-                                  sizingInformation, themeState),
+                              children: getCast(
+                                  movie[1].cast, sizingInformation, themeState),
                             ),
                             const SizedBox(height: 15),
                           ],

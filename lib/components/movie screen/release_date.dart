@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/states/themestate.dart';
@@ -34,7 +35,7 @@ class ReleaseDate extends StatelessWidget {
           ),
         ),
         Text(
-          movie[0]['release_date'] ?? '',
+          formatDate(movie[0].releaseDate, [d, '-', M, '-', yy]) ?? '',
           textAlign: TextAlign.center,
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 15 : 25,

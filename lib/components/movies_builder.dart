@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:news_api/models/movie.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:news_api/models/movie_detailed.dart';
+import 'package:news_api/models/movie_credits.dart';
 import '../constants.dart';
 import 'movie screen/genres.dart';
 import 'movie_card.dart';
@@ -16,7 +19,7 @@ class MoviesBuilder extends StatelessWidget {
     @required this.scrollController,
     @required this.itemCount,
     @required this.sizingInformation,
-    @required this.data,
+    @required this.movies,
     @required this.widgetOrigin,
     @required this.scrollDirection,
     @required this.rowCount,
@@ -28,7 +31,7 @@ class MoviesBuilder extends StatelessWidget {
               itemCount != null &&
               sizingInformation != null &&
               sizingInformation != null &&
-              data != null &&
+              movies != null &&
               widgetOrigin != null &&
               scrollDirection != null &&
               rowCount != null,
@@ -37,7 +40,7 @@ class MoviesBuilder extends StatelessWidget {
   final ScrollController scrollController;
   final int itemCount;
   final SizingInformation sizingInformation;
-  final dynamic data;
+  final List<Movie> movies;
   final Color progressColor;
   final String widgetOrigin;
   final Axis scrollDirection;
@@ -73,37 +76,28 @@ class MoviesBuilder extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) => Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Hero(
-                  tag: '${data['results'][index]['id']}+$widgetOrigin',
+                  tag: '${movies[index].id}+$widgetOrigin',
                   child: MovieCard(
-                    rating:
-                        '${data['results'][index]['vote_average'].toString()}/10',
-                    genres: getGenres(data['results'][index]['genre_ids'],
-                                    sizingInformation)
+                    rating: '${movies[index].voteAverage.toString()}/10',
+                    genres: getGenres(movies[index].genreIds, sizingInformation)
                                 .length >
                             2
-                        ? getGenres(data['results'][index]['genre_ids'],
-                                sizingInformation)
+                        ? getGenres(movies[index].genreIds, sizingInformation)
                             .sublist(0, 2)
-                        : getGenres(data['results'][index]['genre_ids'],
-                            sizingInformation),
-                    percentage: (data['results'][index]['popularity'])
-                        .floor()
-                        .toDouble(),
+                        : getGenres(movies[index].genreIds, sizingInformation),
+                    percentage: (movies[index].popularity).floor().toDouble(),
                     ratingBannerColor: Colors.red.withOpacity(0.5),
-                    voteCount: data['results'][index]['vote_count'],
-                    title: data['results'][index]['original_name'] != null
-                        ? data['results'][index]['original_name'].length > 10
-                            ? data['results'][index]['original_name']
+                    voteCount: movies[index].voteCount,
+                    title: movies[index].originalTitle != null
+                        ? movies[index].originalTitle.length > 10
+                            ? movies[index]
+                                .originalTitle
                                 .toString()
                                 .substring(0, 10)
-                            : data['results'][index]['original_name']
-                        : data['results'][index]['title'].length > 10
-                            ? data['results'][index]['title']
-                                .toString()
-                                .substring(0, 10)
-                            : data['results'][index]['title'],
-                    date: data['results'][index]['release_date'],
-                    image: baseImgUrl + data['results'][index]['poster_path'],
+                            : movies[index].originalTitle
+                        : movies[index].originalTitle,
+                    date: movies[index].releaseDate.toString(),
+                    image: baseImgUrl + movies[index].posterPath,
                     borderColor: const Color(0xFFe0dede).withOpacity(0.5),
                     overlayColor: selectedTheme == ThemeSelected.light
                         ? const Color(0xFF198FD8).withOpacity(0.7)
@@ -116,9 +110,10 @@ class MoviesBuilder extends StatelessWidget {
                     overlayHeight: sizingInformation.isMobile ? 105 : 115,
                     onTap: () async {
                       loader.toggleLoading();
-                      var movieDetails =
-                          await getMovie(data['results'][index]['id']);
-                      var movieCredits = await getCredits(movieDetails['id']);
+                      MovieDetailed movieDetails =
+                          await getMovie(movies[index].id);
+                      MovieCredits movieCredits =
+                          await getCredits(movieDetails.id);
                       loader.toggleLoading();
                       await Get.toNamed('/movie',
                           arguments: [
@@ -144,36 +139,28 @@ class MoviesBuilder extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) => Padding(
               padding: const EdgeInsets.all(12.0),
               child: Hero(
-                tag: '${data['results'][index]['id']}+$widgetOrigin',
+                tag: '${movies[index].id}+$widgetOrigin',
                 child: MovieCard(
-                  rating:
-                      '${data['results'][index]['vote_average'].toString()}/10',
-                  genres: getGenres(data['results'][index]['genre_ids'],
-                                  sizingInformation)
+                  rating: '${movies[index].voteAverage.toString()}/10',
+                  genres: getGenres(movies[index].genreIds, sizingInformation)
                               .length >
                           2
-                      ? getGenres(data['results'][index]['genre_ids'],
-                              sizingInformation)
+                      ? getGenres(movies[index].genreIds, sizingInformation)
                           .sublist(0, 2)
-                      : getGenres(data['results'][index]['genre_ids'],
-                          sizingInformation),
-                  percentage:
-                      (data['results'][index]['popularity']).floor().toDouble(),
+                      : getGenres(movies[index].genreIds, sizingInformation),
+                  percentage: (movies[index].popularity).floor().toDouble(),
                   ratingBannerColor: Colors.red.withOpacity(0.5),
-                  voteCount: data['results'][index]['vote_count'],
-                  title: data['results'][index]['original_name'] != null
-                      ? data['results'][index]['original_name'].length > 10
-                          ? data['results'][index]['original_name']
+                  voteCount: movies[index].voteCount,
+                  title: movies[index].originalTitle != null
+                      ? movies[index].originalTitle.length > 10
+                          ? movies[index]
+                              .originalTitle
                               .toString()
                               .substring(0, 10)
-                          : data['results'][index]['original_name']
-                      : data['results'][index]['title'].length > 10
-                          ? data['results'][index]['title']
-                              .toString()
-                              .substring(0, 10)
-                          : data['results'][index]['title'],
-                  date: data['results'][index]['release_date'],
-                  image: baseImgUrl + data['results'][index]['poster_path'],
+                          : movies[index].originalTitle
+                      : movies[index].originalTitle,
+                  date: movies[index].releaseDate.toString(),
+                  image: baseImgUrl + movies[index].posterPath,
                   borderColor: const Color(0xFFe0dede).withOpacity(0.5),
                   overlayColor: selectedTheme == ThemeSelected.light
                       ? const Color(0xFF198FD8).withOpacity(0.7)
@@ -186,8 +173,7 @@ class MoviesBuilder extends StatelessWidget {
                   overlayHeight: sizingInformation.isMobile ? 105 : 115,
                   onTap: () async {
                     loader.toggleLoading();
-                    var movieDetails =
-                        await getMovie(data['results'][index]['id']);
+                    var movieDetails = await getMovie(movies[index].id);
                     var movieCredits = await getCredits(movieDetails['id']);
                     loader.toggleLoading();
                     await Get.toNamed('/movie',

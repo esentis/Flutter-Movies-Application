@@ -34,7 +34,7 @@ class MovieDuration extends StatelessWidget {
           ),
         ),
         Text(
-          "${movie[0]['runtime'].toString()}'",
+          "${movie[0].runtime.toString()}'",
           textAlign: TextAlign.center,
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 15 : 25,

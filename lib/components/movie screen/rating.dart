@@ -23,7 +23,7 @@ class Rating extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '${movie[0]['vote_average'].toString()}/10',
+          '${movie[0].voteAverage.toString()}/10',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 25 : 40,
             fontWeight: FontWeight.bold,
@@ -33,7 +33,7 @@ class Rating extends StatelessWidget {
           ),
         ),
         Text(
-          '${movie[0]['vote_count']} votes',
+          '${movie[0].voteCount} votes',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 15 : 30,
             fontWeight: FontWeight.bold,

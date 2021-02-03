@@ -29,7 +29,9 @@ class Popularity extends StatelessWidget {
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile
                 ? 15
-                : sizingInformation.isTablet ? 20 : 25,
+                : sizingInformation.isTablet
+                    ? 20
+                    : 25,
             fontWeight: FontWeight.bold,
             color: themeState.selectedTheme == ThemeSelected.light
                 ? Colors.black
@@ -42,7 +44,7 @@ class Popularity extends StatelessWidget {
           centerTextColor: themeState.selectedTheme == ThemeSelected.light
               ? Colors.black
               : const Color(0xFFf7f7f7),
-          percentage: movie[0]['popularity'].floor().toDouble(),
+          percentage: movie[0].popularity.floor().toDouble(),
         ),
       ],
     );

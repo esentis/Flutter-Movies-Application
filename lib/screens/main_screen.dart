@@ -7,6 +7,7 @@ import 'package:news_api/components/general/loading.dart';
 import 'package:news_api/components/general/mobile_menu.dart';
 import 'package:news_api/components/movies_builder.dart';
 import 'package:news_api/components/search_field.dart';
+import 'package:news_api/models/movie.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
@@ -28,8 +29,8 @@ RefreshController _refreshTrendingController =
 RefreshController _refreshUpcomingController =
     RefreshController(initialRefresh: false);
 bool hasLoaded = false;
-var cachedTrendingMovies;
-var cachedUpcomingMovies;
+List<Movie> cachedTrendingMovies;
+List<Movie> cachedUpcomingMovies;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -119,7 +120,9 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 toolbarHeight: sizingInformation.isMobile
-                    ? sizingInformation.isTablet ? 110 : 110
+                    ? sizingInformation.isTablet
+                        ? 110
+                        : 110
                     : 140,
                 leading: Builder(
                   builder: (BuildContext context) => IconButton(
@@ -240,9 +243,8 @@ class _MainScreenState extends State<MainScreen> {
                                           _trendingScrollController,
                                       rowCount:
                                           trendingRowCount(sizingInformation),
-                                      data: cachedTrendingMovies,
-                                      itemCount: cachedTrendingMovies['results']
-                                          .length,
+                                      movies: cachedTrendingMovies,
+                                      itemCount: cachedTrendingMovies.length,
                                       sizingInformation: sizingInformation,
                                       scrollDirection: Axis.horizontal,
                                     )
@@ -261,9 +263,8 @@ class _MainScreenState extends State<MainScreen> {
                                       onRefresh: refreshTrendingMovies,
                                       rowCount:
                                           trendingRowCount(sizingInformation),
-                                      data: cachedTrendingMovies,
-                                      itemCount: cachedTrendingMovies['results']
-                                          .length,
+                                      movies: cachedTrendingMovies,
+                                      itemCount: cachedTrendingMovies.length,
                                       sizingInformation: sizingInformation,
                                       scrollDirection: Axis.vertical,
                                     ),
@@ -276,9 +277,8 @@ class _MainScreenState extends State<MainScreen> {
                                       onRefresh: refreshUpcomingMovies,
                                       rowCount:
                                           upcomingRowCount(sizingInformation),
-                                      data: cachedUpcomingMovies,
-                                      itemCount: cachedUpcomingMovies['results']
-                                          .length,
+                                      movies: cachedUpcomingMovies,
+                                      itemCount: cachedUpcomingMovies.length,
                                       sizingInformation: sizingInformation,
                                       scrollDirection: Axis.vertical,
                                     ),
@@ -316,9 +316,8 @@ class _MainScreenState extends State<MainScreen> {
                                           _upcomingScrollController,
                                       rowCount:
                                           upcomingRowCount(sizingInformation),
-                                      data: cachedUpcomingMovies,
-                                      itemCount: cachedUpcomingMovies['results']
-                                          .length,
+                                      movies: cachedUpcomingMovies,
+                                      itemCount: cachedUpcomingMovies.length,
                                       sizingInformation: sizingInformation,
                                       scrollDirection: Axis.horizontal,
                                     ),
