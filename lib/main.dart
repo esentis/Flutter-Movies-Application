@@ -10,7 +10,7 @@ import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
-  await dotenv.load(fileName: 'dotenv');
+  await dotenv.load(fileName: 'envconfig');
   runApp(MyApp());
 }
 
