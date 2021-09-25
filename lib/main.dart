@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:news_api/screens/movie_screen.dart';
 import 'package:news_api/screens/main_screen.dart';
+import 'package:news_api/screens/movie_screen.dart';
 import 'package:news_api/screens/search_screen.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
-  await DotEnv().load('.env');
+  await dotenv.load(fileName: 'dotenv');
   runApp(MyApp());
 }
 
