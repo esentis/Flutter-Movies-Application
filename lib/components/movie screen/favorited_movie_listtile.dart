@@ -7,8 +7,8 @@ import '../../constants.dart';
 
 class FavoriteMovieTile extends StatelessWidget {
   const FavoriteMovieTile({
-    @required this.movie,
-    Key key,
+    required this.movie,
+    Key? key,
   })  : assert(
           movie != null,
           'Required field is missing',
@@ -41,9 +41,9 @@ class FavoriteMovieTile extends StatelessWidget {
       ),
       onTap: () async {
         var movieDetails = await getMovie(movie[0]['id']);
-        var movieCredits = await getCredits(movieDetails['id']);
+        var movieCredits = await getCredits(movieDetails?.id ?? 0);
         await Get.offAllNamed('/movie',
-            arguments: [movieDetails, movieCredits, 0, 'favorites'] ?? '');
+            arguments: [movieDetails, movieCredits, 0, 'favorites']);
       },
     );
   }

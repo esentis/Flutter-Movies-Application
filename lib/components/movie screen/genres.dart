@@ -5,15 +5,11 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class Genres extends StatelessWidget {
   const Genres({
-    @required this.themeState,
-    @required this.sizingInformation,
-    @required this.movie,
-    Key key,
-  })  : assert(
-          themeState != null && movie != null && sizingInformation != null,
-          'Required fields are missing',
-        ),
-        super(key: key);
+    required this.themeState,
+    required this.sizingInformation,
+    required this.movie,
+    Key? key,
+  }) : super(key: key);
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;
@@ -66,12 +62,11 @@ class Genres extends StatelessWidget {
   }
 }
 
-List<Widget> getGenres(
-    List<dynamic> genres, SizingInformation sizingInformation) {
+List<Widget> getGenres(List<int>? genres, SizingInformation sizingInformation) {
   // ignore: omit_local_variable_types
   List<Widget> genresWidgets = [];
-  if (genres.isNotEmpty) {
-    for (var genre in genres) {
+  if (genres?.isNotEmpty ?? false) {
+    for (var genre in genres!) {
       switch (genre) {
         case 28:
           genresWidgets.add(Padding(

@@ -52,7 +52,7 @@ Future searchMovies(String term) async {
 }
 
 /// Returns movies based on [id].
-Future getMovie(int id) async {
+Future getMovie(int? id) async {
   Response response;
   try {
     response = await tmdb
@@ -68,7 +68,7 @@ Future getMovie(int id) async {
 }
 
 /// Returns the cast and crew for a movie with [id].
-Future getCredits(int id) async {
+Future getCredits(int? id) async {
   Response response;
   try {
     response = await tmdb

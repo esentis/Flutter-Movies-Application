@@ -12,15 +12,13 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constants.dart';
 
-bool _isLoading = false;
-
 class SearchResults extends StatefulWidget {
   @override
   _SearchResultsState createState() => _SearchResultsState();
 }
 
 class _SearchResultsState extends State<SearchResults> {
-  MovieSearchResults searchResults;
+  MovieSearchResults? searchResults;
   @override
   void initState() {
     super.initState();
@@ -49,18 +47,11 @@ class _SearchResultsState extends State<SearchResults> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               backgroundColor: themeState.selectedTheme == ThemeSelected.dark
-                  ? const Color(0xff1a1a2e).withOpacity(0.2)
-                  : Colors.white.withOpacity(0.2),
-              elevation: 15,
+                  ? const Color(0xff1a1a2e).withOpacity(0.8)
+                  : const Color(0xFFf7f7f7).withOpacity(0.8),
               shadowColor: themeState.selectedTheme == ThemeSelected.dark
                   ? const Color(0xFFf7f7f7).withOpacity(0.3)
                   : Colors.black.withOpacity(0.7),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(60),
-                  bottomLeft: Radius.circular(60),
-                ),
-              ),
               toolbarHeight: sizingInformation.isMobile
                   ? sizingInformation.isTablet
                       ? 110
@@ -93,9 +84,9 @@ class _SearchResultsState extends State<SearchResults> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8.0,
-                  vertical: 15,
+                  // vertical: 15,
                 ),
-                child: searchResults.results.isEmpty
+                child: searchResults!.results!.isEmpty
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -121,33 +112,31 @@ class _SearchResultsState extends State<SearchResults> {
                         ],
                       )
                     : ListView.separated(
-                        itemCount: searchResults.results.length,
+                        itemCount: searchResults!.results!.length,
                         itemBuilder: (context, index) => ListTile(
                           onTap: () async {
                             var movieCredits = await getCredits(
-                                searchResults.results[index].id);
-                            var movieDetails =
-                                await getMovie(searchResults.results[index].id);
-                            await Get.toNamed('/movie',
-                                arguments: [
-                                      movieDetails,
-                                      movieCredits,
-                                      index,
-                                      'search'
-                                    ] ??
-                                    '');
+                                searchResults!.results![index].id ?? 0);
+                            var movieDetails = await getMovie(
+                                searchResults!.results![index].id ?? 0);
+                            await Get.toNamed('/movie', arguments: [
+                              movieDetails,
+                              movieCredits,
+                              index,
+                              'search'
+                            ]);
                           },
                           leading:
-                              searchResults.results[index].posterPath != null
+                              searchResults!.results![index].posterPath != null
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(60),
                                       child: Image.network(
-                                        '$baseImgUrl${searchResults.results[index].posterPath}',
+                                        '$baseImgUrl${searchResults!.results![index].posterPath}',
                                       ),
                                     )
                                   : Image.asset('assets/images/404_actor.png'),
                           title: Text(
-                            searchResults.results[index].title,
+                            searchResults!.results![index].title!,
                             style: GoogleFonts.newsCycle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
@@ -159,7 +148,7 @@ class _SearchResultsState extends State<SearchResults> {
                           ),
                           subtitle: Text(
                               formatDate(
-                                  searchResults.results[index].releaseDate,
+                                  searchResults!.results![index].releaseDate!,
                                   [d, '-', M, '-', yy]),
                               style: GoogleFonts.newsCycle(
                                 fontSize: 15,
@@ -169,7 +158,7 @@ class _SearchResultsState extends State<SearchResults> {
                                     : Colors.black,
                               )),
                           trailing: Text(
-                            '${searchResults.results[index].voteAverage}/10',
+                            '${searchResults!.results![index].voteAverage}/10',
                             style: GoogleFonts.newsCycle(
                               fontSize: 20,
                               color:

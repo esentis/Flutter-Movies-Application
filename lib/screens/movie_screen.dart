@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/general/drawer.dart';
+import 'package:news_api/components/general/loading.dart';
+import 'package:news_api/components/general/snackbar.dart';
 import 'package:news_api/components/movie%20screen/favorited_movie_listtile.dart';
 import 'package:news_api/components/movie%20screen/genres.dart';
 import 'package:news_api/components/movie%20screen/heart_icon.dart';
-import 'package:news_api/components/general/loading.dart';
 import 'package:news_api/components/movie%20screen/movie_duration.dart';
 import 'package:news_api/components/movie%20screen/movie_language.dart';
 import 'package:news_api/components/movie%20screen/popularity_information.dart';
 import 'package:news_api/components/movie%20screen/rating.dart';
 import 'package:news_api/components/movie%20screen/release_date.dart';
-import 'package:news_api/components/general/snackbar.dart';
 import 'package:news_api/components/movie%20screen/title_and_tagline.dart';
 import 'package:news_api/constants.dart';
 import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/states/themestate.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
-List<dynamic> movie;
-Color _heartColor;
+List<dynamic>? movie;
+Color? _heartColor;
 bool loaded = false;
 
 class MovieScreen extends StatefulWidget {
@@ -69,7 +69,7 @@ class _MovieScreenState extends State<MovieScreen> {
     super.initState();
     movie = Get.arguments;
     if (savedMovies.isNotEmpty) {
-      if (savedMovies.any((element) => element['id'] == movie[0].id)) {
+      if (savedMovies.any((element) => element['id'] == movie![0].id)) {
         _heartColor = Colors.red;
       } else {
         _heartColor = Colors.white;
@@ -112,7 +112,7 @@ class _MovieScreenState extends State<MovieScreen> {
                 ),
                 leading: GestureDetector(
                   onTap: () {
-                    if (movie[3] == 'favorites') {
+                    if (movie![3] == 'favorites') {
                       Get.to(MainScreen());
                     } else {
                       Get.back();
@@ -140,11 +140,11 @@ class _MovieScreenState extends State<MovieScreen> {
                             backgroundColor: Colors.green.withOpacity(0.7),
                             borderColor: Colors.white,
                           );
-                          savedMovies.add(movie[0]);
+                          savedMovies.add(movie![0]);
                           widgetsToDraw.add(
                             FavoriteMovieTile(
                               movie: movie,
-                              key: Key(movie[0].id.toString()),
+                              key: Key(movie![0].id.toString()),
                             ),
                           );
                         } else {
@@ -158,14 +158,14 @@ class _MovieScreenState extends State<MovieScreen> {
                           );
                           savedMovies.remove(
                             savedMovies.firstWhere(
-                                (element) => element['id'] == movie[0].id),
+                                (element) => element['id'] == movie![0].id),
                           );
 
                           try {
                             widgetsToDraw.remove(
                               widgetsToDraw.firstWhere(
                                 (listTile) =>
-                                    listTile.key == Key(movie[0].id.toString()),
+                                    listTile.key == Key(movie![0].id.toString()),
                               ),
                             );
                           } catch (e) {
@@ -177,7 +177,7 @@ class _MovieScreenState extends State<MovieScreen> {
                         }
                       });
                     },
-                    child: HeartIcon(heartColor: _heartColor),
+                    child: HeartIcon(heartColor: _heartColor!),
                   ),
                 ],
                 // Allows the user to reveal the app bar if they begin scrolling
@@ -187,12 +187,9 @@ class _MovieScreenState extends State<MovieScreen> {
                 flexibleSpace: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Hero(
-                      tag: '${movie[0].id}+${movie[3]}',
-                      child: Image.network(
-                        baseImgUrl + movie[0].posterPath,
-                        fit: BoxFit.cover,
-                      ),
+                    Image.network(
+                      baseImgUrl + movie![0].posterPath,
+                      fit: BoxFit.cover,
                     ),
                   ],
                 ),
@@ -282,7 +279,7 @@ class _MovieScreenState extends State<MovieScreen> {
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                movie[0].overview,
+                                movie![0].overview,
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
                                       sizingInformation.isDesktop ? 35 : 25,
@@ -308,7 +305,7 @@ class _MovieScreenState extends State<MovieScreen> {
                             ),
                             Column(
                               children: getCast(
-                                  movie[1].cast, sizingInformation, themeState),
+                                  movie![1].cast, sizingInformation, themeState),
                             ),
                             const SizedBox(height: 15),
                           ],

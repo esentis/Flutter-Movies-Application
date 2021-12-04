@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 
 class HeartIcon extends StatelessWidget {
   const HeartIcon({
-    @required this.heartColor,
-    Key key,
-  })  : assert(
-          heartColor != null,
-          'Required field is missing',
-        ),
-        super(key: key);
+    required this.heartColor,
+    Key? key,
+  }) : super(key: key);
   final Color heartColor;
   @override
   Widget build(BuildContext context) {

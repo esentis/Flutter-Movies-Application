@@ -6,10 +6,10 @@ class ProductionCompany {
     this.originCountry,
   });
 
-  int id;
-  String logoPath;
-  String name;
-  String originCountry;
+  int? id;
+  String? logoPath;
+  String? name;
+  String? originCountry;
 
   factory ProductionCompany.fromMap(Map<String, dynamic> json) =>
       ProductionCompany(

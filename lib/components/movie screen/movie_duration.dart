@@ -5,15 +5,11 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class MovieDuration extends StatelessWidget {
   const MovieDuration({
-    @required this.themeState,
-    @required this.movie,
-    @required this.sizingInformation,
-    Key key,
-  })  : assert(
-          themeState != null && movie != null && sizingInformation != null,
-          'Required fields are missing',
-        ),
-        super(key: key);
+    required this.themeState,
+    required this.movie,
+    required this.sizingInformation,
+    Key? key,
+  }) : super(key: key);
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;

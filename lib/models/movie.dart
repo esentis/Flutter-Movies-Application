@@ -26,20 +26,20 @@ class Movie {
     this.voteAverage,
   });
 
-  String posterPath;
-  bool adult;
-  String overview;
-  DateTime releaseDate;
-  List<int> genreIds;
-  int id;
-  String originalTitle;
-  String originalLanguage;
-  String title;
-  String backdropPath;
-  double popularity;
-  int voteCount;
-  bool video;
-  double voteAverage;
+  String? posterPath;
+  bool? adult;
+  String? overview;
+  DateTime? releaseDate;
+  List<int>? genreIds;
+  int? id;
+  String? originalTitle;
+  String? originalLanguage;
+  String? title;
+  String? backdropPath;
+  double? popularity;
+  int? voteCount;
+  bool? video;
+  double? voteAverage;
 
   factory Movie.fromMap(Map<String, dynamic> json) => Movie(
         posterPath: json['poster_path'],
@@ -63,8 +63,8 @@ class Movie {
         'adult': adult,
         'overview': overview,
         'release_date':
-            "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
-        'genre_ids': List<dynamic>.from(genreIds.map((x) => x)),
+            "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}",
+        'genre_ids': List<dynamic>.from(genreIds!.map((x) => x)),
         'id': id,
         'original_title': originalTitle,
         'original_language': originalLanguage,

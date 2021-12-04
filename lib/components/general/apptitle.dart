@@ -10,9 +10,9 @@ class AppTitle extends StatefulWidget {
     this.searchIconColor,
     this.settingsIconColor,
   });
-  final Function onSearchTap;
-  final Color searchIconColor;
-  final Color settingsIconColor;
+  final Function? onSearchTap;
+  final Color? searchIconColor;
+  final Color? settingsIconColor;
   @override
   _AppTitleState createState() => _AppTitleState();
 }
@@ -43,7 +43,7 @@ class _AppTitleState extends State<AppTitle> {
             textBaseline: TextBaseline.alphabetic,
             children: [
               GestureDetector(
-                onTap: widget.onSearchTap,
+                onTap: widget.onSearchTap as void Function()?,
                 child: Icon(
                   Icons.search,
                   color: widget.searchIconColor,

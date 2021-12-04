@@ -19,10 +19,10 @@ class MovieSearchResults {
     this.totalPages,
   });
 
-  int page;
-  List<Movie> results;
-  int totalResults;
-  int totalPages;
+  int? page;
+  List<Movie>? results;
+  int? totalResults;
+  int? totalPages;
 
   factory MovieSearchResults.fromMap(Map<String, dynamic> json) =>
       MovieSearchResults(
@@ -34,7 +34,7 @@ class MovieSearchResults {
 
   Map<String, dynamic> toMap() => {
         'page': page,
-        'results': List<dynamic>.from(results.map((x) => x.toMap())),
+        'results': List<dynamic>.from(results!.map((x) => x.toMap())),
         'total_results': totalResults,
         'total_pages': totalPages,
       };

@@ -4,8 +4,8 @@ class SpokenLanguage {
     this.name,
   });
 
-  String iso6391;
-  String name;
+  String? iso6391;
+  String? name;
 
   factory SpokenLanguage.fromMap(Map<String, dynamic> json) => SpokenLanguage(
         iso6391: json['iso_639_1'],

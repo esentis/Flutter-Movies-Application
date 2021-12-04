@@ -5,14 +5,10 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class TitleAndTagline extends StatelessWidget {
   const TitleAndTagline({
-    @required this.themeState,
-    @required this.sizingInformation,
-    @required this.movie,
-  }) : assert(
-            sizingInformation != null &&
-                sizingInformation != null &&
-                themeState != null,
-            'Required fields are missing');
+    required this.themeState,
+    required this.sizingInformation,
+    required this.movie,
+  });
 
   final SetThemeState themeState;
   final dynamic movie;

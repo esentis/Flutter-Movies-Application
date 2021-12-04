@@ -4,12 +4,10 @@ import 'package:news_api/screens/main_screen.dart';
 
 class MobileMenu extends StatefulWidget {
   const MobileMenu({
-    @required this.pageController,
-    @required this.activePage,
-    Key key,
-  })  : assert(pageController != null && activePage != null,
-            'Required fields are missing'),
-        super(key: key);
+    required this.pageController,
+    required this.activePage,
+    Key? key,
+  }) : super(key: key);
 
   final PageController pageController;
   final ActivePage activePage;
@@ -23,7 +21,7 @@ class _MobileMenuState extends State<MobileMenu> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FlatButton(
+        TextButton(
           onPressed: () {
             widget.pageController.animateToPage(
               0,
@@ -45,7 +43,7 @@ class _MobileMenuState extends State<MobileMenu> {
             ),
           ),
         ),
-        FlatButton(
+        TextButton(
           onPressed: () {
             widget.pageController.animateToPage(
               1,

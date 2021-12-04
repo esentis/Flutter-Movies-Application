@@ -4,11 +4,11 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/material.dart';
 
 void buildSnackbar({
-  SizingInformation sizingInformation,
-  String titleText,
-  Color backgroundColor,
-  Color borderColor,
-  double fontSize,
+  required SizingInformation sizingInformation,
+  required String titleText,
+  Color? backgroundColor,
+  Color? borderColor,
+  double? fontSize,
 }) {
   return Get.snackbar(
     '',

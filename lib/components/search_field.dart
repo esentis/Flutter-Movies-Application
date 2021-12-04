@@ -9,31 +9,18 @@ import '../constants.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({
-    @required this.controller,
-    @required this.textFontSize,
-    @required this.sizingInformation,
-    @required this.borderColor,
-    @required this.buttonColor,
-    @required this.buttonTextColor,
-    @required this.shadowColor,
-    @required this.buttonTextFontSize,
-    @required this.hintTextColor,
-    @required this.textColor,
-    @required this.onClose,
-  }) : assert(
-          controller != null &&
-              textFontSize != null &&
-              sizingInformation != null &&
-              borderColor != null &&
-              buttonColor != null &&
-              buttonTextColor != null &&
-              shadowColor != null &&
-              buttonTextFontSize != null &&
-              hintTextColor != null &&
-              textColor != null &&
-              onClose != null,
-          'Required fields are missing',
-        );
+    required this.controller,
+    required this.textFontSize,
+    required this.sizingInformation,
+    required this.borderColor,
+    required this.buttonColor,
+    required this.buttonTextColor,
+    required this.shadowColor,
+    required this.buttonTextFontSize,
+    required this.hintTextColor,
+    required this.textColor,
+    required this.onClose,
+  });
 
   final TextEditingController controller;
   final double textFontSize;
@@ -65,7 +52,7 @@ class _SearchFieldState extends State<SearchField> {
                 {
                   if (value.length <= 2) {
                     buildSnackbar(
-                      backgroundColor: Colors.redAccent[400].withOpacity(0.7),
+                      backgroundColor: Colors.redAccent[400]!.withOpacity(0.7),
                       borderColor: Colors.white,
                       fontSize: widget.sizingInformation.isMobile ? 20 : 35,
                       sizingInformation: widget.sizingInformation,
@@ -132,7 +119,7 @@ class _SearchFieldState extends State<SearchField> {
             Positioned(
               right: 0,
               child: GestureDetector(
-                onTap: widget.onClose,
+                onTap: widget.onClose as void Function()?,
                 child: const Icon(
                   Icons.close,
                   color: Colors.red,
@@ -145,20 +132,13 @@ class _SearchFieldState extends State<SearchField> {
         widget.sizingInformation.isDesktop
             ? Padding(
                 padding: const EdgeInsets.only(top: 14.0),
-                child: FlatButton(
-                  shape: StadiumBorder(
-                    side: BorderSide(
-                      color: widget.borderColor,
-                      width: 3,
-                    ),
-                  ),
-                  color: widget.buttonColor,
+                child: TextButton(
                   onPressed: () async {
                     {
                       if (widget.controller.text.length <= 2) {
                         buildSnackbar(
                           backgroundColor:
-                              Colors.redAccent[400].withOpacity(0.7),
+                              Colors.redAccent[400]!.withOpacity(0.7),
                           borderColor: Colors.white,
                           fontSize: widget.sizingInformation.isMobile ? 20 : 35,
                           sizingInformation: widget.sizingInformation,
