@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:news_api/models/movie.dart';
 import 'package:news_api/models/movie_credits.dart';
