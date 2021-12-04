@@ -27,9 +27,9 @@ jobs:
           channel: "beta" # 'dev', 'alpha', default to: 'stable'
           # flutter-version: '1.12.x' # you can also specify exact version of flutter
       - run: |
-          touch .env
-          echo API_KEY=${{ secrets.API_KEY }} >> .env
-          cat .env
+          touch dotenv
+          echo API_KEY=${{ secrets.API_KEY }} >> dotenv
+          cat dotenv
       # Get flutter dependencies.
       - run: flutter pub get
 
