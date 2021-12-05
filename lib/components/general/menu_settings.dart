@@ -9,14 +9,13 @@ var _selection;
 
 class MenuSettings extends StatelessWidget {
   const MenuSettings({
-    @required this.themeState,
-    @required this.iconColor,
-    Key key,
-  })  : assert(themeState != null, 'Required fields are missing'),
-        super(key: key);
+    required this.themeState,
+    required this.iconColor,
+    Key? key,
+  });
 
   final SetThemeState themeState;
-  final Color iconColor;
+  final Color? iconColor;
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<SettingsMenu>(

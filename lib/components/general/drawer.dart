@@ -28,9 +28,7 @@ class _NewsDrawerState extends State<NewsDrawer> {
         child: Material(
           child: Container(
             decoration: BoxDecoration(
-              color: sizingInformation.isMobile
-                  ? Colors.black
-                  : Colors.transparent,
+              color: sizingInformation.isMobile ? Colors.black : Colors.black,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(60),
                 bottomRight: Radius.circular(60),
@@ -53,13 +51,13 @@ class _NewsDrawerState extends State<NewsDrawer> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   DrawerHeader(
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
                     child: Column(
                       children: [
                         Image.asset('assets/images/logo.png'),
                       ],
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
                     ),
                   ),
                   Center(
@@ -74,11 +72,9 @@ class _NewsDrawerState extends State<NewsDrawer> {
                       ),
                     ),
                   ),
-                  widgetsToDraw == null
-                      ? const Center(child: Text('No favorite movies yet'))
-                      : Column(
-                          children: widgetsToDraw,
-                        ),
+                  Column(
+                    children: widgetsToDraw,
+                  )
                 ],
               ),
             ),

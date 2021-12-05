@@ -1,14 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:flutter/material.dart';
 
-void buildSnackbar({
-  SizingInformation sizingInformation,
-  String titleText,
-  Color backgroundColor,
-  Color borderColor,
-  double fontSize,
+SnackbarController buildSnackbar({
+  required SizingInformation sizingInformation,
+  required String titleText,
+  Color? backgroundColor,
+  Color? borderColor,
+  double? fontSize,
 }) {
   return Get.snackbar(
     '',

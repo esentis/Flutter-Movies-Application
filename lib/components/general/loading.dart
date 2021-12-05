@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class Loading extends StatelessWidget {
   const Loading({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

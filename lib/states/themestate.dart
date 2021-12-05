@@ -7,7 +7,7 @@ enum ThemeSelected { dark, light }
 var selectedTheme = ThemeSelected.dark;
 
 class SetThemeState extends ChangeNotifier {
-  ThemeSelected selectedTheme;
+  ThemeSelected? selectedTheme;
 
   SetThemeState({
     this.selectedTheme,

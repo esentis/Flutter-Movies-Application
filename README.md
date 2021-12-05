@@ -10,11 +10,9 @@
 
 ![forthebadge](https://badgen.net/pub/flutter-platform/xml)
 
-[![Website](https://img.shields.io/website?down_color=red&down_message=Offline&style=for-the-badge&up_color=green&up_message=Online&url=https%3A%2F%2Fhypothermal-mixture.000webhostapp.com%2F)](https://flutter-movies-application.web.app)
+[![Website](https://img.shields.io/website?down_color=red&down_message=Offline&style=for-the-badge&up_color=green&up_message=Online&url=https%3A%2F%2Fflutter-movies-application.web.app%2F)](https://flutter-movies-application.web.app)
 
 ![Lines of Code](https://img.shields.io/tokei/lines/github/esentis/Flutter-Movies-Application?style=for-the-badge)
-
-![Flutter CI](https://github.com/esentis/Flutter-News-Application/workflows/Flutter%20CI/badge.svg)
 
 ## Overview
 

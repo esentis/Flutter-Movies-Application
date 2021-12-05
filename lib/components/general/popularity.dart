@@ -4,19 +4,13 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 class PopularityRating extends StatelessWidget {
   const PopularityRating({
-    @required this.percentage,
-    @required this.centerTextColor,
-    @required this.radius,
-    @required this.fontSize,
-  }) : assert(
-          percentage != null &&
-              centerTextColor != null &&
-              radius != null &&
-              fontSize != null,
-          'Required fields are missing',
-        );
+    required this.percentage,
+    required this.centerTextColor,
+    required this.radius,
+    required this.fontSize,
+  });
   final Color centerTextColor;
-  final double percentage;
+  final double? percentage;
   final double radius;
   final double fontSize;
   LinearGradient getGradient(percentage) {
@@ -41,13 +35,13 @@ class PopularityRating extends StatelessWidget {
     }
     if (percentage > 60 && percentage <= 80) {
       return LinearGradient(colors: [
-        Colors.green[200],
+        Colors.green[200]!,
         Colors.yellowAccent,
       ]);
     }
     if (percentage > 80 && percentage <= 90) {
       return LinearGradient(colors: [
-        Colors.green[900],
+        Colors.green[900]!,
         Colors.yellowAccent,
       ]);
     }
@@ -70,7 +64,7 @@ class PopularityRating extends StatelessWidget {
       curve: Curves.easeIn,
       lineWidth: 10,
       animation: true,
-      percent: percentage / 100 > 1 ? 1 : percentage / 100,
+      percent: percentage! / 100 > 1 ? 1 : percentage! / 100,
       backgroundColor: Colors.transparent,
       linearGradient: getGradient(percentage),
       center: Text(

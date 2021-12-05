@@ -5,31 +5,23 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class StyledTooltip extends StatelessWidget {
   const StyledTooltip({
-    @required this.sizingInformation,
-    @required this.themeState,
-    @required this.maxTextLength,
-    @required this.text,
-    @required this.fontSize,
-    Key key,
-  })  : assert(
-          themeState != null &&
-              maxTextLength != null &&
-              sizingInformation != null &&
-              text != null &&
-              fontSize != null,
-          'Required fields are missing',
-        ),
-        super(key: key);
+    required this.sizingInformation,
+    required this.themeState,
+    required this.maxTextLength,
+    required this.text,
+    required this.fontSize,
+    Key? key,
+  }) : super(key: key);
 
   final SizingInformation sizingInformation;
   final SetThemeState themeState;
   final int maxTextLength;
-  final String text;
+  final String? text;
   final double fontSize;
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: text,
+      message: text!,
       textStyle: GoogleFonts.newsCycle(
         fontSize: 20,
         color: Colors.white,
@@ -39,13 +31,13 @@ class StyledTooltip extends StatelessWidget {
         color: Colors.black,
       ),
       child: Hero(
-        tag: text,
+        tag: text!,
         child: Text(
-          text.length > maxTextLength
+          text!.length > maxTextLength
               ? sizingInformation.isMobile
                   ? '${text.toString().substring(0, maxTextLength)}...'
-                  : sizingInformation
-              : text,
+                  : '${text.toString().substring(0, maxTextLength)}...'
+              : text!,
           textAlign: TextAlign.center,
           style: GoogleFonts.newsCycle(
             fontSize: fontSize,

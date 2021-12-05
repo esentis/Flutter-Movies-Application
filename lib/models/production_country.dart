@@ -4,8 +4,8 @@ class ProductionCountry {
     this.name,
   });
 
-  String iso31661;
-  String name;
+  String? iso31661;
+  String? name;
 
   factory ProductionCountry.fromMap(Map<String, dynamic> json) =>
       ProductionCountry(

@@ -16,20 +16,20 @@ class Cast {
     this.job,
   });
 
-  bool adult;
-  int gender;
-  int id;
-  Department knownForDepartment;
-  String name;
-  String originalName;
-  double popularity;
-  String profilePath;
-  int castId;
-  String character;
-  String creditId;
-  int order;
-  Department department;
-  String job;
+  bool? adult;
+  int? gender;
+  int? id;
+  Department? knownForDepartment;
+  String? name;
+  String? originalName;
+  double? popularity;
+  String? profilePath;
+  int? castId;
+  String? character;
+  String? creditId;
+  int? order;
+  Department? department;
+  String? job;
 
   factory Cast.fromMap(Map<String, dynamic> json) => Cast(
         adult: json['adult'],
@@ -54,7 +54,7 @@ class Cast {
         'adult': adult,
         'gender': gender,
         'id': id,
-        'known_for_department': departmentValues.reverse[knownForDepartment],
+        'known_for_department': departmentValues.reverse![knownForDepartment!],
         'name': name,
         'original_name': originalName,
         'popularity': popularity,
@@ -64,7 +64,7 @@ class Cast {
         'credit_id': creditId,
         'order': order ?? order,
         'department':
-            department == null ? null : departmentValues.reverse[department],
+            department == null ? null : departmentValues.reverse![department!],
         'job': job ?? '',
       };
 }
@@ -101,11 +101,11 @@ final departmentValues = EnumValues({
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
+  Map<T, String>? get reverse {
     reverseMap ??= map.map((k, v) => MapEntry(v, k));
     return reverseMap;
   }

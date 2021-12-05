@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,7 +12,7 @@ import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
-  await dotenv.load(fileName: 'envconfig');
+  await dotenv.load(fileName: 'dotenv');
   runApp(MyApp());
 }
 
@@ -34,6 +36,12 @@ class MyApp extends StatelessWidget {
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+          },
+        ),
         getPages: [
           GetPage(name: '/', page: () => MainScreen()),
           GetPage(name: '/search', page: () => SearchResults()),

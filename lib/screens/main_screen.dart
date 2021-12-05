@@ -8,7 +8,6 @@ import 'package:news_api/components/movies_builder.dart';
 import 'package:news_api/components/search_field.dart';
 import 'package:news_api/models/movie.dart';
 import 'package:news_api/networking/connection.dart';
-import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -28,8 +27,8 @@ RefreshController _refreshTrendingController =
 RefreshController _refreshUpcomingController =
     RefreshController(initialRefresh: false);
 bool hasLoaded = false;
-List<Movie> cachedTrendingMovies;
-List<Movie> cachedUpcomingMovies;
+List<Movie>? cachedTrendingMovies;
+List<Movie>? cachedUpcomingMovies;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -38,8 +37,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   Future getData() async {
-    cachedTrendingMovies = await getTrending();
-    cachedUpcomingMovies = await getUpcoming();
+    var res = await Future.wait([getTrending(), getUpcoming()]);
+    cachedTrendingMovies = res[0];
+    cachedUpcomingMovies = res[1];
     hasLoaded = true;
     setState(() {});
   }
@@ -81,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     var themeState = context.watch<SetThemeState>();
-    var loader = context.watch<SetLoading>();
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -100,10 +100,8 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           drawer: NewsDrawer(),
           appBar: AppBar(
-            backgroundColor: themeState.selectedTheme == ThemeSelected.dark
-                ? const Color(0xFF0f4c75).withOpacity(0.2)
-                : Colors.white.withOpacity(0.2),
-            elevation: 15,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             shadowColor: themeState.selectedTheme == ThemeSelected.dark
                 ? const Color(0xFFf7f7f7).withOpacity(0.3)
                 : Colors.black.withOpacity(0.7),
@@ -138,10 +136,10 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 5.0,
-              left: sizingInformation.isMobile ? 30 : 60,
-              right: sizingInformation.isMobile ? 30 : 60,
+              // left: sizingInformation.isMobile ? 30 : 60,
+              // right: sizingInformation.isMobile ? 30 : 60,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -223,8 +221,8 @@ class _MainScreenState extends State<MainScreen> {
                                   widgetOrigin: 'Trending Movies',
                                   scrollController: _trendingScrollController,
                                   rowCount: trendingRowCount(sizingInformation),
-                                  movies: cachedTrendingMovies,
-                                  itemCount: cachedTrendingMovies.length,
+                                  movies: cachedTrendingMovies ?? [],
+                                  itemCount: cachedTrendingMovies!.length,
                                   sizingInformation: sizingInformation,
                                   scrollDirection: Axis.horizontal,
                                 )
@@ -240,8 +238,8 @@ class _MainScreenState extends State<MainScreen> {
                                   refreshController: _refreshTrendingController,
                                   onRefresh: refreshTrendingMovies,
                                   rowCount: trendingRowCount(sizingInformation),
-                                  movies: cachedTrendingMovies,
-                                  itemCount: cachedTrendingMovies.length,
+                                  movies: cachedTrendingMovies ?? [],
+                                  itemCount: cachedTrendingMovies!.length,
                                   sizingInformation: sizingInformation,
                                   scrollDirection: Axis.vertical,
                                 ),
@@ -251,8 +249,8 @@ class _MainScreenState extends State<MainScreen> {
                                   refreshController: _refreshUpcomingController,
                                   onRefresh: refreshUpcomingMovies,
                                   rowCount: upcomingRowCount(sizingInformation),
-                                  movies: cachedUpcomingMovies,
-                                  itemCount: cachedUpcomingMovies.length,
+                                  movies: cachedUpcomingMovies ?? [],
+                                  itemCount: cachedUpcomingMovies!.length,
                                   sizingInformation: sizingInformation,
                                   scrollDirection: Axis.vertical,
                                 ),
@@ -288,8 +286,8 @@ class _MainScreenState extends State<MainScreen> {
                                   widgetOrigin: 'Upcoming movies',
                                   scrollController: _upcomingScrollController,
                                   rowCount: upcomingRowCount(sizingInformation),
-                                  movies: cachedUpcomingMovies,
-                                  itemCount: cachedUpcomingMovies.length,
+                                  movies: cachedUpcomingMovies ?? [],
+                                  itemCount: cachedUpcomingMovies!.length,
                                   sizingInformation: sizingInformation,
                                   scrollDirection: Axis.horizontal,
                                 ),

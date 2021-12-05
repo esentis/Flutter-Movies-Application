@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/components/general/popularity.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class Popularity extends StatelessWidget {
   const Popularity({
-    @required this.themeState,
-    @required this.movie,
-    @required this.sizingInformation,
-    Key key,
-  })  : assert(
-          themeState != null && movie != null && sizingInformation != null,
-          'Required fields are missing',
-        ),
-        super(key: key);
+    required this.themeState,
+    required this.movie,
+    required this.sizingInformation,
+    Key? key,
+  }) : super(key: key);
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;
-  final dynamic movie;
+  final MovieDetailed movie;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,7 +41,7 @@ class Popularity extends StatelessWidget {
           centerTextColor: themeState.selectedTheme == ThemeSelected.light
               ? Colors.black
               : const Color(0xFFf7f7f7),
-          percentage: movie[0].popularity.floor().toDouble(),
+          percentage: movie.popularity?.floor().toDouble(),
         ),
       ],
     );

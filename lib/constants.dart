@@ -1,8 +1,9 @@
 import 'package:logger/logger.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 List<String> favMovieTitles = [];
-List savedMovies = [];
+List<MovieDetailed> kSavedMovies = [];
 var logger = Logger();
 
 String baseImgUrl = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2';

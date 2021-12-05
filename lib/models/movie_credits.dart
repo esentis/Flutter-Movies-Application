@@ -17,9 +17,9 @@ class MovieCredits {
     this.crew,
   });
 
-  int id;
-  List<Cast> cast;
-  List<Cast> crew;
+  int? id;
+  List<Cast>? cast;
+  List<Cast>? crew;
 
   factory MovieCredits.fromMap(Map<String, dynamic> json) => MovieCredits(
         id: json['id'],
@@ -29,7 +29,7 @@ class MovieCredits {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'cast': List<dynamic>.from(cast.map((x) => x.toMap())),
-        'crew': List<dynamic>.from(crew.map((x) => x.toMap())),
+        'cast': List<dynamic>.from(cast!.map((x) => x.toMap())),
+        'crew': List<dynamic>.from(crew!.map((x) => x.toMap())),
       };
 }
