@@ -20,6 +20,20 @@ A movies application that connects to the <a href="https://www.themoviedb.org/">
 Get trending and newly released movies with in-depth details.
 [Live Version](https://flutter-movies-application.web.app)
 
+If you want to run the project locally:
+
+- Clone the project
+- Create a file named `dotenv` at the root of the project
+- Open the created file and add your TMDB API key
+
+e.g
+
+```text
+TMDB_KEY=2c3247c821ahhb6a60fefasd278gas6
+```
+
+- You are ready to run the project !
+
 ## Screenshots
 
 | On Load                                                 | Navigation                                                       | Toggle Theme                                                           |
