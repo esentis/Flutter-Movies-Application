@@ -52,7 +52,7 @@ Future searchMovies(String term) async {
 }
 
 /// Returns movies based on [id].
-Future getMovie(int? id) async {
+Future<MovieDetailed?> getMovieDetails(int? id) async {
   Response response;
   try {
     response = await tmdb
@@ -60,7 +60,7 @@ Future getMovie(int? id) async {
     logger.i('Searching movie with ID : $id.');
   } on DioError catch (e) {
     logger.e(e);
-    return e.type;
+    return null;
   }
   // ignore: omit_local_variable_types
   MovieDetailed detailedMovie = MovieDetailed.fromMap(response.data);
@@ -68,7 +68,7 @@ Future getMovie(int? id) async {
 }
 
 /// Returns the cast and crew for a movie with [id].
-Future getCredits(int? id) async {
+Future<MovieCredits?> getCredits(int? id) async {
   Response response;
   try {
     response = await tmdb
@@ -76,7 +76,7 @@ Future getCredits(int? id) async {
     logger.i('Getting credings for movie with ID : $id.');
   } on DioError catch (e) {
     logger.e(e);
-    return e.type;
+    return null;
   }
   // ignore: omit_local_variable_types
   MovieCredits movieCredits = MovieCredits.fromMap(response.data);
@@ -84,7 +84,7 @@ Future getCredits(int? id) async {
 }
 
 /// Returns the upcoming movies.
-Future getUpcoming() async {
+Future<List<Movie>?> getUpcoming() async {
   Response response;
   try {
     response = await tmdb.get(
@@ -92,7 +92,7 @@ Future getUpcoming() async {
     logger.i('Getting upcoming movies');
   } on DioError catch (e) {
     logger.e(e);
-    return e.type;
+    return null;
   }
   // ignore: omit_local_variable_types
   List<Movie> upcomingMovies = [];
@@ -100,18 +100,4 @@ Future getUpcoming() async {
     upcomingMovies.add(Movie.fromMap(jsonMovie));
   });
   return upcomingMovies;
-}
-
-/// Returns the latest movie created in the database.
-Future getLatest() async {
-  Response response;
-  try {
-    response = await tmdb.get(
-        '/3/movie/latest?api_key=${dotenv.env['TMDB_KEY']}&language=en-US');
-    logger.i('Getting latest movie added');
-  } on DioError catch (e) {
-    logger.e(e);
-    return e.type;
-  }
-  return response.data;
 }

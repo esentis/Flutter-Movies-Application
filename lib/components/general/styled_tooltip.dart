@@ -36,7 +36,7 @@ class StyledTooltip extends StatelessWidget {
           text!.length > maxTextLength
               ? sizingInformation.isMobile
                   ? '${text.toString().substring(0, maxTextLength)}...'
-                  : sizingInformation as String
+                  : '${text.toString().substring(0, maxTextLength)}...'
               : text!,
           textAlign: TextAlign.center,
           style: GoogleFonts.newsCycle(

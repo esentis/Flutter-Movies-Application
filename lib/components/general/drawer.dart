@@ -28,9 +28,7 @@ class _NewsDrawerState extends State<NewsDrawer> {
         child: Material(
           child: Container(
             decoration: BoxDecoration(
-              color: sizingInformation.isMobile
-                  ? Colors.black
-                  : Colors.transparent,
+              color: sizingInformation.isMobile ? Colors.black : Colors.black,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(60),
                 bottomRight: Radius.circular(60),

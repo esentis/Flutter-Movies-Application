@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -13,7 +14,7 @@ class Genres extends StatelessWidget {
 
   final SetThemeState themeState;
   final SizingInformation sizingInformation;
-  final dynamic movie;
+  final MovieDetailed movie;
   List<Widget> getGenres(List<dynamic> genres,
       SizingInformation sizingInformation, SetThemeState themeState) {
     // ignore: omit_local_variable_types
@@ -52,7 +53,7 @@ class Genres extends StatelessWidget {
         ),
         Column(
           children: getGenres(
-            movie[0].genres,
+            movie.genres ?? [],
             sizingInformation,
             themeState,
           ),

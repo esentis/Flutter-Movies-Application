@@ -14,12 +14,14 @@ import 'package:news_api/components/movie%20screen/rating.dart';
 import 'package:news_api/components/movie%20screen/release_date.dart';
 import 'package:news_api/components/movie%20screen/title_and_tagline.dart';
 import 'package:news_api/constants.dart';
+import 'package:news_api/models/cast.dart';
+import 'package:news_api/models/movie_credits.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:news_api/screens/main_screen.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-List<dynamic>? movie;
 Color? _heartColor;
 bool loaded = false;
 
@@ -29,8 +31,8 @@ class MovieScreen extends StatefulWidget {
 }
 
 class _MovieScreenState extends State<MovieScreen> {
-  List<Widget> getCast(List<dynamic> actors,
-      SizingInformation sizingInformation, SetThemeState themeState) {
+  List<Widget> getCast(List<Cast> actors, SizingInformation sizingInformation,
+      SetThemeState themeState) {
     // ignore: omit_local_variable_types
     List<Widget> actorWidgets = [];
     for (var actor in actors) {
@@ -38,11 +40,12 @@ class _MovieScreenState extends State<MovieScreen> {
       actorWidgets.add(ListTile(
         leading: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: actor.profilePath != null && actor.profilePath.isNotEmpty
+            child: actor.profilePath != null &&
+                    (actor.profilePath?.isNotEmpty ?? false)
                 ? Image.network('$baseImgUrl${actor.profilePath}')
                 : Image.asset('assets/images/404_actor.png')),
         title: Text(
-          actor.name,
+          actor.name ?? '',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isDesktop ? 35 : 20,
             color: themeState.selectedTheme == ThemeSelected.light
@@ -51,7 +54,7 @@ class _MovieScreenState extends State<MovieScreen> {
           ),
         ),
         subtitle: Text(
-          actor.character,
+          actor.character ?? '',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isDesktop ? 25 : 15,
             color: themeState.selectedTheme == ThemeSelected.light
@@ -64,12 +67,20 @@ class _MovieScreenState extends State<MovieScreen> {
     return actorWidgets;
   }
 
+  late MovieDetailed movieDetailed;
+  late MovieCredits credits;
+  late String widgetOrigin;
+
   @override
   void initState() {
     super.initState();
-    movie = Get.arguments;
-    if (savedMovies.isNotEmpty) {
-      if (savedMovies.any((element) => element['id'] == movie![0].id)) {
+
+    movieDetailed = Get.arguments[0];
+    credits = Get.arguments[1];
+    widgetOrigin = Get.arguments[2];
+
+    if (kSavedMovies.isNotEmpty) {
+      if (kSavedMovies.any((m) => m.id == movieDetailed.id)) {
         _heartColor = Colors.red;
       } else {
         _heartColor = Colors.white;
@@ -110,74 +121,81 @@ class _MovieScreenState extends State<MovieScreen> {
                     bottomLeft: Radius.circular(60),
                   ),
                 ),
-                leading: GestureDetector(
-                  onTap: () {
-                    if (movie![3] == 'favorites') {
-                      Get.to(MainScreen());
-                    } else {
-                      Get.back();
-                    }
-                  },
-                  child: const CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      radius: 20,
-                      child: Icon(
-                        Icons.arrow_back,
-                        size: 40,
-                      )),
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (widgetOrigin == 'favorites') {
+                        Get.to(() => MainScreen());
+                      } else {
+                        Get.back();
+                      }
+                    },
+                    child: const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        radius: 20,
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: 40,
+                        )),
+                  ),
                 ),
                 actions: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (_heartColor == Colors.white) {
-                          _heartColor = Colors.red;
-                          buildSnackbar(
-                            sizingInformation: sizingInformation,
-                            fontSize: 35,
-                            titleText: 'Added to favorites !',
-                            backgroundColor: Colors.green.withOpacity(0.7),
-                            borderColor: Colors.white,
-                          );
-                          savedMovies.add(movie![0]);
-                          widgetsToDraw.add(
-                            FavoriteMovieTile(
-                              movie: movie,
-                              key: Key(movie![0].id.toString()),
-                            ),
-                          );
-                        } else {
-                          _heartColor = Colors.white;
-                          buildSnackbar(
-                            sizingInformation: sizingInformation,
-                            borderColor: Colors.white,
-                            backgroundColor: Colors.red.withOpacity(0.7),
-                            fontSize: 35,
-                            titleText: 'Removed from favorites',
-                          );
-                          savedMovies.remove(
-                            savedMovies.firstWhere(
-                                (element) => element['id'] == movie![0].id),
-                          );
-
-                          try {
-                            widgetsToDraw.remove(
-                              widgetsToDraw.firstWhere(
-                                (listTile) =>
-                                    listTile.key == Key(movie![0].id.toString()),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_heartColor == Colors.white) {
+                            _heartColor = Colors.red;
+                            buildSnackbar(
+                              sizingInformation: sizingInformation,
+                              fontSize: 35,
+                              titleText: 'Added to favorites !',
+                              backgroundColor: Colors.green.withOpacity(0.7),
+                              borderColor: Colors.white,
+                            );
+                            kSavedMovies.add(movieDetailed);
+                            widgetsToDraw.add(
+                              FavoriteMovieTile(
+                                movie: movieDetailed,
+                                key: Key(movieDetailed.id.toString()),
                               ),
                             );
-                          } catch (e) {
-                            print(e);
+                          } else {
+                            _heartColor = Colors.white;
+                            buildSnackbar(
+                              sizingInformation: sizingInformation,
+                              borderColor: Colors.white,
+                              backgroundColor: Colors.red.withOpacity(0.7),
+                              fontSize: 35,
+                              titleText: 'Removed from favorites',
+                            );
+                            kSavedMovies.remove(
+                              kSavedMovies
+                                  .firstWhere((m) => m.id == movieDetailed.id),
+                            );
+
+                            try {
+                              widgetsToDraw.remove(
+                                widgetsToDraw.firstWhere(
+                                  (listTile) =>
+                                      listTile.key ==
+                                      Key(movieDetailed.id.toString()),
+                                ),
+                              );
+                            } catch (e) {
+                              print(e);
+                            }
+                            widgetsToDraw.forEach((element) {
+                              print(element.key);
+                            });
                           }
-                          widgetsToDraw.forEach((element) {
-                            print(element.key);
-                          });
-                        }
-                      });
-                    },
-                    child: HeartIcon(heartColor: _heartColor!),
+                        });
+                      },
+                      child: HeartIcon(heartColor: _heartColor!),
+                    ),
                   ),
                 ],
                 // Allows the user to reveal the app bar if they begin scrolling
@@ -188,7 +206,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      baseImgUrl + movie![0].posterPath,
+                      baseImgUrl + movieDetailed.posterPath,
                       fit: BoxFit.cover,
                     ),
                   ],
@@ -218,13 +236,13 @@ class _MovieScreenState extends State<MovieScreen> {
                                         child: TitleAndTagline(
                                           themeState: themeState,
                                           sizingInformation: sizingInformation,
-                                          movie: movie,
+                                          movie: movieDetailed,
                                         ),
                                       ),
                                       Flexible(
                                         child: Rating(
                                           themeState: themeState,
-                                          movie: movie,
+                                          movie: movieDetailed,
                                           sizingInformation: sizingInformation,
                                         ),
                                       )
@@ -244,27 +262,27 @@ class _MovieScreenState extends State<MovieScreen> {
                                       ReleaseDate(
                                         themeState: themeState,
                                         sizingInformation: sizingInformation,
-                                        movie: movie,
+                                        movie: movieDetailed,
                                       ),
                                       MovieDuration(
                                         themeState: themeState,
                                         sizingInformation: sizingInformation,
-                                        movie: movie,
+                                        movie: movieDetailed,
                                       ),
                                       Genres(
                                         themeState: themeState,
                                         sizingInformation: sizingInformation,
-                                        movie: movie,
+                                        movie: movieDetailed,
                                       ),
                                       Language(
                                         themeState: themeState,
                                         sizingInformation: sizingInformation,
-                                        movie: movie,
+                                        movie: movieDetailed,
                                       ),
                                       Popularity(
                                         themeState: themeState,
                                         sizingInformation: sizingInformation,
-                                        movie: movie,
+                                        movie: movieDetailed,
                                       ),
                                     ],
                                   ),
@@ -279,7 +297,7 @@ class _MovieScreenState extends State<MovieScreen> {
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                movie![0].overview,
+                                movieDetailed.overview ?? '',
                                 style: GoogleFonts.newsCycle(
                                   fontSize:
                                       sizingInformation.isDesktop ? 35 : 25,
@@ -304,8 +322,8 @@ class _MovieScreenState extends State<MovieScreen> {
                               color: Colors.black.withOpacity(0.6),
                             ),
                             Column(
-                              children: getCast(
-                                  movie![1].cast, sizingInformation, themeState),
+                              children: getCast(credits.cast ?? [],
+                                  sizingInformation, themeState),
                             ),
                             const SizedBox(height: 15),
                           ],

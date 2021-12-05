@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_api/models/movie.dart';
-import 'package:news_api/models/movie_credits.dart';
 import 'package:news_api/networking/connection.dart';
 import 'package:news_api/states/loadingstate.dart';
 import 'package:news_api/states/themestate.dart';
@@ -101,14 +100,14 @@ class MoviesBuilder extends StatelessWidget {
                     overlayHeight: sizingInformation.isMobile ? 105 : 115,
                     onTap: () async {
                       loader.toggleLoading();
-                      var movieDetails = await getMovie(movies![index].id ?? 0);
-                      MovieCredits movieCredits =
+                      var movieDetails =
+                          await getMovieDetails(movies![index].id ?? 0);
+                      var movieCredits =
                           await getCredits(movieDetails?.id ?? 0);
                       loader.toggleLoading();
                       await Get.toNamed('/movie', arguments: [
                         movieDetails,
                         movieCredits,
-                        index,
                         widgetOrigin
                       ]);
                     },
@@ -161,14 +160,14 @@ class MoviesBuilder extends StatelessWidget {
                   overlayHeight: sizingInformation.isMobile ? 105 : 115,
                   onTap: () async {
                     loader.toggleLoading();
-                    var movieDetails = await getMovie(movies![index].id ?? 0);
+                    var movieDetails =
+                        await getMovieDetails(movies![index].id ?? 0);
                     var movieCredits = await getCredits(movieDetails?.id ?? 0);
                     loader.toggleLoading();
                     await Get.toNamed('/movie', arguments: [
                       movieDetails,
                       movieCredits,
-                      index,
-                      widgetOrigin
+                      widgetOrigin,
                     ]);
                   },
                 ),

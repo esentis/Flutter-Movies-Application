@@ -9,25 +9,21 @@ class HeartIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(60),
-        gradient: const LinearGradient(
+      height: 100,
+      width: 100,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
           colors: [
             Color(0xFF198FD8),
             Color(0xFFe0dede),
           ],
         ),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(60),
-          color: Colors.blue.withOpacity(0.3),
-        ),
-        child: Icon(
-          Icons.favorite,
-          color: heartColor,
-          size: 60,
-        ),
+      child: Icon(
+        Icons.favorite,
+        color: heartColor,
+        size: 40,
       ),
     );
   }

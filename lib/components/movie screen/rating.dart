@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:news_api/states/themestate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -12,14 +13,14 @@ class Rating extends StatelessWidget {
   }) : super(key: key);
 
   final SetThemeState themeState;
-  final dynamic movie;
+  final MovieDetailed movie;
   final SizingInformation sizingInformation;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          '${movie[0].voteAverage.toString()}/10',
+          '${movie.voteAverage.toString()}/10',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 25 : 40,
             fontWeight: FontWeight.bold,
@@ -29,7 +30,7 @@ class Rating extends StatelessWidget {
           ),
         ),
         Text(
-          '${movie[0].voteCount} votes',
+          '${movie.voteCount} votes',
           style: GoogleFonts.newsCycle(
             fontSize: sizingInformation.isMobile ? 15 : 30,
             fontWeight: FontWeight.bold,

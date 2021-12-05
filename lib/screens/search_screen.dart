@@ -117,12 +117,11 @@ class _SearchResultsState extends State<SearchResults> {
                           onTap: () async {
                             var movieCredits = await getCredits(
                                 searchResults!.results![index].id ?? 0);
-                            var movieDetails = await getMovie(
+                            var movieDetails = await getMovieDetails(
                                 searchResults!.results![index].id ?? 0);
                             await Get.toNamed('/movie', arguments: [
                               movieDetails,
                               movieCredits,
-                              index,
                               'search'
                             ]);
                           },

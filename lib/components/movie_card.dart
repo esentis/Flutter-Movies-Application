@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:news_api/components/general/popularity.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -68,118 +69,121 @@ class MovieCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: Banner(
-                location: BannerLocation.topStart,
-                message: rating,
-                color: const Color(0xFFEC1E79),
-                textStyle: GoogleFonts.newsCycle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      const Shadow(
-                        color: Colors.white,
-                        blurRadius: 6,
-                      ),
-                      const Shadow(
-                        color: Colors.black,
-                        blurRadius: 6,
-                      ),
-                    ]),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Builder(
-                      builder: (BuildContext ctx) => Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              height: sizingInformation.isMobile ? 60 : 110,
-                              decoration: BoxDecoration(
-                                color: overlayColor,
-                                shape: BoxShape.rectangle,
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(20),
-                                  topLeft: Radius.circular(20),
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                title!,
-                                style: GoogleFonts.newsCycle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  color: textColor,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              child: Material(
-                                color: Colors.black.withOpacity(0.8),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
+              child: ClipRRect(
+                child: Banner(
+                  location: BannerLocation.topStart,
+                  message: rating,
+                  color: const Color(0xFFEC1E79),
+                  textStyle: GoogleFonts.newsCycle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        const Shadow(
+                          color: Colors.white,
+                          blurRadius: 6,
+                        ),
+                        const Shadow(
+                          color: Colors.black,
+                          blurRadius: 6,
+                        ),
+                      ]),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Builder(
+                        builder: (BuildContext ctx) => Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: sizingInformation.isMobile ? 60 : 110,
+                                decoration: BoxDecoration(
+                                  color: overlayColor,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: const BorderRadius.only(
                                     topRight: Radius.circular(20),
+                                    topLeft: Radius.circular(20),
                                     bottomLeft: Radius.circular(20),
-                                  ),
-                                  side: BorderSide(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14.0),
-                                  child: Column(
-                                    children: [
-                                      ...genres,
-                                      sizingInformation.isMobile
-                                          ? const SizedBox()
-                                          : Text(
-                                              date,
-                                              style: GoogleFonts.newsCycle(
-                                                fontSize: 10,
-                                                color: textColor,
-                                              ),
-                                            ),
-                                    ],
+                                    bottomRight: Radius.circular(20),
                                   ),
                                 ),
                               ),
-                            )
-                          ],
+                              Center(
+                                child: Text(
+                                  title!,
+                                  style: GoogleFonts.newsCycle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: textColor,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                child: Material(
+                                  color: Colors.black.withOpacity(0.8),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(20),
+                                      bottomLeft: Radius.circular(20),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14.0),
+                                    child: Column(
+                                      children: [
+                                        ...genres,
+                                        sizingInformation.isMobile
+                                            ? const SizedBox()
+                                            : Text(
+                                                DateFormat('dd-MM-yyyy').format(
+                                                    DateTime.tryParse(date)!),
+                                                style: GoogleFonts.newsCycle(
+                                                  fontSize: 15,
+                                                  color: textColor,
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 10,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/popcorn.png',
-                            fit: BoxFit.cover,
-                            scale: 27,
-                          ),
-                          PopularityRating(
-                            radius: sizingInformation.isMobile ? 50 : 70,
-                            fontSize: sizingInformation.isMobile ? 14 : 20,
-                            percentage: percentage,
-                            centerTextColor: Colors.white,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                      Positioned(
+                        bottom: 0,
+                        right: 10,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/popcorn.png',
+                              fit: BoxFit.cover,
+                              scale: 27,
+                            ),
+                            PopularityRating(
+                              radius: sizingInformation.isMobile ? 50 : 70,
+                              fontSize: sizingInformation.isMobile ? 14 : 20,
+                              percentage: percentage,
+                              centerTextColor: Colors.white,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

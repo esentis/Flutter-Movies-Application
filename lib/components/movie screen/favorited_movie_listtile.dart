@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/models/movie_detailed.dart';
 import 'package:news_api/networking/connection.dart';
 
 import '../../constants.dart';
@@ -9,21 +10,17 @@ class FavoriteMovieTile extends StatelessWidget {
   const FavoriteMovieTile({
     required this.movie,
     Key? key,
-  })  : assert(
-          movie != null,
-          'Required field is missing',
-        ),
-        super(key: key);
-  final dynamic movie;
+  }) : super(key: key);
+  final MovieDetailed movie;
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(60),
-        child: Image.network(baseImgUrl + movie[0]['poster_path']),
+        child: Image.network(baseImgUrl + movie.posterPath),
       ),
       title: Text(
-        movie[0]['original_title'] ?? movie[0]['title'],
+        movie.originalTitle ?? (movie.title ?? ''),
         style: GoogleFonts.newsCycle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
@@ -31,7 +28,7 @@ class FavoriteMovieTile extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        movie[0]['tagline'] ?? '',
+        movie.tagline ?? '',
         style: GoogleFonts.newsCycle(
           color: Colors.white.withOpacity(0.8),
           fontWeight: FontWeight.bold,
@@ -40,10 +37,10 @@ class FavoriteMovieTile extends StatelessWidget {
         ),
       ),
       onTap: () async {
-        var movieDetails = await getMovie(movie[0]['id']);
+        var movieDetails = await getMovieDetails(movie.id);
         var movieCredits = await getCredits(movieDetails?.id ?? 0);
         await Get.offAllNamed('/movie',
-            arguments: [movieDetails, movieCredits, 0, 'favorites']);
+            arguments: [movieDetails, movieCredits, 'favorites']);
       },
     );
   }
