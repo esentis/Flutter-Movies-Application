@@ -20,7 +20,7 @@ int trendingRowCount(SizingInformation sizeInformation) {
   } else if (sizeInformation.screenSize.width <= 1920) {
     return 1;
   } else {
-    return 2;
+    return 1;
   }
 }
 
@@ -36,6 +36,6 @@ int upcomingRowCount(SizingInformation sizeInformation) {
   } else if (sizeInformation.screenSize.width <= 1920) {
     return 1;
   } else {
-    return 2;
+    return 1;
   }
 }
