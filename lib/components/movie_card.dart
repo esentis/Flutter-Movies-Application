@@ -174,7 +174,7 @@ class MovieCard extends StatelessWidget {
                               scale: 27,
                             ),
                             PopularityRating(
-                              radius: sizingInformation.isMobile ? 50 : 70,
+                              radius: 40,
                               fontSize: sizingInformation.isMobile ? 14 : 20,
                               percentage: percentage,
                               centerTextColor: Colors.white,
